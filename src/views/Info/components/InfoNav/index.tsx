@@ -1,0 +1,119 @@
+import { Box, ButtonMenu, ButtonMenuItem, Flex } from '@pancakeswap/uikit'
+import { NextLinkFromReactRouter } from 'components/NextLink'
+import { useTranslation } from 'contexts/Localization'
+import { useRouter } from 'next/router'
+import styled, { css } from 'styled-components'
+import Search from 'views/Info/components/InfoSearch'
+
+const NavWrapper = styled(Flex)`
+  // background: ${({ theme }) => theme.colors.gradients.cardHeader};
+  background: transparent;
+  justify-content: space-between;
+  padding: 30px 16px;
+  flex-direction: column;
+  gap: 8px;
+  ${({ theme }) => theme.mediaQueries.sm} {
+    padding: 30px 40px;
+    flex-direction: row;
+  }
+
+  // Make NavWrapper has the same size as Info page:
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 16px;
+  padding-right: 16px;
+
+  @media screen and (min-width: 370px) {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+`
+
+const StyledButtonMenu = styled(ButtonMenu)`
+  background: transparent;
+  border: none;
+  outline: none;
+`
+
+const StyledButtonMenuItem = styled(ButtonMenuItem)<{ $isActive?: boolean }>`
+  color: #2d022e;
+  background: #2d022e;
+  border-radius: 30px;
+  margin-right: 20px;
+  width: 180px;
+  height: 52px;
+  // Layout:
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 20px 30px;
+  // Content:
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 16px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+  flex: none;
+  order: 0;
+  flex-grow: 0;
+
+  &&:last-child {
+    margin-right: 0;
+  }
+
+  &&:hover {
+    backdrop-filter: blur(10px);
+    background: rgba(236, 76, 147, 0.5);
+    color: #fff;
+  }
+
+  ${(props) =>
+    props.$isActive &&
+    css`
+      background: #ec4c93;
+      color: #fff;
+
+      &&:hover {
+        background: #ec4c93;
+      }
+    `}
+`
+
+const InfoNav = () => {
+  const { t } = useTranslation()
+  const router = useRouter()
+  const isPools = router.asPath === '/info/pools'
+  const isTokens = router.asPath === '/info/tokens'
+  let activeIndex = 0
+  if (isPools) {
+    activeIndex = 1
+  }
+  if (isTokens) {
+    activeIndex = 2
+  }
+  return (
+    <NavWrapper>
+      <Box>
+        <StyledButtonMenu activeIndex={activeIndex} scale="sm" variant="subtle">
+          <StyledButtonMenuItem as={NextLinkFromReactRouter} to="/info" $isActive={activeIndex === 0}>
+            {t('Overview')}
+          </StyledButtonMenuItem>
+          <StyledButtonMenuItem as={NextLinkFromReactRouter} to="/info/pools" $isActive={activeIndex === 1}>
+            {t('Pools')}
+          </StyledButtonMenuItem>
+          <StyledButtonMenuItem as={NextLinkFromReactRouter} to="/info/tokens" $isActive={activeIndex === 2}>
+            {t('Tokens')}
+          </StyledButtonMenuItem>
+        </StyledButtonMenu>
+      </Box>
+      <Box width={['100%', '100%', '250px']} style={{ width: '340px', height: '52px' }}>
+        <Search />
+      </Box>
+    </NavWrapper>
+  )
+}
+
+export default InfoNav
