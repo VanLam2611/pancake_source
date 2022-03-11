@@ -2,12 +2,11 @@
   "name": "pancake-frontend",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://vanlam2611.github.io/pancake_source/",
   "scripts": {
     "analyze": "ANALYZE=true yarn build",
     "dev": "next dev",
     "build": "next build",
-    "start": "node server.js",
+    "start": "next start",
     "test": "jest",
     "test:config": "jest src/config/__tests__/ --testPathIgnorePatterns",
     "integration-test": "start-server-and-test start http://localhost:3000 'cypress run'",
@@ -20,9 +19,7 @@
     "postinstall": "yarn run typechain",
     "typechain": "typechain --out-dir src/config/abi/types --target=ethers-v5 \"src/config/abi/*.json\"",
     "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "build-storybook": "build-storybook"
   },
   "browserslist": {
     "production": [
