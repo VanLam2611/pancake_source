@@ -26,10 +26,13 @@ import { getBscScanLink } from 'utils'
 import Balance from 'components/Balance'
 import { getPoolBlockInfo } from 'views/Pools/helpers'
 import { BIG_ZERO } from 'utils/bigNumber'
+import MaxStakeRow from '../../MaxStakeRow'
 
 interface ExpandedFooterProps {
   pool: DeserializedPool
   account: string
+  labelColor?: string
+  valueColor?: string
 }
 
 const ExpandedWrapper = styled(Flex)`
@@ -39,7 +42,7 @@ const ExpandedWrapper = styled(Flex)`
   }
 `
 
-const ExpandedFooter: React.FC<ExpandedFooterProps> = ({ pool, account }) => {
+const ExpandedFooter: React.FC<ExpandedFooterProps> = ({ pool, account, labelColor, valueColor }) => {
   const { t } = useTranslation()
   const currentBlock = useCurrentBlock()
 
@@ -50,10 +53,12 @@ const ExpandedFooter: React.FC<ExpandedFooterProps> = ({ pool, account }) => {
     startBlock,
     endBlock,
     stakingLimit,
+    stakingLimitEndBlock,
     contractAddress,
     sousId,
     vaultKey,
     profileRequirement,
+    isFinished,
   } = pool
 
   const {
@@ -104,11 +109,11 @@ const ExpandedFooter: React.FC<ExpandedFooterProps> = ({ pool, account }) => {
       <div style={{ margin: '24px 0' }}>
         {profileRequirement && (profileRequirement.required || profileRequirement.thresholdPoints.gt(0)) && (
           <Flex mb="8px" justifyContent="space-between">
-            <Text small>{t('Requirement')}:</Text>
+            <Text color={labelColor || '#fff'} small>{t('Requirement')}:</Text>
             <Text small textAlign="right">
               {profileRequirement.required && t('Pancake Profile')}{' '}
               {profileRequirement.thresholdPoints.gt(0) && (
-                <Text small>
+                <Text color={valueColor || '#fff'} small>
                   {profileRequirement.thresholdPoints.toNumber().toLocaleString()} {t('Profile Points')}
                 </Text>
               )}
@@ -116,21 +121,13 @@ const ExpandedFooter: React.FC<ExpandedFooterProps> = ({ pool, account }) => {
           </Flex>
         )}
         <Flex mb="2px" justifyContent="space-between" alignItems="center">
-          <Text small color="#fff">
-            {t('Total staked')}:
-          </Text>
+          <Text color={labelColor || '#fff'} small>{t('Total staked')}:</Text>
           <Flex alignItems="flex-start">
             {totalStaked && totalStaked.gte(0) ? (
               <>
-                <Balance
-                  small
-                  color="#EC4C93"
-                  value={getTotalStakedBalance()}
-                  decimals={0}
-                  unit={` ${stakingToken.symbol}`}
-                />
+                <Balance color={valueColor || '#fff'} small value={getTotalStakedBalance()} decimals={0} unit={` ${stakingToken.symbol}`} />
                 <span ref={totalStakedTargetRef}>
-                  <HelpIcon color="#EC4C93" width="20px" ml="6px" mt="4px" />
+                  <HelpIcon color={valueColor || '#fff'} width="20px" ml="6px" mt="4px" />
                 </span>
               </>
             ) : (
@@ -139,13 +136,15 @@ const ExpandedFooter: React.FC<ExpandedFooterProps> = ({ pool, account }) => {
             {totalStakedTooltipVisible && totalStakedTooltip}
           </Flex>
         </Flex>
-        {stakingLimit && stakingLimit.gt(0) && (
-          <Flex mb="2px" justifyContent="space-between">
-            <Text small>{t('Max. stake per user')}:</Text>
-            <Text small>{`${getFullDisplayBalance(stakingLimit, stakingToken.decimals, 0)} ${
-              stakingToken.symbol
-            }`}</Text>
-          </Flex>
+        {!isFinished && stakingLimit && stakingLimit.gt(0) && (
+          <MaxStakeRow
+            small
+            currentBlock={currentBlock}
+            hasPoolStarted={hasPoolStarted}
+            stakingLimit={stakingLimit}
+            stakingLimitEndBlock={stakingLimitEndBlock}
+            stakingToken={stakingToken}
+          />
         )}
         {shouldShowBlockCountdown && (
           <Flex mb="2px" justifyContent="space-between" alignItems="center">
@@ -154,7 +153,7 @@ const ExpandedFooter: React.FC<ExpandedFooterProps> = ({ pool, account }) => {
               <Flex alignItems="center">
                 <Link external href={getBscScanLink(hasPoolStarted ? endBlock : startBlock, 'countdown')}>
                   <Balance small value={blocksToDisplay} decimals={0} color="primary" />
-                  <Text small ml="4px" color="primary" textTransform="lowercase">
+                  <Text color={labelColor || '#fff'} small ml="4px" textTransform="lowercase">
                     {t('Blocks')}
                   </Text>
                   <TimerIcon ml="4px" color="primary" />
@@ -168,12 +167,12 @@ const ExpandedFooter: React.FC<ExpandedFooterProps> = ({ pool, account }) => {
         {vaultKey && (
           <Flex mb="2px" justifyContent="space-between" alignItems="center">
             {tooltipVisible && tooltip}
-            <TooltipText ref={targetRef} small color="#fff">
+            <TooltipText color={labelColor || '#fff'} ref={targetRef} small>
               {t('Performance Fee')}
             </TooltipText>
             <Flex alignItems="center">
               {performanceFee ? (
-                <Text ml="4px" small color="#EC4C93">
+                <Text color={valueColor || '#fff'} ml="4px" small>
                   {performanceFee / 100}%
                 </Text>
               ) : (
@@ -186,23 +185,32 @@ const ExpandedFooter: React.FC<ExpandedFooterProps> = ({ pool, account }) => {
 
       <div style={{ margin: '0px' }}>
         <Flex mb="2px" justifyContent="flex-start">
-          <LinkExternal href={`/info/token/${earningToken.address}`} bold={false} small>
-            {t('See Token Info')}
+          <LinkExternal
+            href={`/info/token/${earningToken.address}`}
+            color={valueColor || '#fff'}
+            bold={false} small
+          >
+            <span style={{ color: `${labelColor || '#fff'}` }}>{t('See Token Info')}</span>
           </LinkExternal>
         </Flex>
         <Flex mb="2px" justifyContent="flex-start">
-          <LinkExternal href={earningToken.projectLink} bold={false} small>
-            {t('View Project Site')}
+          <LinkExternal
+            href={earningToken.projectLink}
+            color={valueColor || '#fff'}
+            bold={false} small
+          >
+            <span style={{ color: `${labelColor || '#fff'}` }}>{t('View Project Site')}</span>
           </LinkExternal>
         </Flex>
         {poolContractAddress && (
           <Flex mb="2px" justifyContent="flex-start">
             <LinkExternal
               href={`${BASE_BSC_SCAN_URL}/address/${vaultKey ? cakeVaultContractAddress : poolContractAddress}`}
+              color={valueColor || '#fff'}
               bold={false}
               small
             >
-              {t('View Contract')}
+              <span style={{ color: `${labelColor || '#fff'}` }}>{t('View Contract')}</span>
             </LinkExternal>
           </Flex>
         )}
@@ -214,10 +222,10 @@ const ExpandedFooter: React.FC<ExpandedFooterProps> = ({ pool, account }) => {
               height="auto"
               onClick={() => registerToken(tokenAddress, earningToken.symbol, earningToken.decimals)}
             >
-              <Text color="primary" fontSize="14px">
+              <Text color={labelColor || '#fff'} fontSize="14px">
                 {t('Add to Metamask')}
               </Text>
-              <MetamaskIcon ml="4px" />
+              <MetamaskIcon ml="10px" />
             </Button>
           </Flex>
         )}

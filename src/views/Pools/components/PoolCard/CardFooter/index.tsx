@@ -12,6 +12,8 @@ interface FooterProps {
   account: string
   totalCakeInVault?: BigNumber
   defaultExpanded?: boolean
+  txtColor?: string
+  txtColorMain?: string
 }
 
 const ExpandableButtonWrapper = styled(Flex)`
@@ -29,7 +31,24 @@ const StyledCardFooter = styled(CardFooter)`
   border: none;
 `
 
-const Footer: React.FC<FooterProps> = ({ pool, account, defaultExpanded }) => {
+const StyledTagWrapper = styled.div <{ $color?: string }>`
+  > div {
+    padding: 8px 12px;
+    background: rgba(116, 33, 69, 0.5);
+    border: 1px solid #EC4C93;
+    box-sizing: border-box;
+    border-radius: 10px;
+    border: ${props => props.$color ? `1px solid ${props.$color}` : '1px solid #fff'};
+    color: ${props => props.$color ? props.$color : '#fff'};
+  
+    > svg {
+      margin-right: 8px;
+      fill: ${props => props.$color ? props.$color : '#fff'};
+    }
+  }
+`
+
+const Footer: React.FC<FooterProps> = ({ pool, account, defaultExpanded, txtColor, txtColorMain }) => {
   const { vaultKey } = pool
   const { t } = useTranslation()
   const [isExpanded, setIsExpanded] = useState(defaultExpanded || false)
@@ -47,17 +66,27 @@ const Footer: React.FC<FooterProps> = ({ pool, account, defaultExpanded }) => {
     <StyledCardFooter>
       <ExpandableButtonWrapper>
         <Flex alignItems="center">
-          {vaultKey ? <CompoundingPoolTag /> : <ManualPoolTag />}
+          {
+            vaultKey ? (
+              <StyledTagWrapper $color={txtColorMain}>
+                <CompoundingPoolTag />
+              </StyledTagWrapper>
+            ) : (
+              <StyledTagWrapper $color='#B5689E'>
+                <ManualPoolTag />
+              </StyledTagWrapper>
+            )
+          }
           {tooltipVisible && tooltip}
           <Flex ref={targetRef}>
-            <HelpIcon ml="4px" width="20px" height="20px" color="textSubtle" />
+            <HelpIcon ml="8px" width="20px" height="20px" color={txtColorMain || "textSubtle"} />
           </Flex>
         </Flex>
         <ExpandableLabel expanded={isExpanded} onClick={() => setIsExpanded(!isExpanded)}>
           {isExpanded ? t('Hide') : t('Details')}
         </ExpandableLabel>
       </ExpandableButtonWrapper>
-      {isExpanded && <ExpandedFooter pool={pool} account={account} />}
+      {isExpanded && <ExpandedFooter pool={pool} account={account} labelColor={txtColor} valueColor={txtColorMain} />}
     </StyledCardFooter>
   )
 }

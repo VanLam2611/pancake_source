@@ -36,7 +36,6 @@ export const removeSerializedPair =
 
 export const muteAudio = createAction<void>('user/muteAudio')
 export const unmuteAudio = createAction<void>('user/unmuteAudio')
-export const toggleTheme = createAction<void>('user/toggleTheme')
 export const updateUserFarmStakedOnly = createAction<{ userFarmStakedOnly: FarmStakedOnly }>(
   'user/updateUserFarmStakedOnly',
 )
@@ -48,6 +47,9 @@ export const updateUserPredictionAcceptedRisk = createAction<{ userAcceptedRisk:
 )
 export const updateUserPredictionChartDisclaimerShow = createAction<{ userShowDisclaimer: boolean }>(
   'user/updateUserPredictionChartDisclaimerShow',
+)
+export const updateUserPredictionChainlinkChartDisclaimerShow = createAction<{ userShowDisclaimer: boolean }>(
+  'user/updateUserPredictionChainlinkChartDisclaimerShow',
 )
 export const updateUserExpertModeAcknowledgementShow = createAction<{ userExpertModeAcknowledgementShow: boolean }>(
   'user/updateUserExpertModeAcknowledgementShow',

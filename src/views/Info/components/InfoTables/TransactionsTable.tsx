@@ -14,7 +14,7 @@ import {
   ArrowBackIcon,
   Heading,
 } from '@pancakeswap/uikit'
-import { formatAmount } from 'views/Info/utils/formatInfoNumbers'
+import { formatAmount } from 'utils/formatInfoNumbers'
 import { getBscScanLink } from 'utils'
 import truncateHash from 'utils/truncateHash'
 import { Transaction, TransactionType } from 'state/info/types'

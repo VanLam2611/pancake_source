@@ -1,7 +1,15 @@
 import Swap from '../views/Swap'
 
-const SwapPage = () => {
+const SwapPages = () => {
   return <Swap />
 }
 
-export default SwapPage
+export default SwapPages
+
+// import TradingView from '../views/Swap/components/TradingView'
+
+// const Chart = () => {
+//   return <TradingView />
+// }
+
+// export default Chart

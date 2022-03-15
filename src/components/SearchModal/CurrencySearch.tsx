@@ -52,7 +52,6 @@ function CurrencySearch({
   const searchToken = useToken(debouncedQuery)
   const searchTokenIsAdded = useIsUserAddedToken(searchToken)
 
-  const setTrue = true;
   const [audioPlay] = useAudioModeManager()
 
   const showETH: boolean = useMemo(() => {
@@ -158,7 +157,7 @@ function CurrencySearch({
               fixedListRef={fixedList}
               showImportView={showImportView}
               setImportToken={setImportToken}
-              isShow={setTrue}
+              isShow={true}
             />
           </Box>
         ) : (

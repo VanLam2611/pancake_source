@@ -28,7 +28,7 @@ import VaultCardActions from './VaultCardActions'
 import UnstakingFeeCountdownRow from './UnstakingFeeCountdownRow'
 import RecentCakeProfitRow from './RecentCakeProfitRow'
 
-const StyledCardBody = styled(CardBody)<{ isLoading: boolean }>`
+const StyledCardBody = styled(CardBody) <{ isLoading: boolean }>`
   // min-height: ${({ isLoading }) => (isLoading ? '0' : '254px')};
   padding: 0 30px 0 30px;
 `
@@ -44,12 +44,12 @@ const StyledCardBodyInfoBox = styled(Box)`
   box-sizing: border-box;
   border-radius: 10px;
   align-self: stretch;
-  margin: 0 0 24px 0;
+  margin: 0 0 0px 0;
   padding: 16px;
 `
 
 const StyledCardFooterWrapper = styled.div`
-  margin: 30px 30px 0 30px;
+  margin: 24px 30px 24px 30px;
 `
 
 interface CakeVaultProps extends CardProps {
@@ -151,7 +151,7 @@ const CakeVaultCard: React.FC<CakeVaultProps> = ({ pool, showStakedOnly, default
         <FlexGap mt="0px" gap="24px" flexDirection={accountHasSharesStaked ? 'column-reverse' : 'column'}>
           <StyledCardBodyInfoBox>
             <Box mt="0px">
-              <RecentCakeProfitRow vaultKey={pool.vaultKey} />
+              <RecentCakeProfitRow pool={pool} />
             </Box>
             <Box mt="8px">
               <UnstakingFeeCountdownRow
@@ -181,7 +181,7 @@ const CakeVaultCard: React.FC<CakeVaultProps> = ({ pool, showStakedOnly, default
       </StyledCardBody>
 
       <StyledCardFooterWrapper>
-        <CardFooter defaultExpanded={defaultFooterExpanded} pool={pool} account={account} />
+        <CardFooter defaultExpanded={defaultFooterExpanded} pool={pool} account={account} txtColor='#fff' txtColorMain='#EC4C93' />
       </StyledCardFooterWrapper>
     </StyledCard>
   )

@@ -1,12 +1,11 @@
 import { KeyboardEvent, RefObject, useCallback, useMemo, useRef, useState, useEffect } from 'react'
 import { Currency, ETHER, Token } from '@pancakeswap/sdk'
-import {  Input, Box } from '@pancakeswap/uikit'
+import { Text, Input, Box } from '@pancakeswap/uikit'
 import { useTranslation } from 'contexts/Localization'
 import { FixedSizeList } from 'react-window'
 import { useAudioModeManager } from 'state/user/hooks'
 import useDebounce from 'hooks/useDebounce'
 import useActiveWeb3React from 'hooks/useActiveWeb3React'
-import styled from 'styled-components'
 import { useAllTokens, useToken, useIsUserAddedToken, useFoundOnInactiveList } from '../../hooks/Tokens'
 import { isAddress } from '../../utils'
 import Column, { AutoColumn } from '../Layout/Column'
@@ -16,6 +15,8 @@ import CurrencyList from './CurrencyList'
 import { filterTokens, useSortedTokensByQuery } from './filtering'
 import useTokenComparator from './sorting'
 import { getSwapSound } from './swapSound'
+import styled from 'styled-components'
+
 import ImportRow from './ImportRow'
 
 interface CurrencyOpenSearchProps {
@@ -34,9 +35,9 @@ const CurrencyOpen = styled.div`
   top: -10px;
   left: 10px;
   z-index: 2;
-  .sc-jRQBWg.gwfFOu{
-      background: #000;
-      border-radius: 10px;
+  .sc-jRQBWg.gwfFOu {
+    background: #000;
+    border-radius: 10px;
   }
 `
 
@@ -46,7 +47,7 @@ function CurrencyOpenSearch({
   otherSelectedCurrency,
   showCommonBases,
   showImportView,
-  setImportToken
+  setImportToken,
 }: CurrencyOpenSearchProps) {
   const { t } = useTranslation()
   const { chainId } = useActiveWeb3React()
@@ -60,7 +61,7 @@ function CurrencyOpenSearch({
   const [invertSearchOrder] = useState<boolean>(false)
 
   const allTokens = useAllTokens()
-  // const [parentValue, setParentValue] = useState<string>('')
+  const [parentValue, setParentValue] = useState<string>('')
 
   // if they input an address, use it
   const searchToken = useToken(debouncedQuery)
@@ -95,11 +96,13 @@ function CurrencyOpenSearch({
     [audioPlay, onCurrencySelect],
   )
 
-  // const getValueInput = useCallback((valueInput)=>{
-  //   setParentValue(valueInput)
-  //   console.log('Value input: '+ parentValue);
-    
-  // },[parentValue])
+  const getValueInput = useCallback(
+    (valueInput) => {
+      setParentValue(valueInput)
+      console.log('Value input: ' + parentValue)
+    },
+    [parentValue],
+  )
 
   // manage focus on modal show
   const inputRef = useRef<HTMLInputElement>()
@@ -109,7 +112,6 @@ function CurrencyOpenSearch({
   }, [])
 
   // const modalResultSearch = document.querySelector('#currency_open');
-  
 
   const [searchOpen, setSearchOpen] = useState<boolean>(false)
 
@@ -118,15 +120,13 @@ function CurrencyOpenSearch({
     const checksummedInput = isAddress(input)
     setSearchQuery(checksummedInput || input)
     fixedList.current?.scrollTo(0)
-    
-    if(input.length === 0){
-        setSearchOpen(false);
-    }
-    else{
-        setSearchOpen(true);
+
+    if (input.length == 0) {
+      setSearchOpen(false)
+    } else {
+      setSearchOpen(true)
     }
   }, [])
-
 
   const handleEnter = useCallback(
     (e: KeyboardEvent<HTMLInputElement>) => {
@@ -158,10 +158,10 @@ function CurrencyOpenSearch({
           <Row>
             <Input
               id="token-search-input"
-              value={searchQuery}
               placeholder={t('Search your cryptor')}
               scale="sm"
               autoComplete="off"
+              value={searchQuery}
               ref={inputRef as RefObject<HTMLInputElement>}
               onChange={handleInput}
               onKeyDown={handleEnter}
@@ -177,7 +177,7 @@ function CurrencyOpenSearch({
           </Column>
         ) : filteredSortedTokens?.length > 0 || filteredInactiveTokens?.length > 0 ? (
           <div style={{ position: 'relative' }}>
-            <CurrencyOpen id="currency_open" style={{visibility: searchOpen ? 'visible' : 'hidden'}}>
+            <CurrencyOpen id="currency_open" style={{ visibility: searchOpen ? 'visible' : 'hidden' }}>
               <Box margin="24px -24px">
                 <CurrencyList
                   height={390}
@@ -188,7 +188,7 @@ function CurrencyOpenSearch({
                   breakIndex={inactiveTokens && filteredSortedTokens ? filteredSortedTokens.length : undefined}
                   onCurrencySelect={handleCurrencySelect}
                   otherCurrency={otherSelectedCurrency}
-                //   parentValue={valueInput}
+                  //   parentValue={valueInput}
                   selectedCurrency={selectedCurrency}
                   fixedListRef={fixedList}
                   showImportView={showImportView}

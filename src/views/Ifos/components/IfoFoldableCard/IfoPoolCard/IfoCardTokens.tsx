@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js'
 import {
   Text,
   Flex,
@@ -12,12 +11,10 @@ import {
   BunnyPlaceholderIcon,
   Message,
   MessageText,
-  useModal,
-  Link,
   ErrorIcon,
 } from '@pancakeswap/uikit'
-import styled from 'styled-components'
 import { useWeb3React } from '@web3-react/core'
+import styled from 'styled-components'
 import { Token } from '@pancakeswap/sdk'
 import { Ifo, PoolIds } from 'config/constants/types'
 import tokens from 'config/constants/tokens'
@@ -26,13 +23,13 @@ import { PublicIfoData, WalletIfoData } from 'views/Ifos/types'
 import { useTranslation } from 'contexts/Localization'
 import { getBalanceNumber } from 'utils/formatBalance'
 import { TokenImage, TokenPairImage } from 'components/TokenImage'
-import VaultStakeModal from 'views/Pools/components/CakeVaultCard/VaultStakeModal'
-import { useIfoPoolVault, useIfoPoolCredit, useIfoWithApr } from 'state/pools/hooks'
-import { BIG_ZERO } from 'utils/bigNumber'
+import { useIfoPoolCredit } from 'state/pools/hooks'
 import { EnableStatus } from '../types'
 import PercentageOfTotal from './PercentageOfTotal'
 import { SkeletonCardTokens } from './Skeletons'
 import IFORequirements from './IFORequirements'
+import { MessageTextLink } from '../../IfoCardStyles'
+import StakeVaultButton from '../StakeVaultButton'
 
 interface TokenSectionProps extends FlexProps {
   primaryToken?: Token
@@ -140,14 +137,6 @@ const OnSaleInfo = ({ token, saleAmount, distributionRatio }) => {
   )
 }
 
-const MessageTextLink = styled(Link)`
-  display: inline;
-  text-decoration: underline;
-  font-weight: bold;
-  font-size: 14px;
-  white-space: nowrap;
-`
-
 const IfoCardTokens: React.FC<IfoCardTokensProps> = ({
   criterias,
   isEligible,
@@ -176,21 +165,7 @@ const IfoCardTokens: React.FC<IfoCardTokensProps> = ({
   const { hasClaimed } = userPoolCharacteristics
   const distributionRatio = ifo[poolId].distributionRatio * 100
 
-  const ifoPoolVault = useIfoPoolVault()
-  const { pool } = useIfoWithApr()
   const credit = useIfoPoolCredit()
-
-  const stakingTokenBalance = pool?.userData?.stakingTokenBalance
-    ? new BigNumber(pool.userData.stakingTokenBalance)
-    : BIG_ZERO
-
-  const [onPresentStake] = useModal(
-    <VaultStakeModal
-      stakingMax={stakingTokenBalance}
-      performanceFee={ifoPoolVault.fees.performanceFeeAsDecimal}
-      pool={pool}
-    />,
-  )
 
   const renderTokenSection = () => {
     if (isLoading) {
@@ -330,9 +305,7 @@ const IfoCardTokens: React.FC<IfoCardTokensProps> = ({
               <MessageTextLink href="/ifo#ifo-how-to" textAlign="center">
                 {t('How does it work?')} »
               </MessageTextLink>
-              <Button mt="24px" onClick={onPresentStake}>
-                {t('Stake CAKE in IFO pool')}
-              </Button>
+              <StakeVaultButton mt="24px" />
             </>
           )}
         </Flex>

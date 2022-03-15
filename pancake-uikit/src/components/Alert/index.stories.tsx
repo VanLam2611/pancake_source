@@ -13,16 +13,16 @@ const Row = styled.div`
 export default {
   title: 'Components/Alert',
   component: Alert,
-  argTypes: {}
+  argTypes: {},
 } as Meta
 
 const Template = (args) => {
   return <Alert {...args} />
 }
-export const Default = Template.bind({});
+export const Default = Template.bind({})
 Default.args = {
   variant: 'primary',
-};
+}
 // export const Default: React.FC = () => {
 //   return (
 //     <div style={{ padding: '32px', width: '400px' }}>

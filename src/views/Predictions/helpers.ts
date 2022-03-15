@@ -53,11 +53,11 @@ export const formatRoundTime = (secondsBetweenBlocks: number) => {
 }
 
 export const getHasRoundFailed = (round: NodeRound, buffer: number) => {
-  const closeTimestampMs = (round.closeTimestamp + buffer) * 1000
-  const now = Date.now()
-
-  if (closeTimestampMs !== null && now > closeTimestampMs && !round.oracleCalled) {
-    return true
+  if (!round.oracleCalled) {
+    const closeTimestampMs = (round.closeTimestamp + buffer) * 1000
+    if (Number.isFinite(closeTimestampMs)) {
+      return Date.now() > closeTimestampMs
+    }
   }
 
   return false
@@ -97,3 +97,5 @@ export const getRoundPosition = (lockPrice: BigNumber, closePrice: BigNumber) =>
 
   return closePrice.gt(lockPrice) ? BetPosition.BULL : BetPosition.BEAR
 }
+
+export const CHART_DOT_CLICK_EVENT = 'CHART_DOT_CLICK_EVENT'

@@ -60,7 +60,7 @@ function CurrencyRow({
   isSelected,
   otherSelected,
   style,
-  isShow
+  isShow,
 }: {
   currency: Currency
   onSelect: () => void
@@ -135,7 +135,7 @@ export default function CurrencyList({
   showImportView,
   setImportToken,
   breakIndex,
-  isShow
+  isShow,
 }: {
   height: number
   currencies: Currency[]
@@ -178,7 +178,7 @@ export default function CurrencyList({
 
       if (index === breakIndex || !data) {
         return (
-            <FixedContentRow style={style}>
+          <FixedContentRow style={style}>
             <LightGreyCard padding="8px 12px" borderRadius="8px">
               <RowBetween>
                 <Text small>{t('Expanded results from inactive Token Lists')}</Text>
@@ -221,8 +221,7 @@ export default function CurrencyList({
           isShow={isShow}
         />
       )
-    },
-    [
+    }, [
       chainId,
       inactiveTokens,
       onCurrencySelect,
@@ -232,7 +231,6 @@ export default function CurrencyList({
       showImportView,
       breakIndex,
       t,
-      isShow
     ],
   )
 

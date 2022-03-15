@@ -4,7 +4,7 @@ import Container from '../Layout/Container'
 import { PageHeaderProps } from './types'
 
 const Outer = styled(Box)<{ background?: string }>`
-  background: ${({ background }) => background || '#6800A899'};
+  background: ${({ theme, background }) => background || '#6800A899'};
 `
 
 const Inner = styled(Container)`

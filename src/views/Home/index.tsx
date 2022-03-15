@@ -1,4 +1,3 @@
-import { Flex } from '@pancakeswap/uikit'
 import styled from 'styled-components'
 import PageSection from 'components/PageSection'
 import { useWeb3React } from '@web3-react/core'
@@ -15,27 +14,8 @@ import FarmsPoolsRow from './components/FarmsPoolsRow'
 import Footer from './components/Footer'
 import CakeDataRow from './components/CakeDataRow'
 // import { InnerWedgeWrapper, OuterWedgeWrapper, WedgeTopRight } from './components/WedgeSvgs'
-import UserBanner from './components/UserBanner'
-// import FarmAuctionsBanner from './components/Banners/FarmAuctionsBanner'
-import IFOBanner from './components/Banners/IFOBanner'
-
-const showBanner = false
-
-const HomeBanner = ({ account }: { account: string }) => {
-  if (!showBanner) {
-    return null
-  }
-
-  return (
-    <Flex
-      pt={[account ? '220px' : '0', null, null, account ? '76px' : '0']}
-      mt={[account ? '0' : '-16px', null, null, account ? '0' : '-48px']}
-      pb="24px"
-    >
-      <IFOBanner />
-    </Flex>
-  )
-}
+// import UserBanner from './components/UserBanner'
+// import MultipleBanner from './components/Banners/MultipleBanner'
 
 const StyledHeroSection = styled(PageSection)`
   background-image: url('/imagesForWomenTechFinance/home/WomenTech_finance_02_1.png');
@@ -278,10 +258,10 @@ const Home: React.FC = () => {
       >
         {account && (
           <UserBannerWrapper>
-            <UserBanner />
+            {/* <UserBanner /> */}
           </UserBannerWrapper>
         )}
-        <HomeBanner account={account} />
+        {/* <MultipleBanner /> */}
         <Hero />
       </StyledHeroSection>
 

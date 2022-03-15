@@ -196,14 +196,14 @@ const WinSection = () => {
 
   return (
     <>
-      <BgWrapper>
+      {/* <BgWrapper>
         <BottomLeftImgWrapper>
           <CompositeImage {...bottomLeftImage} />
         </BottomLeftImgWrapper>
         <TopRightImgWrapper>
           <CompositeImage {...topRightImage} />
         </TopRightImgWrapper>
-      </BgWrapper>
+      </BgWrapper> */}
 
       {/* <TransparentFrame isDark={theme.isDark}> */}
       <StyledCardListWrapper flexDirection="column" alignItems="center" justifyContent="center">

@@ -1,26 +1,26 @@
-// import { useEffect, useState } from 'react'
-import { Currency, Pair } from '@pancakeswap/sdk'
-import { Button, ChevronDownIcon, Text, useModal, Flex, Box } from '@pancakeswap/uikit'
+import { useEffect, useState } from 'react'
+import { Currency, Pair, Token } from '@pancakeswap/sdk'
+import { Button, ChevronDownIcon, Text, useModal, Flex, Box, MetamaskIcon } from '@pancakeswap/uikit'
 import styled from 'styled-components'
 import useTheme from 'hooks/useTheme'
-// import { registerToken } from 'utils/wallet'
-// import { isAddress } from 'utils'
+import { registerToken } from 'utils/wallet'
+import { isAddress } from 'utils'
 import { useTranslation } from 'contexts/Localization'
-// import useActiveWeb3React from 'hooks/useActiveWeb3React'
-// import { useCurrencyBalance } from '../../state/wallet/hooks'
+import useActiveWeb3React from 'hooks/useActiveWeb3React'
+import { RowBetween } from 'components/Layout/Row'
+import { useCurrencyBalance } from '../../state/wallet/hooks'
 import CurrencySearchModal from '../SearchModal/CurrencySearchModal'
 import { CurrencyLogo, DoubleCurrencyLogo } from '../Logo'
-
-import { RowBetween } from '../Layout/Row'
 import { Input as NumericalInput } from './NumericalInput'
+import { CopyButton } from '../CopyButton'
 
-// const InputRow = styled.div<{ selected: boolean }>`
-//   display: flex;
-//   flex-flow: row nowrap;
-//   align-items: center;
-//   justify-content: flex-end;
-//   padding: ${({ selected }) => (selected ? '0.75rem 0.5rem 0.75rem 1rem' : '0.75rem 0.75rem 0.75rem 1rem')};
-// `
+const InputRow = styled.div<{ selected: boolean }>`
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: flex-end;
+  padding: ${({ selected }) => (selected ? '0.75rem 0.5rem 0.75rem 1rem' : '0.75rem 0.75rem 0.75rem 1rem')};
+`
 const CurrencySelectButton = styled(Button).attrs({ variant: 'text', scale: 'sm' })`
   padding: 1.5rem 1rem;
   position: relative;
@@ -38,7 +38,7 @@ const CurrencySelectButtonTrue = styled(Button).attrs({ variant: 'text', scale: 
   left: 10px;
   z-index: 3;
   background-color: rgba(46, 0, 23, 0.5);
-  border: 1px solid #EC4C93;
+  border: 1px solid #ec4c93;
   border-radius: 5px !important;
 `
 
@@ -95,26 +95,29 @@ interface CurrencyInputPanelProps {
 export default function CurrencyInputPanel({
   value,
   onUserInput,
-  // onMax,
-  // showMaxButton,
-  // label,
+  onMax,
+  showMaxButton,
+  label,
   onCurrencySelect,
   currency,
   disableCurrencySelect = false,
-  // hideBalance = false,
+  hideBalance = false,
   pair = null, // used for double token logo
   otherCurrency,
   id,
   showCommonBases,
   isShow,
 }: CurrencyInputPanelProps) {
-  // const { account } = useActiveWeb3React()
-  // const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
-  const { t } = useTranslation()
+  const { account, library } = useActiveWeb3React()
+  const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
+  const {
+    t,
+    currentLanguage: { locale },
+  } = useTranslation()
   const { isDark } = useTheme()
 
-  // const token = pair ? pair.liquidityToken : currency instanceof Token ? currency : null
-  // const tokenAddress = token ? isAddress(token.address) : null
+  const token = pair ? pair.liquidityToken : currency instanceof Token ? currency : null
+  const tokenAddress = token ? isAddress(token.address) : null
 
   const [onPresentCurrencyModal] = useModal(
     <CurrencySearchModal
@@ -126,7 +129,7 @@ export default function CurrencyInputPanel({
   )
 
   return (
-    <Box id={id}>
+    <Box position="relative" id={id}>
       <Flex mb="6px" alignItems="center" justifyContent="space-between">
         {isShow ? (
           <CurrencySelectButton
@@ -230,7 +233,7 @@ export default function CurrencyInputPanel({
             {/* <InputRow selected={disableCurrencySelect}>
             {account && currency && showMaxButton && label !== 'To' && (
               <Button onClick={onMax} scale="xs" variant="secondary">
-                MAX
+                {t('Max').toLocaleUpperCase(locale)}
               </Button>
             )}
           </InputRow> */}

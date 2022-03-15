@@ -35,16 +35,18 @@ import {
 } from 'utils/contractHelpers'
 import { getMulticallAddress } from 'utils/addressHelpers'
 import { VaultKey } from 'state/types'
-// import {
-//   CakeVault,
-//   EnsPublicResolver,
-//   EnsRegistrar,
-//   Erc20,
-//   Erc20Bytes32,
-//   IfoPool,
-//   Multicall,
-//   Weth,
-// } from '@pancakeswap/sdk'
+import {
+  CakeVault,
+  EnsPublicResolver,
+  EnsRegistrar,
+  Erc20,
+  Erc20Bytes32,
+  IfoPool,
+  Multicall,
+  Weth,
+  Cake,
+  Erc721collection,
+} from 'config/abi/types'
 
 // Imports below migrated from Exchange useContract.ts
 import { Contract } from '@ethersproject/contracts'
@@ -58,7 +60,7 @@ import WETH_ABI from '../config/abi/weth.json'
 import multiCallAbi from '../config/abi/Multicall.json'
 import { getContract, getProviderOrSigner } from '../utils'
 
-// import { IPancakePair } from '../config/abi/types/IPancakePairzz'
+import { IPancakePair } from '../config/abi/types/IPancakePair'
 
 /**
  * Helper hooks to get specific contracts (by ABI)
@@ -90,11 +92,14 @@ export const useERC721 = (address: string) => {
   return useMemo(() => getErc721Contract(address, library.getSigner()), [address, library])
 }
 
-export const useCake = (withSignerIfPossible = true) => {
+export const useCake = (): { reader: Cake; signer: Cake } => {
   const { account, library } = useActiveWeb3React()
   return useMemo(
-    () => getCakeContract(withSignerIfPossible ? getProviderOrSigner(library, account) : null),
-    [account, library, withSignerIfPossible],
+    () => ({
+      reader: getCakeContract(null),
+      signer: getCakeContract(getProviderOrSigner(library, account)),
+    }),
+    [account, library],
   )
 }
 
@@ -164,7 +169,7 @@ export const useEasterNftContract = () => {
   return useMemo(() => getEasterNftContract(library.getSigner()), [library])
 }
 
-export const useVaultPoolContract = (vaultKey: VaultKey) => {
+export const useVaultPoolContract = (vaultKey: VaultKey): CakeVault | IfoPool => {
   const { library } = useActiveWeb3React()
   return useMemo(() => {
     return vaultKey === VaultKey.CakeVault
@@ -188,9 +193,12 @@ export const usePredictionsContract = () => {
   return useMemo(() => getPredictionsContract(library.getSigner()), [library])
 }
 
-export const useChainlinkOracleContract = () => {
-  const { library } = useActiveWeb3React()
-  return useMemo(() => getChainlinkOracleContract(library.getSigner()), [library])
+export const useChainlinkOracleContract = (withSignerIfPossible = true) => {
+  const { library, account } = useActiveWeb3React()
+  return useMemo(
+    () => getChainlinkOracleContract(withSignerIfPossible ? getProviderOrSigner(library, account) : null),
+    [account, library, withSignerIfPossible],
+  )
 }
 
 export const useSpecialBunnyCakeVaultContract = () => {
@@ -241,14 +249,17 @@ export const useNftMarketContract = () => {
   return useMemo(() => getNftMarketContract(library.getSigner()), [library])
 }
 
-export const useErc721CollectionContract = (collectionAddress: string, withSignerIfPossible = true) => {
+export const useErc721CollectionContract = (
+  collectionAddress: string,
+): { reader: Erc721collection; signer: Erc721collection } => {
   const { library, account } = useActiveWeb3React()
-  return useMemo(() => {
-    return getErc721CollectionContract(
-      withSignerIfPossible ? getProviderOrSigner(library, account) : null,
-      collectionAddress,
-    )
-  }, [account, library, collectionAddress, withSignerIfPossible])
+  return useMemo(
+    () => ({
+      reader: getErc721CollectionContract(null, collectionAddress),
+      signer: getErc721CollectionContract(getProviderOrSigner(library, account), collectionAddress),
+    }),
+    [account, library, collectionAddress],
+  )
 }
 
 // Code below migrated from Exchange useContract.ts
@@ -273,12 +284,12 @@ function useContract<T extends Contract = Contract>(
 }
 
 export function useTokenContract(tokenAddress?: string, withSignerIfPossible?: boolean) {
-  return useContract(tokenAddress, ERC20_ABI, withSignerIfPossible)
+  return useContract<Erc20>(tokenAddress, ERC20_ABI, withSignerIfPossible)
 }
 
 export function useWETHContract(withSignerIfPossible?: boolean): Contract | null {
   const { chainId } = useActiveWeb3React()
-  return useContract(chainId ? WETH[chainId].address : undefined, WETH_ABI, withSignerIfPossible)
+  return useContract<Weth>(chainId ? WETH[chainId].address : undefined, WETH_ABI, withSignerIfPossible)
 }
 
 export function useENSRegistrarContract(withSignerIfPossible?: boolean): Contract | null {
@@ -293,21 +304,21 @@ export function useENSRegistrarContract(withSignerIfPossible?: boolean): Contrac
         break
     }
   }
-  return useContract(address, ENS_ABI, withSignerIfPossible)
+  return useContract<EnsRegistrar>(address, ENS_ABI, withSignerIfPossible)
 }
 
 export function useENSResolverContract(address: string | undefined, withSignerIfPossible?: boolean): Contract | null {
-  return useContract(address, ENS_PUBLIC_RESOLVER_ABI, withSignerIfPossible)
+  return useContract<EnsPublicResolver>(address, ENS_PUBLIC_RESOLVER_ABI, withSignerIfPossible)
 }
 
 export function useBytes32TokenContract(tokenAddress?: string, withSignerIfPossible?: boolean): Contract | null {
-  return useContract(tokenAddress, ERC20_BYTES32_ABI, withSignerIfPossible)
+  return useContract<Erc20Bytes32>(tokenAddress, ERC20_BYTES32_ABI, withSignerIfPossible)
 }
 
-export function usePairContract(pairAddress?: string, withSignerIfPossible?: boolean) {
+export function usePairContract(pairAddress?: string, withSignerIfPossible?: boolean): IPancakePair | null {
   return useContract(pairAddress, IPancakePairABI, withSignerIfPossible)
 }
 
 export function useMulticallContract() {
-  return useContract(getMulticallAddress(), multiCallAbi, false)
+  return useContract<Multicall>(getMulticallAddress(), multiCallAbi, false)
 }

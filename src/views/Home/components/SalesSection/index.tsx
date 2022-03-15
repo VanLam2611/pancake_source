@@ -116,7 +116,7 @@ const SalesSection: React.FC<SalesSectionProps> = (props) => {
           </StyledText>
 
           <Flex justifyContent="center" alignItems="center">
-            <Button mr="16px" style={{backgroundColor: '#EC4C93'}}>
+            <Button mr="16px" style={{ backgroundColor: '#EC4C93' }}>
               {primaryButton.external ? (
                 <Link external href={primaryButton.to}>
                   <Text color="#EC4C93" bold fontSize="16px">
@@ -132,7 +132,13 @@ const SalesSection: React.FC<SalesSectionProps> = (props) => {
               )}
             </Button>
             {secondaryButton.external ? (
-              <Link external href={secondaryButton.to} color='#fff' p='10px 20px' style={{border: '1px solid #EC4C93', borderRadius: '16px'}}>
+              <Link
+                external
+                href={secondaryButton.to}
+                color="#fff"
+                p="10px 20px"
+                style={{ border: '1px solid #EC4C93', borderRadius: '16px' }}
+              >
                 {secondaryButton.text}
               </Link>
             ) : (

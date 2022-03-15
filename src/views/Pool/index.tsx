@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import styled from 'styled-components'
 import useTheme from 'hooks/useTheme'
+import { useRouter } from 'next/router'
 import { Pair } from '@pancakeswap/sdk'
 import { Text, Flex, CardBody, CardFooter, Button, AddIcon } from '@pancakeswap/uikit'
 import Link from 'next/link'
@@ -13,6 +14,7 @@ import { toV2LiquidityToken, useTrackedTokenPairs } from '../../state/user/hooks
 import Dots from '../../components/Loader/Dots'
 import { AppHeader, AppBody } from '../../components/App'
 import Page from '../Page'
+import ActiveLink from 'views/Swap/components/ActiveLink'
 
 const Body = styled(CardBody)`
   padding: 1rem;
@@ -37,6 +39,7 @@ export default function Pool() {
   const { account } = useActiveWeb3React()
   const { t } = useTranslation()
   const { isDark } = useTheme()
+  const router = useRouter()
 
   // fetch the user's balances of all tracked V2 LP tokens
   const trackedTokenPairs = useTrackedTokenPairs()
@@ -101,6 +104,7 @@ export default function Pool() {
 
   return (
     <Page>
+      <ActiveLink route={router.route}/>
       <AppBody>
         <AppHeader title={t('Your Liquidity')} subtitle={t('Remove liquidity to receive tokens back')} />
         <Body>
@@ -111,11 +115,11 @@ export default function Pool() {
                 <Text color={isDark ? 'textSubtle' : '#EC4C93'} mb="8px">
                   {t("Don't see a pool you joined?")}
                 </Text>
-                {/* <Link href="/find" passHref>
-                <Button id="import-pool-link" variant="secondary" scale="sm" as="a">
+                <Link href="/find" passHref>
+                <Button id="import-pool-link" style={{border: '2px solid #EC4C93', background: 'transparent', color: '#EC4C93'}} scale="sm" as="a">
                   {t('Find other LP tokens')}
                 </Button>
-              </Link> */}
+              </Link>
               </Flex>
             </Content>
           )}

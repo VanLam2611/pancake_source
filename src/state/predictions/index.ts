@@ -4,7 +4,7 @@ import { formatUnits } from '@ethersproject/units'
 import maxBy from 'lodash/maxBy'
 import merge from 'lodash/merge'
 import range from 'lodash/range'
-import { BIG_ZERO } from 'utils/bigNumber'
+import pickBy from 'lodash/pickBy'
 import {
   Bet,
   LedgerData,
@@ -16,6 +16,7 @@ import {
   PredictionUser,
   LeaderboardFilter,
   State,
+  PredictionsChartView,
 } from 'state/types'
 import { getPredictionsContract } from 'utils/contractHelpers'
 import { FetchStatus } from 'config/constants/types'
@@ -48,6 +49,7 @@ import {
 
 const initialState: PredictionsState = {
   status: PredictionStatus.INITIAL,
+  chartView: PredictionsChartView.Chainlink,
   isLoading: false,
   isHistoryPaneOpen: false,
   isChartPaneOpen: false,
@@ -57,7 +59,6 @@ const initialState: PredictionsState = {
   intervalSeconds: 300,
   minBetAmount: '10000000000000',
   bufferSeconds: 60,
-  lastOraclePrice: BIG_ZERO.toJSON(),
   rounds: {},
   history: [],
   totalHistory: 0,
@@ -362,11 +363,11 @@ export const predictionsSlice = createSlice({
     setChartPaneState: (state, action: PayloadAction<boolean>) => {
       state.isChartPaneOpen = action.payload
     },
+    setChartView: (state, action: PayloadAction<PredictionsChartView>) => {
+      state.chartView = action.payload
+    },
     setHistoryFilter: (state, action: PayloadAction<HistoryFilter>) => {
       state.historyFilter = action.payload
-    },
-    setLastOraclePrice: (state, action: PayloadAction<string>) => {
-      state.lastOraclePrice = action.payload
     },
     markAsCollected: (state, action: PayloadAction<{ [key: string]: boolean }>) => {
       state.claimableStatuses = { ...state.claimableStatuses, ...action.payload }
@@ -498,7 +499,11 @@ export const predictionsSlice = createSlice({
 
     // Get multiple rounds
     builder.addCase(fetchRounds.fulfilled, (state, action) => {
-      state.rounds = merge({}, state.rounds, action.payload)
+      const allRoundData = merge({}, state.rounds, action.payload)
+      // Take always last PAST_ROUND_COUNT items
+      state.rounds = pickBy(allRoundData, (value, key) => {
+        return Number(key) > state.currentEpoch - PAST_ROUND_COUNT
+      })
     })
 
     // Show History
@@ -538,9 +543,9 @@ export const predictionsSlice = createSlice({
 // Actions
 export const {
   setChartPaneState,
+  setChartView,
   setHistoryFilter,
   setHistoryPaneState,
-  setLastOraclePrice,
   markAsCollected,
   setLeaderboardFilter,
   setSelectedAddress,

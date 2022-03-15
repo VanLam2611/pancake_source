@@ -1,7 +1,7 @@
 import { TranslateFunction } from 'contexts/Localization/types'
 import { SalesSectionProps } from '.'
 
-export const swapSectionData = (t: TranslateFunction) => ({
+export const swapSectionData = (t: TranslateFunction): SalesSectionProps => ({
   headingText: t('Trade anything. No registration, no hassle.'),
   bodyText: t('Trade any token on BNB Smart Chain in seconds, just by connecting your wallet.'),
   reverse: false,
@@ -25,7 +25,7 @@ export const swapSectionData = (t: TranslateFunction) => ({
   },
 })
 
-export const earnSectionData = (t: TranslateFunction) => ({
+export const earnSectionData = (t: TranslateFunction): SalesSectionProps => ({
   headingText: t('Earn passive income with crypto.'),
   bodyText: t('Womentech makes it easy to make your crypto work for you.'),
   reverse: true,
@@ -49,7 +49,7 @@ export const earnSectionData = (t: TranslateFunction) => ({
   },
 })
 
-export const cakeSectionData = (t: TranslateFunction) => ({
+export const cakeSectionData = (t: TranslateFunction): SalesSectionProps => ({
   headingText: t('Womentech makes our world go round.'),
   bodyText: t(
     'Womentech token is at the heart of the PancakeSwap ecosystem. Buy it, win it, farm it, spend it, stake it... heck, you can even vote with it!',

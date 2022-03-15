@@ -127,8 +127,6 @@ const TradingViewChart = ({
   // if there's no no-data event coming between the debounce time, we assume the chart is loaded
   const debouncedLoading = useDebounce(isLoading, 800)
 
-  
-
   useEffect(() => {
     if (!(isLoading || debouncedLoading) && !hasNoData && symbols) {
       onTwChartSymbol(symbols)
@@ -137,10 +135,9 @@ const TradingViewChart = ({
     }
   }, [debouncedLoading, hasNoData, isLoading, onTwChartSymbol, symbols])
 
-useEffect(() => {
-  console.log('Format: ' + currencies[Field.INPUT]?.symbol);
-  
-})
+  useEffect(() => {
+    console.log('Format: ' + currencies[Field.INPUT]?.symbol)
+  })
 
   useScript('https://s3.tradingview.com/tv.js')
   const initializeTradingView = (TradingViewObj: any, theme: DefaultTheme, localeCode: string, opts: any) => {

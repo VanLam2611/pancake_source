@@ -1,4 +1,5 @@
 /* eslint-disable import/no-extraneous-dependencies */
+// eslint-disable-next-line lodash/import-scope
 import { capitalize } from 'lodash'
 import React, { useState } from 'react'
 import { BrowserRouter, Link } from 'react-router-dom'
@@ -15,8 +16,23 @@ export default {
   title: 'Components/Button',
   component: Button,
   argTypes: {
-    onClick: { action: 'handldeClick' },
+    onClick: { action: 'handleClick' },
     onContextMenu: { action: 'handleRightClick' },
+    children: {
+      name: 'label',
+      type: { name: 'string', required: true },
+      defaultValue: 'Button',
+      control: { type: 'text' },
+    },
+    variant: {
+      name: 'variant',
+      options: ['primary', 'secondary', 'input', 'text', 'tertiary', 'danger', 'subtle', 'success', 'light'],
+      control: { type: 'radio' },
+      // control: { type: 'select' },
+    },
+    width: {
+      control: { type: 'range', min: 50, max: 500, step: 10 },
+    },
   },
 }
 
@@ -173,13 +189,12 @@ const Template = (args) => {
 export const Basic = Template.bind({})
 Basic.args = {
   children: 'Hello, world!',
-  handleClick: () => {
-    // console.log('Invoke handleClick from Button!')
-  },
   style: {
     userSelect: 'none',
-    
   },
+  // handleClick: () => {
+  //   // console.log('Invoke handleClick from Button!')
+  // },
 }
 
 export const ConnectWallet: React.FC = () => {
@@ -189,9 +204,7 @@ export const ConnectWallet: React.FC = () => {
       <BrowserRouter>
         <Row>
           <ExpandableButton expanded={expanded} onClick={() => setExpanded((prev) => !prev)} />
-          <Button  onClick={() => setExpanded((prev) => !prev)}>
-            ExpandableLabel
-          </Button>
+          <Button onClick={() => setExpanded((prev) => !prev)}>ExpandableLabel</Button>
         </Row>
       </BrowserRouter>
     </Box>

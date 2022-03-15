@@ -1,4 +1,4 @@
-// import { FarmAuction, Predictions } from 'config/abi/types'
+import { FarmAuction, Predictions } from 'config/abi/types'
 import { ContractFunction } from '@ethersproject/contracts'
 import { BigNumber } from '@ethersproject/bignumber'
 
@@ -35,7 +35,7 @@ export type PredictionsGetUserRoundsResponse = [BigNumber[], PredictionsLedgerRe
 
 export type PredictionsGetUserRoundsLengthResponse = BigNumber
 
-export interface PredictionsContract extends Omit<any, 'getUserRounds' | 'ledger'> {
+export interface PredictionsContract extends Omit<Predictions, 'getUserRounds' | 'ledger'> {
   getUserRounds: ContractFunction<PredictionsGetUserRoundsResponse>
   ledger: ContractFunction<PredictionsLedgerResponse>
 }
@@ -72,7 +72,7 @@ type GetWhitelistedAddressesResponse = [
   BigNumber,
 ]
 
-export interface FarmAuctionContract extends Omit<any, 'auctions'> {
+export interface FarmAuctionContract extends Omit<FarmAuction, 'auctions'> {
   auctions: ContractFunction<AuctionsResponse>
   getWhitelistedAddresses: ContractFunction<GetWhitelistedAddressesResponse>
 }

@@ -18,6 +18,8 @@ import { NftToken, State as NftMarketState } from './nftMarket/types'
 
 export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, State, unknown, AnyAction>
 
+export type DeserializedPoolVault = DeserializedPool & (DeserializedCakeVault | DeserializedIfoCakeVault)
+
 export interface BigNumberToJson {
   type: 'BigNumber'
   hex: string
@@ -43,6 +45,7 @@ export interface SerializedFarm extends SerializedFarmConfig {
   tokenPriceBusd?: string
   quoteTokenPriceBusd?: string
   tokenAmountTotal?: SerializedBigNumber
+  quoteTokenAmountTotal?: SerializedBigNumber
   lpTotalInQuoteToken?: SerializedBigNumber
   lpTotalSupply?: SerializedBigNumber
   tokenPriceVsQuote?: SerializedBigNumber
@@ -54,6 +57,7 @@ export interface DeserializedFarm extends DeserializedFarmConfig {
   tokenPriceBusd?: string
   quoteTokenPriceBusd?: string
   tokenAmountTotal?: BigNumber
+  quoteTokenAmountTotal?: BigNumber
   lpTotalInQuoteToken?: BigNumber
   lpTotalSupply?: BigNumber
   tokenPriceVsQuote?: BigNumber
@@ -79,6 +83,7 @@ interface CorePoolProps {
 export interface DeserializedPool extends DeserializedPoolConfig, CorePoolProps {
   totalStaked?: BigNumber
   stakingLimit?: BigNumber
+  stakingLimitEndBlock?: number
   profileRequirement?: {
     required: boolean
     thresholdPoints: BigNumber
@@ -94,6 +99,7 @@ export interface DeserializedPool extends DeserializedPoolConfig, CorePoolProps 
 export interface SerializedPool extends SerializedPoolConfig, CorePoolProps {
   totalStaked?: SerializedBigNumber
   stakingLimit?: SerializedBigNumber
+  numberBlocksForUserLimit?: number
   profileRequirement?: {
     required: boolean
     thresholdPoints: SerializedBigNumber
@@ -115,7 +121,7 @@ export interface Profile {
   isActive: boolean
   username: string
   nft?: NftToken
-  team: Team
+  team?: Team
   hasRegistered: boolean
 }
 
@@ -136,45 +142,77 @@ export interface DeserializedFarmsState {
   poolLength?: number
 }
 
-export interface VaultFees {
+export interface SerializedVaultFees {
   performanceFee: number
   callFee: number
   withdrawalFee: number
   withdrawalFeePeriod: number
 }
 
-export interface VaultUser {
+export interface DeserializedVaultFees extends SerializedVaultFees {
+  performanceFeeAsDecimal: number
+}
+
+export interface SerializedVaultUser {
   isLoading: boolean
-  userShares: string
-  cakeAtLastUserAction: string
+  userShares: SerializedBigNumber
+  cakeAtLastUserAction: SerializedBigNumber
   lastDepositedTime: string
   lastUserActionTime: string
 }
 
-export interface IfoVaultUser extends VaultUser {
+export interface DeserializedVaultUser {
+  isLoading: boolean
+  userShares: BigNumber
+  cakeAtLastUserAction: BigNumber
+  lastDepositedTime: string
+  lastUserActionTime: string
+}
+
+export interface DeserializedIfoVaultUser extends DeserializedVaultUser {
   credit: string
 }
 
-export interface CakeVault {
-  totalShares?: string
-  pricePerFullShare?: string
-  totalCakeInVault?: string
-  estimatedCakeBountyReward?: string
-  totalPendingCakeHarvest?: string
-  fees?: VaultFees
-  userData?: VaultUser
+export interface SerializedIfoVaultUser extends SerializedVaultUser {
+  credit: string
 }
 
-export interface IfoCakeVault extends Omit<CakeVault, 'userData'> {
-  userData?: IfoVaultUser
+export interface DeserializedCakeVault {
+  totalShares?: BigNumber
+  pricePerFullShare?: BigNumber
+  totalCakeInVault?: BigNumber
+  estimatedCakeBountyReward?: BigNumber
+  totalPendingCakeHarvest?: BigNumber
+  fees?: DeserializedVaultFees
+  userData?: DeserializedVaultUser
+}
+
+export interface SerializedCakeVault {
+  totalShares?: SerializedBigNumber
+  pricePerFullShare?: SerializedBigNumber
+  totalCakeInVault?: SerializedBigNumber
+  estimatedCakeBountyReward?: SerializedBigNumber
+  totalPendingCakeHarvest?: SerializedBigNumber
+  fees?: SerializedVaultFees
+  userData?: SerializedVaultUser
+}
+
+export interface SerializedIfoCakeVault extends Omit<SerializedCakeVault, 'userData'> {
+  userData?: SerializedIfoVaultUser
+  creditStartBlock?: number
+  creditEndBlock?: number
+}
+
+export interface DeserializedIfoCakeVault extends Omit<DeserializedCakeVault, 'userData'> {
+  userData?: DeserializedIfoVaultUser
   creditStartBlock?: number
   creditEndBlock?: number
 }
 
 export interface PoolsState {
   data: SerializedPool[]
-  cakeVault: CakeVault
-  ifoPool: IfoCakeVault
+  cakeVault: SerializedCakeVault
+  ifoPool: SerializedIfoCakeVault
   userDataLoaded: boolean
 }
 
@@ -205,6 +243,11 @@ export enum PredictionStatus {
   LIVE = 'live',
   PAUSED = 'paused',
   ERROR = 'error',
+}
+
+export enum PredictionsChartView {
+  TradingView = 'TradingView',
+  Chainlink = 'Chainlink Oracle',
 }
 
 export interface Round {
@@ -349,6 +392,7 @@ export interface PredictionsState {
   status: PredictionStatus
   isLoading: boolean
   isHistoryPaneOpen: boolean
+  chartView: PredictionsChartView
   isChartPaneOpen: boolean
   isFetchingHistory: boolean
   historyFilter: HistoryFilter
@@ -356,7 +400,6 @@ export interface PredictionsState {
   intervalSeconds: number
   minBetAmount: string
   bufferSeconds: number
-  lastOraclePrice: string
   history: Bet[]
   totalHistory: number
   currentHistoryPage: number
@@ -424,6 +467,7 @@ export interface Proposal {
   id: string
   snapshot: string
   space: Space
+  votes: number
   start: number
   state: ProposalState
   title: string

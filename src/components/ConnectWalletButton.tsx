@@ -1,10 +1,10 @@
-import { Button, useWalletModal } from '@pancakeswap/uikit'
+import { Button, useWalletModal, ButtonProps } from '@pancakeswap/uikit'
 import useAuth from 'hooks/useAuth'
 import { useTranslation } from 'contexts/Localization'
 import useTheme from 'hooks/useTheme'
 import Trans from './Trans'
 
-const ConnectWalletButton = (props) => {
+const ConnectWalletButton = ({ children, ...props }: ButtonProps) => {
   const { t } = useTranslation()
   const { isDark } = useTheme()
   const { login, logout } = useAuth()
@@ -19,7 +19,7 @@ const ConnectWalletButton = (props) => {
       onClick={onPresentConnectModal}
       {...props}
     >
-      <Trans>Connect Wallet</Trans>
+      {children || <Trans>Connect Wallet</Trans>}
     </Button>
   )
 }

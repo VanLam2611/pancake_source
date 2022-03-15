@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useMemo, useState, useRef } from 'react'
-import styled from 'styled-components'
+import styled, { DefaultTheme } from 'styled-components'
 import { CurrencyAmount, JSBI, Token, Trade } from '@pancakeswap/sdk'
 import {
   Button,
+  Link,
   Text,
   ArrowDownIcon,
   Box,
@@ -15,12 +16,12 @@ import {
   Skeleton,
 } from '@pancakeswap/uikit'
 import useTheme from 'hooks/useTheme'
-import { DefaultTheme } from 'styled-components'
 import { useIsTransactionUnsupported } from 'hooks/Trades'
 import UnsupportedCurrencyFooter from 'components/UnsupportedCurrencyFooter'
 import Footer from 'components/Menu/Footer'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'contexts/Localization'
+import { EXCHANGE_DOCS_URLS } from 'config/constants'
 import SwapWarningTokens from 'config/constants/swapWarningTokens'
 import useRefreshBlockNumberID from './hooks/useRefreshBlockNumber'
 import AddressInputPanel from './components/AddressInputPanel'
@@ -65,7 +66,7 @@ import SwapWarningModal from './components/SwapWarningModal'
 import PriceChartContainer from './components/Chart/PriceChartContainer'
 import { StyledInputCurrencyWrapper, StyledSwapContainer } from './styles'
 import CurrencyInputHeader from './components/CurrencyInputHeader'
-import useScript from 'hooks/useScript'
+import ActiveLink from './components/ActiveLink'
 
 const Label = styled(Text)`
   font-size: 12px;
@@ -378,7 +379,9 @@ export default function Swap() {
 
   return (
     <>
+      
       <Page removePadding={isChartExpanded} hideFooterOnDesktop={isChartExpanded}>
+      <ActiveLink route={router.route}/>
         {isMobile ? (
           <Box width="100%" position="relative">
             <PriceChartContainer
@@ -391,7 +394,7 @@ export default function Swap() {
               isChartDisplayed={isChartDisplayed}
               currentSwapPrice={singleTokenPrice}
             />
-            <Flex mt='20px' flexDirection="column">
+            <Flex mt="20px" flexDirection="column" justifyContent='center' alignItems='center'>
               <StyledSwapContainer $isChartExpanded={isChartExpanded}>
                 <StyledInputCurrencyWrapper mt={isChartExpanded ? '24px' : '0'}>
                   <AppBody>
@@ -417,7 +420,7 @@ export default function Swap() {
                           onCurrencySelect={handleInputSelect}
                           otherCurrency={currencies[Field.OUTPUT]}
                           id="swap-currency-input"
-                          isShow={true}
+                          isShow
                         />
 
                         <AutoColumn justify="space-between">
@@ -449,7 +452,7 @@ export default function Swap() {
                           onCurrencySelect={handleOutputSelect}
                           otherCurrency={currencies[Field.INPUT]}
                           id="swap-currency-output"
-                          isShow={true}
+                          isShow
                         />
 
                         {isExpertMode && recipient !== null && !showWrap ? (
@@ -614,7 +617,7 @@ export default function Swap() {
             </Flex>
           </Box>
         ) : (
-          <Flex justifyContent='center' width="100%" position="relative">
+          <Flex justifyContent="center" width="100%" position="relative">
             <PriceChartContainer
               inputCurrencyId={inputCurrencyId}
               inputCurrency={currencies[Field.INPUT]}
@@ -651,7 +654,7 @@ export default function Swap() {
                           onCurrencySelect={handleInputSelect}
                           otherCurrency={currencies[Field.OUTPUT]}
                           id="swap-currency-input"
-                          isShow={true}
+                          isShow
                         />
 
                         <AutoColumn justify="space-between">
@@ -683,7 +686,7 @@ export default function Swap() {
                           onCurrencySelect={handleOutputSelect}
                           otherCurrency={currencies[Field.INPUT]}
                           id="swap-currency-output"
-                          isShow={true}
+                          isShow
                         />
 
                         {isExpertMode && recipient !== null && !showWrap ? (

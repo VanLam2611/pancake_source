@@ -12,7 +12,6 @@ import {
   removeSerializedToken,
   SerializedPair,
   muteAudio,
-  toggleTheme,
   unmuteAudio,
   updateGasPrice,
   updateUserDeadline,
@@ -26,6 +25,7 @@ import {
   ViewMode,
   updateUserPredictionAcceptedRisk,
   updateUserPredictionChartDisclaimerShow,
+  updateUserPredictionChainlinkChartDisclaimerShow,
   updateUserUsernameVisibility,
   updateUserExpertModeAcknowledgementShow,
   hidePhishingWarningBanner,
@@ -68,7 +68,6 @@ export interface UserState {
 
   timestamp: number
   audioPlay: boolean
-  isDark: boolean
   isExchangeChartDisplayed: boolean
   isSubgraphHealthIndicatorDisplayed: boolean
   userChartViewMode: ChartViewMode
@@ -78,6 +77,7 @@ export interface UserState {
   userFarmsViewMode: ViewMode
   userPredictionAcceptedRisk: boolean
   userPredictionChartDisclaimerShow: boolean
+  userPredictionChainlinkChartDisclaimerShow: boolean
   userExpertModeAcknowledgementShow: boolean
   userUsernameVisibility: boolean
   gasPrice: string
@@ -99,7 +99,6 @@ export const initialState: UserState = {
   pairs: {},
   timestamp: currentTimestamp(),
   audioPlay: true,
-  isDark: false,
   isExchangeChartDisplayed: true,
   isSubgraphHealthIndicatorDisplayed: false,
   userChartViewMode: ChartViewMode.BASIC,
@@ -109,6 +108,7 @@ export const initialState: UserState = {
   userFarmsViewMode: ViewMode.TABLE,
   userPredictionAcceptedRisk: false,
   userPredictionChartDisclaimerShow: true,
+  userPredictionChainlinkChartDisclaimerShow: true,
   userExpertModeAcknowledgementShow: true,
   userUsernameVisibility: false,
   gasPrice: GAS_PRICE_GWEI.default,
@@ -190,9 +190,6 @@ export default createReducer(initialState, (builder) =>
     .addCase(unmuteAudio, (state) => {
       state.audioPlay = true
     })
-    .addCase(toggleTheme, (state) => {
-      state.isDark = !state.isDark
-    })
     .addCase(updateUserFarmStakedOnly, (state, { payload: { userFarmStakedOnly } }) => {
       state.userFarmStakedOnly = userFarmStakedOnly
     })
@@ -210,6 +207,9 @@ export default createReducer(initialState, (builder) =>
     })
     .addCase(updateUserPredictionChartDisclaimerShow, (state, { payload: { userShowDisclaimer } }) => {
       state.userPredictionChartDisclaimerShow = userShowDisclaimer
+    })
+    .addCase(updateUserPredictionChainlinkChartDisclaimerShow, (state, { payload: { userShowDisclaimer } }) => {
+      state.userPredictionChainlinkChartDisclaimerShow = userShowDisclaimer
     })
     .addCase(updateUserExpertModeAcknowledgementShow, (state, { payload: { userExpertModeAcknowledgementShow } }) => {
       state.userExpertModeAcknowledgementShow = userExpertModeAcknowledgementShow

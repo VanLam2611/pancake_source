@@ -4,9 +4,9 @@ import useTheme from 'hooks/useTheme'
 interface HeadingProps extends TextProps {
   text: string
   firstColor?: keyof Colors
-  firstColorCustomized?: string
-  numberOfColoredWords?: number
-  style?: any
+  firstColorCustomized: string
+  numberOfColoredWords: number
+  style: any
 }
 
 const ColoredWordHeading: React.FC<HeadingProps> = ({ text, firstColor, mb = '24px', ...props }) => {

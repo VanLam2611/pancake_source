@@ -5,7 +5,7 @@ import { simpleRpcProvider } from 'utils/providers'
 import { AuctionsResponse, FarmAuctionContractStatus, BidsPerAuction } from 'utils/types'
 import { Auction, AuctionStatus, Bidder, BidderAuction } from 'config/constants/types'
 import { ethersToBigNumber } from 'utils/bigNumber'
-// import { FarmAuction } from 'config/abi/types'
+import { FarmAuction } from 'config/abi/types'
 
 export const FORM_ADDRESS =
   'https://docs.google.com/forms/d/e/1FAIpQLSfQNsAfh98SAfcqJKR3is2hdvMRdnvfd2F3Hql96vXHgIi3Bw/viewform'
@@ -137,7 +137,7 @@ export const processAuctionData = async (auctionId: number, auctionResponse: Auc
 }
 
 export const processBidderAuctions = (
-  bidderAuctions
+  bidderAuctions: Awaited<ReturnType<FarmAuction['viewBidderAuctions']>>,
 ): { auctions: BidderAuction[]; nextCursor: number } => {
   const [auctionIds, bids, claimed, nextCursor] = bidderAuctions
   const auctions = auctionIds.map((auctionId, index) => ({

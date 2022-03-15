@@ -1,62 +1,59 @@
+import { useMemo, useEffect } from 'react'
 import { useRouter } from 'next/router'
-import { useEffect } from 'react'
 import { NextLinkFromReactRouter } from 'components/NextLink'
 import { Menu as UikitMenu } from '@pancakeswap/uikit'
 import { languageList } from 'config/localization/languages'
 import { useTranslation } from 'contexts/Localization'
-// import PhishingWarningBanner from 'components/PhishingWarningBanner'
+import PhishingWarningBanner from 'components/PhishingWarningBanner'
 import useTheme from 'hooks/useTheme'
+import { useMenuItems } from 'hooks/useMenuItems'
 import { usePriceCakeBusd } from 'state/farms/hooks'
-// import { usePhishingBannerManager } from 'state/user/hooks'
-import config from './config/config'
+import { usePhishingBannerManager } from 'state/user/hooks'
 import UserMenu from './UserMenu'
 import GlobalSettings from './GlobalSettings'
 import { getActiveMenuItem, getActiveSubMenuItem } from './utils'
 import { footerLinks } from './config/footerConfig'
 import 'easymde/dist/easymde.min.css'
-// import { Alert as Comm } from '../../../pancake-uikit/src/components/Alert'
+import { Alert as Comm } from '../../../pancake-uikit/src/components/Alert'
 
 const Menu = (props) => {
-  const { isDark, toggleTheme } = useTheme()
+  const { isDark, setTheme } = useTheme()
   const cakePriceUsd = usePriceCakeBusd()
   const { currentLanguage, setLanguage, t } = useTranslation()
   const { pathname } = useRouter()
-  // const [showPhishingWarningBanner] = usePhishingBannerManager()
+  const [showPhishingWarningBanner] = usePhishingBannerManager()
 
-  const activeMenuItem = getActiveMenuItem({ menuConfig: config(t), pathname })
+  const menuItems = useMenuItems()
+
+  const activeMenuItem = getActiveMenuItem({ menuConfig: menuItems, pathname })
   const activeSubMenuItem = getActiveSubMenuItem({ menuItem: activeMenuItem, pathname })
 
-  useEffect(() => {
-    const uix = document.querySelectorAll('.gEEURT:first-child')
-    uix.forEach((e) => {
-      e.classList.add('helo')
-    })
-  })
+  const toggleTheme = useMemo(() => {
+    return () => setTheme(isDark ? 'light' : 'dark')
+  }, [setTheme, isDark])
 
   return (
-    <>
-    
-      <UikitMenu
-        linkComponent={(linkProps) => {
-          return <NextLinkFromReactRouter to={linkProps.href} {...linkProps} prefetch={false} />
-        }}
-        userMenu={<UserMenu />}
-        globalMenu={<GlobalSettings />}
-        isDark={isDark}
-        toggleTheme={toggleTheme}
-        currentLang={currentLanguage.code}
-        langs={languageList}
-        setLang={setLanguage}
-        cakePriceUsd={cakePriceUsd.toNumber()}
-        links={config(t)}
-        subLinks={activeMenuItem?.hideSubNav ? [] : activeMenuItem?.items}
-        footerLinks={footerLinks(t)}
-        activeItem={activeMenuItem?.href}
-        activeSubItem={activeSubMenuItem?.href}
-        buyCakeLabel={t('Buy CAKE')}
-        {...props}
-      />
-    </>
+    <UikitMenu
+      linkComponent={(linkProps) => {
+        return <NextLinkFromReactRouter to={linkProps.href} {...linkProps} prefetch={false} />
+      }}
+      userMenu={<UserMenu />}
+      globalMenu={<GlobalSettings />}
+      banner={showPhishingWarningBanner && typeof window !== 'undefined' && <PhishingWarningBanner />}
+      isDark={isDark}
+      toggleTheme={toggleTheme}
+      currentLang={currentLanguage.code}
+      langs={languageList}
+      setLang={setLanguage}
+      cakePriceUsd={cakePriceUsd.toNumber()}
+      links={menuItems}
+      subLinks={activeMenuItem?.hideSubNav ? [] : activeMenuItem?.items}
+      footerLinks={footerLinks(t)}
+      activeItem={activeMenuItem?.href}
+      activeSubItem={activeSubMenuItem?.href}
+      buyCakeLabel={t('Buy CAKE')}
+      {...props}
+    />
   )
 }
 

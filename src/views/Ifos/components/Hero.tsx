@@ -92,11 +92,18 @@ const StyledNavButton = styled.div<{ $isActive?: boolean }>`
   margin-right: 14px;
   cursor: pointer;
 
+  :hover {
+    background: #B5689E;
+    border: 1px solid #B5689E;
+  }
+
   ${(props) =>
     props.$isActive &&
     css`
-      background: #ec4c93;
-      border: 1px solid #ec4c93;
+      &&, &&:hover {
+        background: #ec4c93;
+        border: 1px solid #ec4c93;
+      }
     `}
 `
 

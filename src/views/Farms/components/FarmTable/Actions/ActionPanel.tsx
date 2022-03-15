@@ -1,11 +1,11 @@
 import styled, { keyframes, css } from 'styled-components'
 import { useTranslation } from 'contexts/Localization'
 import { LinkExternal, Text } from '@pancakeswap/uikit'
-import { FarmWithStakedValue } from 'views/Farms/components/FarmCard/FarmCard'
 import getLiquidityUrlPathParts from 'utils/getLiquidityUrlPathParts'
 import { getAddress } from 'utils/addressHelpers'
 import { getBscScanLink } from 'utils'
-import { CommunityTag, CoreTag, DualTag } from 'components/Tags'
+import { FarmAuctionTag, CoreTag, DualTag } from 'components/Tags'
+import { FarmWithStakedValue } from '../../types'
 
 import HarvestAction from './HarvestAction'
 import StakedAction from './StakedAction'
@@ -164,7 +164,7 @@ const ActionPanel: React.FunctionComponent<ActionPanelProps> = ({
         <StyledLinkExternal href={bsc}>{t('View Contract')}</StyledLinkExternal>
         <StyledLinkExternal href={info}>{t('See Pair Info')}</StyledLinkExternal>
         <TagsContainer>
-          {farm.isCommunity ? <CommunityTag /> : <CoreTag />}
+          {farm.isCommunity ? <FarmAuctionTag /> : <CoreTag />}
           {dual ? <DualTag /> : null}
         </TagsContainer>
       </InfoContainer>
