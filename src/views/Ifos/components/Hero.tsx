@@ -4,6 +4,7 @@ import Container from 'components/Layout/Container'
 import { useTranslation } from 'contexts/Localization'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
+import useTheme from 'hooks/useTheme'
 
 const StyledHero = styled(Box)`
   // background-image: url('/images/ifos/assets/ifo-banner-${({ theme }) => (theme.isDark ? 'dark' : 'light')}.png');
@@ -22,9 +23,9 @@ const StyledContainer = styled(Container)`
   }
 `
 
-const StyledHeroContentWrapper = styled.div`
-  background: rgba(12, 7, 17, 0.8);
-  border: 1px solid #ec4c93;
+const StyledHeroContentWrapper = styled.div <{ $bgColor?: string, $borderColor?: string }>`
+  background: ${(props) => props.$bgColor};
+  border: 1px solid ${(props) => props.$borderColor};
   box-sizing: border-box;
   border-radius: 10px;
   padding: 30px;
@@ -35,21 +36,20 @@ const StyledHeading = styled(Heading)`
   font-weight: bold;
   font-size: 32px;
   line-height: 32px;
-  color: #fff;
   margin-bottom: 8px;
 `
 
 const StyledButton = styled(Button)`
   background-color: ${({ theme }) => theme.colors.tertiary};
   color: ${({ theme }) => theme.colors.primary};
-  padding: 4px 13px;
+  padding: 8px 12px;
   height: auto;
   text-transform: uppercase;
   align-self: flex-start;
   font-size: 12px;
   box-shadow: ${({ theme }) => theme.shadows.inset};
   border-radius: 8px;
-  margin-left: 8px;
+  margin: 24px 0 24px 0;
 `
 
 const DesktopButton = styled(Button)`
@@ -74,42 +74,59 @@ const StyledSubTitle = styled(Text)`
   font-weight: normal;
   font-size: 24px;
   line-height: 24px;
-  color: #b5689e;
   margin: 0;
 `
 
-const StyledNavButton = styled.div<{ $isActive?: boolean }>`
-  color: #fff;
+const StyledNavButtonList = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex-wrap: wrap;
+`
+
+const StyledNavButton = styled.div<{
+  $isActive?: boolean,
+  $txtColor?: string,
+  $bgColor?: string,
+  $bgColorActive?: string,
+  $borderColor?: string,
+  $borderColorActive?: string
+}>`
+  color: ${(props) => props.$txtColor};
   font-size: 16px;
   line-height: 16px;
   text-transform: uppercase;
   background: blue;
   padding: 18px 40px;
-  background: rgba(46, 0, 23, 0.5);
-  border: 1px solid rgba(236, 76, 147, 0.5);
+  background: ${(props) => props.$bgColor};
+  border: 1px solid ${(props) => props.$borderColor};
   box-sizing: border-box;
   border-radius: 300px;
-  margin-right: 14px;
+  margin: 0 14px 0 0;
   cursor: pointer;
 
   :hover {
-    background: #B5689E;
-    border: 1px solid #B5689E;
+    opacity: 0.8;
   }
 
-  ${(props) =>
-    props.$isActive &&
-    css`
-      &&, &&:hover {
-        background: #ec4c93;
-        border: 1px solid #ec4c93;
-      }
-    `}
+  ${(props) => props.$isActive && css`
+    &&,
+    &&:hover {
+      background: ${props.$bgColorActive};
+      border: 1px solid ${props.$borderColorActive};
+    }
+  `}
+
+  @media screen and (max-width: 576px) {
+    width: 100%;
+    margin: 0 0 14px 0;
+  }
 `
 
 const Hero = () => {
   const router = useRouter()
   const { t } = useTranslation()
+  const { theme } = useTheme()
   const { isMobile } = useMatchBreakpoints()
   const currentRoute = router.route
 
@@ -126,35 +143,53 @@ const Hero = () => {
     <Box mb="0px">
       <StyledHero>
         <StyledContainer>
-          <StyledHeroContentWrapper>
+          <StyledHeroContentWrapper
+            $bgColor={theme.isDark ? theme.colors.bgDark : '#fff'}
+            $borderColor={theme.isDark ? theme.colors.itemBlueUnhighlight : '#fff'}
+          >
             <Flex
               justifyContent="space-between"
               flexDirection={['column', 'column', 'column', 'row']}
               style={{ gap: '4px' }}
             >
               <Box>
-                <StyledHeading as="h1" mb={['12px', '12px', '16px']}>
+                <StyledHeading color={theme.colors.itemPrimary} as="h1" mb={['12px', '12px', '16px']}>
                   {t('IFO: Initial Farm Offerings')}
                 </StyledHeading>
-                <StyledSubTitle bold>
+                <StyledSubTitle color={theme.isDark ? '#fff' : '#6E6E6E'} bold>
                   {t('Buy new tokens launching on BNB Smart Chain')}
-                  {isMobile && <StyledButton onClick={handleClick}>{t('How does it work?')}</StyledButton>}
+                  <div>{isMobile && <StyledButton onClick={handleClick}>{t('How does it work?')}</StyledButton>}</div>
                 </StyledSubTitle>
               </Box>
 
-              <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+              <StyledNavButtonList>
                 <Link href="/ifo" passHref>
-                  <StyledNavButton $isActive={currentRoute === '/ifo'}>{t('Latest')}</StyledNavButton>
+                  <StyledNavButton
+                    $isActive={currentRoute === '/ifo'}
+                    $txtColor='#fff'
+                    $bgColor={theme.colors.bgDark}
+                    $bgColorActive={theme.colors.itemPrimary}
+                    $borderColor={theme.colors.itemBlueUnhighlight}
+                    $borderColorActive={theme.colors.itemPrimary}
+                  >{t('Latest')}</StyledNavButton>
                 </Link>
                 <Link href="/ifo/history" passHref>
-                  <StyledNavButton $isActive={currentRoute === '/ifo/history'}>{t('Finished')}</StyledNavButton>
+                  <StyledNavButton
+                    $isActive={currentRoute === '/ifo/history'}
+                    $txtColor='#fff'
+                    $bgColor={theme.colors.bgDark}
+                    $bgColorActive={theme.colors.itemPrimary}
+                    $borderColor={theme.colors.itemBlueUnhighlight}
+                    $borderColorActive={theme.colors.itemPrimary}
+                  >{t('Finished')}</StyledNavButton>
                 </Link>
-                {!isMobile && (
+
+                {/* {!isMobile && (
                   <DesktopButton onClick={handleClick} variant="subtle">
                     {t('How does it work?')}
                   </DesktopButton>
-                )}
-              </div>
+                )} */}
+              </StyledNavButtonList>
             </Flex>
           </StyledHeroContentWrapper>
         </StyledContainer>

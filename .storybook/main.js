@@ -5,13 +5,13 @@
 //   framework: '@storybook/react',
 // }
 
-// Solution 1:
+// Solution:
 module.exports = {
   stories: [
     '../src/**/*.stories.mdx',
     '../src/**/*.stories.@(js|jsx|ts|tsx)',
-    '../pancake-uikit/src/components/**/*.stories.mdx',
-    '../pancake-uikit/src/components/**/*.stories.@(js|jsx|ts|tsx)',
+    '../packages/uikit/src/components/**/*.stories.mdx',
+    '../packages/uikit/src/components/**/*.stories.@(js|jsx|ts|tsx)',
   ],
   framework: '@storybook/react',
   addons: [

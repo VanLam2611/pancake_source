@@ -1,43 +1,22 @@
-import styled from 'styled-components'
-import { Flex, TooltipText, IconButton, useModal, CalculateIcon, Skeleton, useTooltip } from '@pancakeswap/uikit'
+import { Flex, TooltipText, useTooltip } from '@pancakeswap/uikit'
 import { useTranslation } from 'contexts/Localization'
-import Balance from 'components/Balance'
-import RoiCalculatorModal from 'components/RoiCalculatorModal'
 import { DeserializedPool } from 'state/types'
 import BigNumber from 'bignumber.js'
-import { BIG_ZERO } from 'utils/bigNumber'
-import { vaultPoolConfig } from 'config/constants/pools'
-
-const ApyLabelContainer = styled(Flex)`
-  cursor: pointer;
-
-  &:hover {
-    opacity: 0.5;
-  }
-`
+import Apr from 'views/Pools/components/Apr'
+import useTheme from 'hooks/useTheme'
 
 interface AprRowProps {
   pool: DeserializedPool
   stakedBalance: BigNumber
   performanceFee?: number
   style?: any
+  showIcon?: boolean
 }
 
-const AprRow: React.FC<AprRowProps> = ({ pool, stakedBalance, performanceFee = 0, style }) => {
+const AprRow: React.FC<AprRowProps> = ({ pool, stakedBalance, performanceFee = 0, style, showIcon = true }) => {
+  const { theme } = useTheme()
   const { t } = useTranslation()
-  const {
-    stakingToken,
-    earningToken,
-    isFinished,
-    apr,
-    rawApr,
-    earningTokenPrice,
-    stakingTokenPrice,
-    userData,
-    vaultKey,
-  } = pool
-
-  const stakingTokenBalance = userData?.stakingTokenBalance ? new BigNumber(userData.stakingTokenBalance) : BIG_ZERO
+  const { vaultKey } = pool
 
   const tooltipContent = vaultKey
     ? t('APY includes compounding, APR doesn’t. This pool’s CAKE is compounded automatically, so we show APY.')
@@ -45,49 +24,16 @@ const AprRow: React.FC<AprRowProps> = ({ pool, stakedBalance, performanceFee = 0
 
   const { targetRef, tooltip, tooltipVisible } = useTooltip(tooltipContent, { placement: 'bottom-start' })
 
-  const apyModalLink = stakingToken.address ? `/swap?outputCurrency=${stakingToken.address}` : '/swap'
-
-  const [onPresentApyModal] = useModal(
-    <RoiCalculatorModal
-      earningTokenPrice={earningTokenPrice}
-      stakingTokenPrice={stakingTokenPrice}
-      apr={vaultKey ? rawApr : apr}
-      linkLabel={t('Get %symbol%', { symbol: stakingToken.symbol })}
-      linkHref={apyModalLink}
-      stakingTokenBalance={stakedBalance.plus(stakingTokenBalance)}
-      stakingTokenSymbol={stakingToken.symbol}
-      earningTokenSymbol={earningToken.symbol}
-      autoCompoundFrequency={vaultPoolConfig[vaultKey]?.autoCompoundFrequency ?? 0}
-      performanceFee={performanceFee}
-    />,
-  )
-
   return (
     <Flex alignItems="center" justifyContent="space-between" style={style}>
       {tooltipVisible && tooltip}
-      <TooltipText ref={targetRef} color="#fff">
-        {vaultKey ? `${t('APY')}:` : `${t('APR')}:`}
-      </TooltipText>
-      {apr || isFinished ? (
-        <ApyLabelContainer alignItems="center" onClick={onPresentApyModal}>
-          <Balance
-            color="#EC4C93"
-            fontSize="16px"
-            isDisabled={isFinished}
-            value={isFinished ? 0 : apr}
-            decimals={2}
-            unit="%"
-            onClick={onPresentApyModal}
-          />
-          {!isFinished && (
-            <IconButton variant="text" scale="sm">
-              <CalculateIcon color="#EC4C93" width="18px" />
-            </IconButton>
-          )}
-        </ApyLabelContainer>
-      ) : (
-        <Skeleton width="82px" height="32px" />
-      )}
+      <TooltipText ref={targetRef} color={theme.isDark ? '#fff' : '#000'}>{vaultKey ? `${t('APY')}:` : `${t('APR')}:`}</TooltipText>
+      <Apr
+        pool={pool}
+        stakedBalance={stakedBalance}
+        performanceFee={performanceFee}
+        showIcon={showIcon}
+      />
     </Flex>
   )
 }

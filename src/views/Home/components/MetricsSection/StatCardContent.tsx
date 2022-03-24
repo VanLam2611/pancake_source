@@ -1,4 +1,30 @@
+import styled, { css } from 'styled-components'
 import { Heading, Flex, Text, useMatchBreakpoints } from '@pancakeswap/uikit'
+import useTheme from 'hooks/useTheme'
+
+const StyledHeading = styled(Heading) <{ $isDarkStyle?: boolean }>`
+  color: #000;
+  font-weight: 600;
+  font-size: 44px;
+  line-height: 44px;
+
+  ${(props) => props.$isDarkStyle ? css`
+    color: #fff;
+  ` : css`
+    color: #000;
+  `}
+`
+
+const StyledBodyText = styled(Text) <{ $isDarkStyle?: boolean }>`
+  color: #000;
+  font-size: 16px;
+  
+  ${(props) => props.$isDarkStyle ? css`
+  color: #fff;
+  ` : css`
+  color: #000;
+  `}
+`
 
 const StatCardContent: React.FC<{
   headingText: string
@@ -12,6 +38,7 @@ const StatCardContent: React.FC<{
   const split = headingText.split(' ')
   const lastWord = split.pop()
   const remainingWords = split.slice(0, split.length).join(' ')
+  const { theme } = useTheme()
 
   return (
     <Flex
@@ -24,20 +51,20 @@ const StatCardContent: React.FC<{
       style={{ alignItems: 'center', ...style }}
     >
       {isSmallerScreen && remainingWords.length > 13 ? (
-        <Heading scale="lg" style={{ color: '#fff', fontWeight: '600', fontSize: '35px', lineHeight: '37px' }}>
+        <StyledHeading $isDarkStyle={theme.isDark} scale="lg">
           {remainingWords}
-        </Heading>
+        </StyledHeading>
       ) : (
-        <Heading scale="xl" style={{ color: '#fff', fontWeight: '600', fontSize: '35px', lineHeight: '37px' }}>
+        <StyledHeading $isDarkStyle={theme.isDark} scale="xl">
           {remainingWords}
-        </Heading>
+        </StyledHeading>
       )}
-      <Heading color={highlightColor} scale="xl" mb="5px">
-        <span style={{ color: `${lastWordColor}` }}>{lastWord}</span>
+      <Heading color={highlightColor} scale="xl" mb="0px">
+        <span style={{ color: `${lastWordColor}`, textTransform: 'capitalize' }}>{lastWord}</span>
       </Heading>
-      <Text color="textSubtle" style={{ color: '#fff' }}>
+      <StyledBodyText $isDarkStyle={theme.isDark} color="textSubtle">
         {bodyText}
-      </Text>
+      </StyledBodyText>
     </Flex>
   )
 }

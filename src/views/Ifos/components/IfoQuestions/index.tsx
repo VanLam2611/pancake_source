@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { Text, Heading, Card, CardHeader, CardBody, Flex } from '@pancakeswap/uikit'
 import { useTranslation } from 'contexts/Localization'
 import FoldableText from 'components/FoldableSection/FoldableText'
+import useTheme from 'hooks/useTheme'
 import config from './config'
 
 // const ImageWrapper = styled.div`
@@ -29,8 +30,9 @@ const DetailsWrapper = styled.div`
   }
 `
 
-const StyledCard = styled(Card)`
-  background: rgba(12, 7, 17, 0.8);
+const StyledCard = styled(Card) <{ $bgColor?: string, $borderColor?: string }>`
+  background: ${(props) => props.$bgColor};
+  border: 1px solid ${(props) => props.$borderColor};
   border-radius: 10px 10px 0px 0px;
   padding: 0;
 
@@ -40,25 +42,25 @@ const StyledCard = styled(Card)`
   }
 `
 
-const StyledCardHeader = styled(CardHeader)`
-  background: linear-gradient(180deg, #6800a8 0%, rgba(104, 0, 168, 0) 147.22%);
+const StyledCardHeader = styled(CardHeader) <{ $bgColor?: string, $borderColor?: string }>`
+  background: ${(props) => props.$bgColor};
+  border: ${(props) => `1px solid ${props.$borderColor}` || 'none'};
   border-radius: 10px 10px 0px 0px;
   padding: 32px;
 `
 
 const StyledCardHeading = styled(Heading)`
-  font-weight: bold;
+  font-weight: 500;
   font-size: 24px;
   line-height: 24px;
   text-transform: uppercase;
-  color: #fff;
   text-align: center;
 `
 
-const StyledFoldableText = styled(FoldableText)`
+const StyledFoldableText = styled(FoldableText) <{ $txtColor?: string, $borderColor?: string }>`
   margin: 0;
   padding: 12px 24px;
-  border-bottom: 1px solid #ec4c93;
+  border-bottom: ${(props) => `1px solid ${props.$borderColor}` || 'none'};
 
   :last-child {
     border-bottom: none;
@@ -69,13 +71,20 @@ const StyledFoldableText = styled(FoldableText)`
   }
 
   > div > div {
-    color: #fff;
-    font-weight: bold;
+    color: ${(props) => props.$txtColor || '#000'};
+    font-weight: 500;
   }
+`
+
+const StyledText = styled(Text)`
+  font-size: 16px;
+  line-height: 21px;
+  margin: 10px 0px;
 `
 
 const IfoQuestions = () => {
   const { t } = useTranslation()
+  const { theme } = useTheme()
 
   return (
     <Flex alignItems={['center', null, null, 'start']} flexDirection={['column', null, null, 'row']}>
@@ -84,21 +93,32 @@ const IfoQuestions = () => {
       </ImageWrapper> */}
 
       <DetailsWrapper>
-        <StyledCard>
-          <StyledCardHeader>
-            <StyledCardHeading scale="lg" color="#fff">
+        <StyledCard
+          $bgColor={theme.isDark ? 'rgba(30, 39, 53, 0.8)' : '#fff'}
+          $borderColor={theme.isDark ? theme.colors.itemBlueUnhighlight : '#fff'}
+        >
+          <StyledCardHeader
+            $bgColor={theme.isDark ? theme.colors.bgDark : '#fff'}
+          >
+            <StyledCardHeading scale="lg" color={theme.isDark ? '#fff' : '#000'}>
               {t('Details')}
             </StyledCardHeading>
           </StyledCardHeader>
           <CardBody p="0">
             {config.map(({ title, description }, i, { length }) => {
               return (
-                <StyledFoldableText key={i} mb={i + 1 === length ? '' : '24px'} title={title} isLineBreakHided>
+                <StyledFoldableText
+                  key={i} mb={i + 1 === length ? '' : '24px'}
+                  title={title}
+                  $txtColor={theme.isDark ? '#fff' : '#000'}
+                  $borderColor={theme.isDark ? theme.colors.itemBlueUnhighlight : theme.colors.bgBright}
+                  isLineBreakHided
+                >
                   {description.map((desc, index) => {
                     return (
-                      <Text key={index} color="#B5689E" as="p">
+                      <StyledText key={index} color={theme.colors.itemPrimary} as="p">
                         {desc}
-                      </Text>
+                      </StyledText>
                     )
                   })}
                 </StyledFoldableText>

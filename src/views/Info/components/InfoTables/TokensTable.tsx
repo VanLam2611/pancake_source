@@ -7,6 +7,7 @@ import { CurrencyLogo } from 'views/Info/components/CurrencyLogo'
 import { formatAmount } from 'utils/formatInfoNumbers'
 import Percent from 'views/Info/components/Percent'
 import { useTranslation } from 'contexts/Localization'
+import useTheme from 'hooks/useTheme'
 import { ClickableColumnHeader, TableWrapper, PageButtons, Arrow } from './shared'
 
 /**
@@ -66,15 +67,14 @@ const ResponsiveLogo = styled(CurrencyLogo)`
   }
 `
 
-const StyledTableHeader = styled(ResponsiveGrid)`
+const StyledTableHeader = styled(ResponsiveGrid) <{ $bgColor?: string }>`
   padding: 20px 30px;
   border-radius: 10px;
-  background: #2d022e;
   margin-bottom: 24px;
+  background: ${(props) => props.$bgColor || ''};
 `
 
 const StyledTableHeaderText = styled(Text)`
-  color: #b5689e;
   font-style: normal;
   font-weight: bold;
   font-size: 16px;
@@ -83,7 +83,6 @@ const StyledTableHeaderText = styled(Text)`
 `
 
 const StyledClickableColumnHeader = styled(ClickableColumnHeader)`
-  color: #b5689e;
   font-style: normal;
   font-weight: bold;
   font-size: 16px;
@@ -91,21 +90,20 @@ const StyledClickableColumnHeader = styled(ClickableColumnHeader)`
   text-transform: uppercase;
 `
 
-const StyledDataRowText = styled(Text)<{ $isNumber?: boolean }>`
+const StyledDataRowText = styled(Text) <{ $isNumber?: boolean, $txtColor?: string, $numBgColor?: string }>`
   font-style: normal;
   font-weight: normal;
   font-size: 16px;
   line-height: 16px;
   text-transform: capitalize;
-  color: #fff;
+  color: ${(props) => props.$txtColor || ''};
 
   ${(props) =>
     props.$isNumber &&
     css`
       padding: 5px 8px;
-      background: #2d022e;
+      background: ${props.$numBgColor || ''};
       border-radius: 5px;
-      color: #b5689e;
       font-style: normal;
       font-weight: 600;
       font-size: 16px;
@@ -119,12 +117,12 @@ const StyledDataRowPercent = styled(Percent)`
   line-height: 16px;
 `
 
-const StyledDataRowLinkWrapper = styled(LinkWrapper)`
+const StyledDataRowLinkWrapper = styled(LinkWrapper) <{ $bgColor?: string, $borderColor?: string }>`
   && {
     padding: 20px 0;
-    background: rgba(12, 7, 17, 0.7);
     border-radius: 0;
-    border-bottom: 1px solid #ec4c93;
+    background: ${(props) => props.$bgColor || ''};
+    border-bottom: ${(props) => `1px solid ${props.$borderColor}` || '1px solid transparent'};
   }
 
   &&:first-of-type {
@@ -178,31 +176,47 @@ const TableLoader: React.FC = () => {
 }
 
 const DataRow: React.FC<{ tokenData: TokenData; index: number }> = ({ tokenData, index }) => {
+  const { theme } = useTheme()
   const { isXs, isSm } = useMatchBreakpoints()
   return (
-    <StyledDataRowLinkWrapper to={`/info/token/${tokenData.address}`}>
+    <StyledDataRowLinkWrapper
+      to={`/info/token/${tokenData.address}`}
+      $bgColor={theme.isDark ? theme.colors.bgDarkWeaker : '#fff'}
+      $borderColor={theme.isDark ? theme.colors.itemBlueUnhighlight : '#EBEBEB'}
+    >
       <ResponsiveGrid>
         <Flex>
-          <StyledDataRowText $isNumber>{index + 1}</StyledDataRowText>
+          <StyledDataRowText
+            $isNumber
+            $numBgColor={theme.isDark ? theme.colors.bgDark : theme.colors.bgBright}
+          >{index + 1}</StyledDataRowText>
         </Flex>
         <Flex alignItems="center">
           <ResponsiveLogo address={tokenData.address} />
           {(isXs || isSm) && <Text ml="8px">{tokenData.symbol}</Text>}
           {!isXs && !isSm && (
             <Flex marginLeft="10px">
-              <StyledDataRowText>{tokenData.name}</StyledDataRowText>
-              <StyledDataRowText ml="8px">({tokenData.symbol})</StyledDataRowText>
+              <StyledDataRowText $txtColor={theme.isDark ? '#fff' : '#6E6E6E'}>
+                {tokenData.name}
+              </StyledDataRowText>
+              <StyledDataRowText $txtColor={theme.isDark ? '#fff' : '#6E6E6E'} ml="8px">
+                ({tokenData.symbol})
+              </StyledDataRowText>
             </Flex>
           )}
         </Flex>
-        <StyledDataRowText fontWeight={400}>
+        <StyledDataRowText fontWeight={400} $txtColor={theme.isDark ? '#fff' : '#6E6E6E'}>
           ${formatAmount(tokenData.priceUSD, { notation: 'standard' })}
         </StyledDataRowText>
         <StyledDataRowText fontWeight={400}>
           <StyledDataRowPercent value={tokenData.priceUSDChange} fontWeight={400} />
         </StyledDataRowText>
-        <StyledDataRowText fontWeight={400}>${formatAmount(tokenData.volumeUSD)}</StyledDataRowText>
-        <StyledDataRowText fontWeight={400}>${formatAmount(tokenData.liquidityUSD)}</StyledDataRowText>
+        <StyledDataRowText fontWeight={400} $txtColor={theme.isDark ? '#fff' : '#6E6E6E'}>
+          ${formatAmount(tokenData.volumeUSD)}
+        </StyledDataRowText>
+        <StyledDataRowText fontWeight={400} $txtColor={theme.isDark ? '#fff' : '#6E6E6E'}>
+          ${formatAmount(tokenData.liquidityUSD)}
+        </StyledDataRowText>
       </ResponsiveGrid>
     </StyledDataRowLinkWrapper>
   )
@@ -227,6 +241,7 @@ const TokenTable: React.FC<{
   const [sortDirection, setSortDirection] = useState<boolean>(true)
 
   const { t } = useTranslation()
+  const { theme } = useTheme()
 
   const [page, setPage] = useState(1)
   const [maxPage, setMaxPage] = useState(1)
@@ -243,15 +258,15 @@ const TokenTable: React.FC<{
   const sortedTokens = useMemo(() => {
     return tokenDatas
       ? tokenDatas
-          .sort((a, b) => {
-            if (a && b) {
-              return a[sortField as keyof TokenData] > b[sortField as keyof TokenData]
-                ? (sortDirection ? -1 : 1) * 1
-                : (sortDirection ? -1 : 1) * -1
-            }
-            return -1
-          })
-          .slice(maxItems * (page - 1), page * maxItems)
+        .sort((a, b) => {
+          if (a && b) {
+            return a[sortField as keyof TokenData] > b[sortField as keyof TokenData]
+              ? (sortDirection ? -1 : 1) * 1
+              : (sortDirection ? -1 : 1) * -1
+          }
+          return -1
+        })
+        .slice(maxItems * (page - 1), page * maxItems)
       : []
   }, [tokenDatas, maxItems, page, sortDirection, sortField])
 
@@ -277,12 +292,12 @@ const TokenTable: React.FC<{
 
   return (
     <StyledTableWrapper>
-      <StyledTableHeader>
-        <StyledTableHeaderText color="secondary" fontSize="12px" bold>
+      <StyledTableHeader $bgColor={theme.colors.bgDarkWeaker}>
+        <StyledTableHeaderText color="itemPrimary" fontSize="12px" bold>
           #
         </StyledTableHeaderText>
         <StyledClickableColumnHeader
-          color="secondary"
+          color="itemPrimary"
           fontSize="12px"
           bold
           onClick={() => handleSort(SORT_FIELD.name)}
@@ -291,7 +306,7 @@ const TokenTable: React.FC<{
           {t('Name')} {arrow(SORT_FIELD.name)}
         </StyledClickableColumnHeader>
         <StyledClickableColumnHeader
-          color="secondary"
+          color="itemPrimary"
           fontSize="12px"
           bold
           onClick={() => handleSort(SORT_FIELD.priceUSD)}
@@ -300,7 +315,7 @@ const TokenTable: React.FC<{
           {t('Price')} {arrow(SORT_FIELD.priceUSD)}
         </StyledClickableColumnHeader>
         <StyledClickableColumnHeader
-          color="secondary"
+          color="itemPrimary"
           fontSize="12px"
           bold
           onClick={() => handleSort(SORT_FIELD.priceUSDChange)}
@@ -309,7 +324,7 @@ const TokenTable: React.FC<{
           {t('Price Change')} {arrow(SORT_FIELD.priceUSDChange)}
         </StyledClickableColumnHeader>
         <StyledClickableColumnHeader
-          color="secondary"
+          color="itemPrimary"
           fontSize="12px"
           bold
           onClick={() => handleSort(SORT_FIELD.volumeUSD)}
@@ -318,7 +333,7 @@ const TokenTable: React.FC<{
           {t('Volume 24H')} {arrow(SORT_FIELD.volumeUSD)}
         </StyledClickableColumnHeader>
         <StyledClickableColumnHeader
-          color="secondary"
+          color="itemPrimary"
           fontSize="12px"
           bold
           onClick={() => handleSort(SORT_FIELD.liquidityUSD)}
@@ -350,7 +365,7 @@ const TokenTable: React.FC<{
             >
               <ArrowBackIcon color={page === 1 ? 'textDisabled' : 'primary'} />
             </Arrow>
-            <Text style={{ color: '#fff', textShadow: '0 0 5px #000' }}>
+            <Text style={{ color: `${theme.isDark ? '#fff' : '#6E6E6E'}` }}>
               {t('Page %page% of %maxPage%', { page, maxPage })}
             </Text>
             <Arrow

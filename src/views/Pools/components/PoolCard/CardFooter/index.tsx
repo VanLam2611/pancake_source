@@ -5,6 +5,7 @@ import { useTranslation } from 'contexts/Localization'
 import { Flex, CardFooter, ExpandableLabel, HelpIcon, useTooltip } from '@pancakeswap/uikit'
 import { DeserializedPool } from 'state/types'
 import { CompoundingPoolTag, ManualPoolTag } from 'components/Tags'
+import useTheme from 'hooks/useTheme'
 import ExpandedFooter from './ExpandedFooter'
 
 interface FooterProps {
@@ -24,31 +25,33 @@ const ExpandableButtonWrapper = styled(Flex)`
   }
 `
 
-const StyledCardFooter = styled(CardFooter)`
-  background: rgba(12, 7, 17, 0.5);
+const StyledCardFooter = styled(CardFooter) <{ $bgColor?: string }>`
+  background: ${(props) => (props.$bgColor || '#fff')};
   border-radius: 10px;
   padding: 24px;
   border: none;
 `
 
-const StyledTagWrapper = styled.div <{ $color?: string }>`
+const StyledTagWrapper = styled.div <{ $color?: string, $bgColor?: string }>`
   > div {
     padding: 8px 12px;
-    background: rgba(116, 33, 69, 0.5);
-    border: 1px solid #EC4C93;
+    background: ${(props) => (props.$bgColor ? props.$bgColor : '#fff')};
+    border: 1px solid #60C5BA;
     box-sizing: border-box;
-    border-radius: 10px;
-    border: ${props => props.$color ? `1px solid ${props.$color}` : '1px solid #fff'};
-    color: ${props => props.$color ? props.$color : '#fff'};
-  
+    border-radius: 30px;
+    border: ${(props) => (props.$bgColor ? `1px solid ${props.$bgColor}` : '1px solid #fff')};
+    color: #fff;
+
     > svg {
       margin-right: 8px;
-      fill: ${props => props.$color ? props.$color : '#fff'};
+      fill: #fff;
     }
   }
 `
 
 const Footer: React.FC<FooterProps> = ({ pool, account, defaultExpanded, txtColor, txtColorMain }) => {
+  const { theme } = useTheme()
+
   const { vaultKey } = pool
   const { t } = useTranslation()
   const [isExpanded, setIsExpanded] = useState(defaultExpanded || false)
@@ -63,30 +66,30 @@ const Footer: React.FC<FooterProps> = ({ pool, account, defaultExpanded, txtColo
   })
 
   return (
-    <StyledCardFooter>
+    <StyledCardFooter
+      $bgColor={theme.isDark ? theme.colors.bgDark : theme.colors.bgBright}
+    >
       <ExpandableButtonWrapper>
         <Flex alignItems="center">
-          {
-            vaultKey ? (
-              <StyledTagWrapper $color={txtColorMain}>
-                <CompoundingPoolTag />
-              </StyledTagWrapper>
-            ) : (
-              <StyledTagWrapper $color='#B5689E'>
-                <ManualPoolTag />
-              </StyledTagWrapper>
-            )
-          }
+          {vaultKey ? (
+            <StyledTagWrapper $color={txtColor} $bgColor={txtColorMain}>
+              <CompoundingPoolTag />
+            </StyledTagWrapper>
+          ) : (
+            <StyledTagWrapper $color={txtColor} $bgColor='#60C5BA'>
+              <ManualPoolTag />
+            </StyledTagWrapper>
+          )}
           {tooltipVisible && tooltip}
           <Flex ref={targetRef}>
-            <HelpIcon ml="8px" width="20px" height="20px" color={txtColorMain || "textSubtle"} />
+            <HelpIcon ml="8px" width="20px" height="20px" color='#60C5BA' />
           </Flex>
         </Flex>
         <ExpandableLabel expanded={isExpanded} onClick={() => setIsExpanded(!isExpanded)}>
           {isExpanded ? t('Hide') : t('Details')}
         </ExpandableLabel>
       </ExpandableButtonWrapper>
-      {isExpanded && <ExpandedFooter pool={pool} account={account} labelColor={txtColor} valueColor={txtColorMain} />}
+      {isExpanded && <ExpandedFooter pool={pool} account={account} labelColor={theme.isDark ? '#fff' : '#000'} valueColor={'#60C5BA'} />}
     </StyledCardFooter>
   )
 }

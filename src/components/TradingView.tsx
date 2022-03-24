@@ -6,7 +6,6 @@ import { useEffect, useRef } from 'react'
 import { DefaultTheme, useTheme } from 'styled-components'
 import { ChartByLabel } from './Chart/ChartbyLabel'
 
-
 /**
  * When the script tag is injected the TradingView object is not immediately
  * available on the window. So we listen for when it gets set
@@ -64,7 +63,7 @@ const TradingView = ({ id, symbol }: TradingViewProps) => {
   const widgetRef = useRef<any>()
   const { isMobile } = useMatchBreakpoints()
 
-  useScript('https://s3.tradingview.com/tv.js') 
+  useScript('https://s3.tradingview.com/tv.js')
 
   useEffect(() => {
     const opts: any = {

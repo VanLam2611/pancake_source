@@ -109,7 +109,9 @@ const ExpandedFooter: React.FC<ExpandedFooterProps> = ({ pool, account, labelCol
       <div style={{ margin: '24px 0' }}>
         {profileRequirement && (profileRequirement.required || profileRequirement.thresholdPoints.gt(0)) && (
           <Flex mb="8px" justifyContent="space-between">
-            <Text color={labelColor || '#fff'} small>{t('Requirement')}:</Text>
+            <Text color={labelColor || '#fff'} small>
+              {t('Requirement')}:
+            </Text>
             <Text small textAlign="right">
               {profileRequirement.required && t('Pancake Profile')}{' '}
               {profileRequirement.thresholdPoints.gt(0) && (
@@ -121,11 +123,19 @@ const ExpandedFooter: React.FC<ExpandedFooterProps> = ({ pool, account, labelCol
           </Flex>
         )}
         <Flex mb="2px" justifyContent="space-between" alignItems="center">
-          <Text color={labelColor || '#fff'} small>{t('Total staked')}:</Text>
+          <Text color={labelColor || '#fff'} small>
+            {t('Total staked')}:
+          </Text>
           <Flex alignItems="flex-start">
             {totalStaked && totalStaked.gte(0) ? (
               <>
-                <Balance color={valueColor || '#fff'} small value={getTotalStakedBalance()} decimals={0} unit={` ${stakingToken.symbol}`} />
+                <Balance
+                  color={valueColor || '#fff'}
+                  small
+                  value={getTotalStakedBalance()}
+                  decimals={0}
+                  unit={` ${stakingToken.symbol}`}
+                />
                 <span ref={totalStakedTargetRef}>
                   <HelpIcon color={valueColor || '#fff'} width="20px" ml="6px" mt="4px" />
                 </span>
@@ -185,20 +195,12 @@ const ExpandedFooter: React.FC<ExpandedFooterProps> = ({ pool, account, labelCol
 
       <div style={{ margin: '0px' }}>
         <Flex mb="2px" justifyContent="flex-start">
-          <LinkExternal
-            href={`/info/token/${earningToken.address}`}
-            color={valueColor || '#fff'}
-            bold={false} small
-          >
+          <LinkExternal href={`/info/token/${earningToken.address}`} color={valueColor || '#fff'} bold={false} small>
             <span style={{ color: `${labelColor || '#fff'}` }}>{t('See Token Info')}</span>
           </LinkExternal>
         </Flex>
         <Flex mb="2px" justifyContent="flex-start">
-          <LinkExternal
-            href={earningToken.projectLink}
-            color={valueColor || '#fff'}
-            bold={false} small
-          >
+          <LinkExternal href={earningToken.projectLink} color={valueColor || '#fff'} bold={false} small>
             <span style={{ color: `${labelColor || '#fff'}` }}>{t('View Project Site')}</span>
           </LinkExternal>
         </Flex>

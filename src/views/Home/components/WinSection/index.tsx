@@ -1,7 +1,7 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { Flex, Text, TicketFillIcon, PredictionsIcon } from '@pancakeswap/uikit'
 import { useTranslation } from 'contexts/Localization'
-// import useTheme from 'hooks/useTheme'
+import useTheme from 'hooks/useTheme'
 import ColoredWordHeading from '../ColoredWordHeading'
 import IconCard, { IconCardData } from '../IconCard'
 import PredictionCardContent from './PredictionCardContent'
@@ -59,18 +59,19 @@ const StyledColoredWordHeading = styled(ColoredWordHeading)`
   font-size: 60px;
   line-height: 63px;
   text-align: center;
-  margin-bottom: 40px;
+  // margin-bottom: 40px;
+  margin-bottom: 12px;
 
   @media screen and (max-width: 1400px) {
     font-size: 50px;
     line-height: 53px;
-    margin-bottom: 20px;
+    // margin-bottom: 20px;
   }
 
   @media screen and (max-width: 576px) {
     font-size: 35px;
     line-height: 38px;
-    margin-bottom: 15px;
+    // margin-bottom: 15px;
   }
 `
 
@@ -79,16 +80,16 @@ const StyledTextWrapper = styled(Text)`
   text-align: center;
 
   @media screen and (max-width: 1400px) {
-    margin-bottom: 20px;
+    // margin-bottom: 24px;
   }
 
   @media screen and (max-width: 576px) {
-    margin-bottom: 15px;
+    // margin-bottom: 24px;
   }
 `
 
-const StyledText = styled(Text)`
-  color: #fff;
+const StyledText = styled(Text) <{ $isDarkStyle?: boolean }>`
+  color: #000;
   font-style: normal;
   font-weight: 300;
   font-size: 25px;
@@ -97,6 +98,12 @@ const StyledText = styled(Text)`
   margin: 0;
   padding: 0;
   display: inline;
+
+  ${(props) => props.$isDarkStyle ? css`
+    color: #fff;
+  ` : css`
+    color: #000;
+  `}
 
   @media screen and (max-width: 1400px) {
     font-size: 23px;
@@ -117,20 +124,54 @@ const StyledCardListWrapper = styled(Flex)`
   position: relative;
 `
 
+const StyledCardLayoutWrapper = styled(Flex)`
+  @media screen and (max-width: 1200px) {
+    flex-direction: column;
+    margin: 0;
+    align-self: flex-start;
+  }
+
+  @media screen and (max-width: 576px) {
+    margin: 0 auto;
+    align-self: center;
+  }
+`
+
 const StyledCardWrapper = styled(Flex)`
   position: absolute;
   margin: 0;
+  width: 268px;
 
   &&:nth-child(1) {
-    bottom: 0;
+    top: 50%;
     left: 50%;
-    transform: translateX(calc(-50% - (275px / 2)));
+    transform:
+      translateX(calc(-50% - (268px / 2) + 12px - 268px - 25px))
+      translateY(calc(-50% - 25%));
   }
 
   &&:nth-child(2) {
-    bottom: calc(60px);
+    top: 50%;
     left: 50%;
-    transform: translateX(calc(-50% + (275px / 2) + 40px));
+    transform:
+      translateX(calc(-50% - (268px / 2) + 12px))
+      translateY(calc(-50% + 100px));
+  }
+
+  @media screen and (max-width: 1200px) {
+    &&,
+    &&:nth-child(1),
+    &&:nth-child(2) {
+      position: relative;
+      transform: translate(0, 0);
+      top: 0;
+      left: 0;
+      margin-bottom: 24px;
+    }
+
+    &&:nth-child(2) {
+      transform: translateX(25%);
+    }
   }
 
   @media screen and (max-width: 576px) {
@@ -145,9 +186,14 @@ const StyledCardWrapper = styled(Flex)`
       transform: translate(0, 0);
       top: 0;
       left: 0;
-      margin-bottom: 15px;
+      margin-bottom: 24px;
     }
   }
+`
+
+const StyledIconCard = styled(IconCard)`
+  width: 100%;
+  border-radius: 10px;
 `
 
 const StyledContentWrapper = styled.div`
@@ -192,7 +238,7 @@ const topRightImage = {
 
 const WinSection = () => {
   const { t } = useTranslation()
-  // const { theme } = useTheme()
+  const { theme } = useTheme()
 
   return (
     <>
@@ -210,53 +256,54 @@ const WinSection = () => {
         <StyledContentWrapper>
           <StyledColoredWordHeading
             numberOfColoredWords={2}
-            firstColorCustomized="#ec4b93"
+            firstColorCustomized="#60c5ba"
             textAlign="center"
-            text={t('Win millions in prizes')}
-            style={{ color: '#fff' }}
+            text={t('Win millions in prizes.')}
+            style={{ color: `${theme.isDark ? '#fff' : '#0b3854'}` }}
           />
 
           <StyledTextWrapper>
-            <StyledText color="textSubtle">{t('Provably fair, on-chain games.')}</StyledText>
-            <StyledText> </StyledText>
-            <StyledText mb="0px" color="textSubtle">
+            <StyledText $isDarkStyle={theme.isDark} color="textSubtle">{t('Provably fair, on-chain games.')}</StyledText>
+            <StyledText $isDarkStyle={theme.isDark}> </StyledText>
+            <StyledText $isDarkStyle={theme.isDark} mb="0px" color="textSubtle">
               {t('Win big with Womentech.')}
             </StyledText>
           </StyledTextWrapper>
         </StyledContentWrapper>
 
-        <Flex m="0 auto" flexDirection={['column', null, null, 'row']} maxWidth="600px">
+        <StyledCardLayoutWrapper m="0 auto" flexDirection={['column', null, null, 'row']} maxWidth="600px">
           <StyledCardWrapper
             flex="1"
-            maxWidth={['275px', null, null, '100%']}
+            maxWidth={['268px', null, null, '100%']}
             mr={[null, null, null, '24px']}
             mb={['32px', null, null, '0']}
           >
-            <IconCard
+            <StyledIconCard
               {...PredictionCardData}
-              style={{ transform: 'rotate(0)' }}
+              background="linear-gradient(138.81deg, #96E4DC 0%, #FFFFFF 100%)"
+              style={{ border: '1px solid #60c5ba' }}
               hasMainIcon={false}
-              hasBorder
-              hasLinearBg
-              background="transparent"
+              rotation='0'
             >
               <PredictionCardContent />
-            </IconCard>
+            </StyledIconCard>
           </StyledCardWrapper>
 
-          <StyledCardWrapper flex="1" maxWidth={['275px', null, null, '100%']}>
-            <IconCard
+          <StyledCardWrapper
+            flex="1"
+            maxWidth={['268px', null, null, '100%']}
+          >
+            <StyledIconCard
               {...LotteryCardData}
-              style={{ transform: 'rotate(0)' }}
+              background="linear-gradient(138.81deg, #2370B8 0%, #FFFFFF 100%)"
+              style={{ border: '1px solid #2370b8' }}
               hasMainIcon={false}
-              hasBorder
-              hasLinearBg
-              background="transparent"
+              rotation='0'
             >
               <LotteryCardContent />
-            </IconCard>
+            </StyledIconCard>
           </StyledCardWrapper>
-        </Flex>
+        </StyledCardLayoutWrapper>
       </StyledCardListWrapper>
       {/* </TransparentFrame> */}
     </>

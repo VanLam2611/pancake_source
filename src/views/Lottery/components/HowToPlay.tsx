@@ -63,7 +63,7 @@ const StepCard: React.FC<{ step: Step }> = ({ step }) => {
         <Text mb="16px" fontSize="12px" bold textAlign="right" textTransform="uppercase">
           {step.label}
         </Text>
-        <Heading mb="16px" scale="lg" color="#EC4C93">
+        <Heading mb="16px" scale="lg" color="#60C5BA">
           {step.title}
         </Heading>
         <Text color="textSubtle">{step.subtitle}</Text>
@@ -241,7 +241,7 @@ const HowToPlay: React.FC = () => {
   return (
     <Box width="100%">
       <Flex mb="40px" alignItems="center" flexDirection="column">
-        <Heading mb="24px" scale="xl" color="#EC4C93">
+        <Heading mb="24px" scale="xl" color="#60C5BA">
           {t('How to Play')}
         </Heading>
         <Text textAlign="center">
@@ -259,7 +259,7 @@ const HowToPlay: React.FC = () => {
       <Divider />
       <GappedFlex flexDirection={['column', 'column', 'column', 'row']}>
         <Flex flex="2" flexDirection="column">
-          <Heading mb="24px" scale="lg" color="#EC4C93">
+          <Heading mb="24px" scale="lg" color="#60C5BA">
             {t('Winning Criteria')}
           </Heading>
           <Heading mb="24px" scale="md">
@@ -297,7 +297,7 @@ const HowToPlay: React.FC = () => {
       <Divider />
       <GappedFlex flexDirection={['column', 'column', 'column', 'row']}>
         <Flex flex="2" flexDirection="column">
-          <Heading mb="24px" scale="lg" color="#EC4C93">
+          <Heading mb="24px" scale="lg" color="#60C5BA">
             {t('Prize Funds')}
           </Heading>
           <Text color="textSubtle">{t('The prizes for each lottery round come from three sources:')}</Text>
@@ -353,7 +353,7 @@ const HowToPlay: React.FC = () => {
           <Text>
             {t('Check our in-depth guide on')}{' '}
             <InlineLink
-              style={{ color: '#EC4C93' }}
+              style={{ color: '#60C5BA' }}
               href="https://docs.pancakeswap.finance/products/lottery/lottery-guide"
             >
               {t('how to play the PancakeSwap lottery!')}

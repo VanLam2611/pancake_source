@@ -7,5 +7,5 @@ const useTheme = () => {
   const theme = useContext(StyledThemeContext)
   return { isDark: resolvedTheme === 'dark', theme, setTheme }
 }
-
+  
 export default useTheme

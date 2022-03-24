@@ -7,6 +7,7 @@ import { PoolData } from 'state/info/types'
 import { ITEMS_PER_INFO_TABLE_PAGE } from 'config/constants/info'
 import { DoubleCurrencyLogo } from 'views/Info/components/CurrencyLogo'
 import { useTranslation } from 'contexts/Localization'
+import useTheme from 'hooks/useTheme'
 import { ClickableColumnHeader, TableWrapper, PageButtons, Arrow } from './shared'
 
 /**
@@ -55,15 +56,14 @@ const LinkWrapper = styled(NextLinkFromReactRouter)`
   }
 `
 
-const StyledTableHeader = styled(ResponsiveGrid)`
+const StyledTableHeader = styled(ResponsiveGrid) <{ $bgColor?: string }>`
   padding: 20px 30px;
   border-radius: 10px;
-  background: #2d022e;
   margin-bottom: 24px;
+  background: ${(props) => props.$bgColor || ''};
 `
 
 const StyledTableHeaderText = styled(Text)`
-  color: #b5689e;
   font-style: normal;
   font-weight: bold;
   font-size: 16px;
@@ -73,7 +73,6 @@ const StyledTableHeaderText = styled(Text)`
 `
 
 const StyledClickableColumnHeader = styled(ClickableColumnHeader)`
-  color: #b5689e;
   font-style: normal;
   font-weight: bold;
   font-size: 16px;
@@ -82,21 +81,20 @@ const StyledClickableColumnHeader = styled(ClickableColumnHeader)`
   height: 100%;
 `
 
-const StyledDataRowText = styled(Text)<{ $isNumber?: boolean }>`
+const StyledDataRowText = styled(Text) <{ $isNumber?: boolean, $txtColor?: string, $numBgColor?: string }>`
   font-style: normal;
   font-weight: normal;
   font-size: 16px;
   line-height: 16px;
   text-transform: capitalize;
-  color: #fff;
+  color: ${(props) => props.$txtColor || ''};
 
   ${(props) =>
     props.$isNumber &&
     css`
       padding: 5px 8px;
-      background: #2d022e;
+      background: ${props.$numBgColor || ''};
       border-radius: 5px;
-      color: #b5689e;
       font-style: normal;
       font-weight: 600;
       font-size: 16px;
@@ -104,12 +102,12 @@ const StyledDataRowText = styled(Text)<{ $isNumber?: boolean }>`
     `}
 `
 
-const StyledDataRowLinkWrapper = styled(LinkWrapper)`
+const StyledDataRowLinkWrapper = styled(LinkWrapper) <{ $bgColor?: string, $borderColor?: string }>`
   && {
     padding: 20px 0;
-    background: rgba(12, 7, 17, 0.7);
     border-radius: 0;
-    border-bottom: 1px solid #ec4c93;
+    background: ${(props) => props.$bgColor || ''};
+    border-bottom: ${(props) => `1px solid ${props.$borderColor}` || '1px solid transparent'};
   }
 
   &&:first-of-type {
@@ -173,21 +171,31 @@ const TableLoader: React.FC = () => (
 )
 
 const DataRow = ({ poolData, index }: { poolData: PoolData; index: number }) => {
+  const { theme } = useTheme()
   return (
-    <StyledDataRowLinkWrapper to={`/info/pool/${poolData.address}`}>
+    <StyledDataRowLinkWrapper
+      to={`/info/pool/${poolData.address}`}
+      $bgColor={theme.isDark ? theme.colors.bgDarkWeaker : '#fff'}
+      $borderColor={theme.isDark ? theme.colors.itemBlueUnhighlight : '#EBEBEB'}
+    >
       <ResponsiveGrid>
-        <StyledDataRowText $isNumber>{index + 1}</StyledDataRowText>
+        <Flex>
+          <StyledDataRowText
+            $isNumber
+            $numBgColor={theme.isDark ? theme.colors.bgDark : theme.colors.bgBright}
+          >{index + 1}</StyledDataRowText>
+        </Flex>
         <Flex>
           <DoubleCurrencyLogo address0={poolData.token0.address} address1={poolData.token1.address} />
-          <StyledDataRowText ml="8px">
+          <StyledDataRowText $txtColor={theme.isDark ? '#fff' : '#6E6E6E'} ml="8px">
             {poolData.token0.symbol}/{poolData.token1.symbol}
           </StyledDataRowText>
         </Flex>
-        <StyledDataRowText>${formatAmount(poolData.volumeUSD)}</StyledDataRowText>
-        <StyledDataRowText>${formatAmount(poolData.volumeUSDWeek)}</StyledDataRowText>
-        <StyledDataRowText>${formatAmount(poolData.lpFees24h)}</StyledDataRowText>
-        <StyledDataRowText>{formatAmount(poolData.lpApr7d)}%</StyledDataRowText>
-        <StyledDataRowText>${formatAmount(poolData.liquidityUSD)}</StyledDataRowText>
+        <StyledDataRowText $txtColor={theme.colors.itemPrimary}>${formatAmount(poolData.volumeUSD)}</StyledDataRowText>
+        <StyledDataRowText $txtColor={theme.colors.itemPrimary}>${formatAmount(poolData.volumeUSDWeek)}</StyledDataRowText>
+        <StyledDataRowText $txtColor={theme.isDark ? '#fff' : '#6E6E6E'}>${formatAmount(poolData.lpFees24h)}</StyledDataRowText>
+        <StyledDataRowText $txtColor={theme.isDark ? '#fff' : '#6E6E6E'}>{formatAmount(poolData.lpApr7d)}%</StyledDataRowText>
+        <StyledDataRowText $txtColor={theme.isDark ? '#fff' : '#6E6E6E'}>${formatAmount(poolData.liquidityUSD)}</StyledDataRowText>
       </ResponsiveGrid>
     </StyledDataRowLinkWrapper>
   )
@@ -199,6 +207,8 @@ interface PoolTableProps {
 }
 
 const PoolTable: React.FC<PoolTableProps> = ({ poolDatas, loading }) => {
+  const { theme } = useTheme()
+
   // for sorting
   const [sortField, setSortField] = useState(SORT_FIELD.volumeUSD)
   const [sortDirection, setSortDirection] = useState<boolean>(true)
@@ -218,15 +228,15 @@ const PoolTable: React.FC<PoolTableProps> = ({ poolDatas, loading }) => {
   const sortedPools = useMemo(() => {
     return poolDatas
       ? poolDatas
-          .sort((a, b) => {
-            if (a && b) {
-              return a[sortField as keyof PoolData] > b[sortField as keyof PoolData]
-                ? (sortDirection ? -1 : 1) * 1
-                : (sortDirection ? -1 : 1) * -1
-            }
-            return -1
-          })
-          .slice(ITEMS_PER_INFO_TABLE_PAGE * (page - 1), page * ITEMS_PER_INFO_TABLE_PAGE)
+        .sort((a, b) => {
+          if (a && b) {
+            return a[sortField as keyof PoolData] > b[sortField as keyof PoolData]
+              ? (sortDirection ? -1 : 1) * 1
+              : (sortDirection ? -1 : 1) * -1
+          }
+          return -1
+        })
+        .slice(ITEMS_PER_INFO_TABLE_PAGE * (page - 1), page * ITEMS_PER_INFO_TABLE_PAGE)
       : []
   }, [page, poolDatas, sortDirection, sortField])
 
@@ -248,15 +258,15 @@ const PoolTable: React.FC<PoolTableProps> = ({ poolDatas, loading }) => {
 
   return (
     <StyledTableWrapper>
-      <StyledTableHeader>
-        <StyledTableHeaderText color="secondary" fontSize="12px" bold>
+      <StyledTableHeader $bgColor={theme.colors.bgDarkWeaker}>
+        <StyledTableHeaderText color="itemPrimary" fontSize="12px" bold>
           #
         </StyledTableHeaderText>
-        <StyledTableHeaderText color="secondary" fontSize="12px" bold textTransform="uppercase">
+        <StyledTableHeaderText color="itemPrimary" fontSize="12px" bold textTransform="uppercase">
           {t('Pool')}
         </StyledTableHeaderText>
         <StyledClickableColumnHeader
-          color="secondary"
+          color="itemPrimary"
           fontSize="12px"
           bold
           onClick={() => handleSort(SORT_FIELD.volumeUSD)}
@@ -265,7 +275,7 @@ const PoolTable: React.FC<PoolTableProps> = ({ poolDatas, loading }) => {
           {t('Volume 24H')} {arrow(SORT_FIELD.volumeUSD)}
         </StyledClickableColumnHeader>
         <StyledClickableColumnHeader
-          color="secondary"
+          color="itemPrimary"
           fontSize="12px"
           bold
           onClick={() => handleSort(SORT_FIELD.volumeUSDWeek)}
@@ -274,7 +284,7 @@ const PoolTable: React.FC<PoolTableProps> = ({ poolDatas, loading }) => {
           {t('Volume 7D')} {arrow(SORT_FIELD.volumeUSDWeek)}
         </StyledClickableColumnHeader>
         <StyledClickableColumnHeader
-          color="secondary"
+          color="itemPrimary"
           fontSize="12px"
           bold
           onClick={() => handleSort(SORT_FIELD.lpFees24h)}
@@ -283,7 +293,7 @@ const PoolTable: React.FC<PoolTableProps> = ({ poolDatas, loading }) => {
           {t('LP reward fees 24H')} {arrow(SORT_FIELD.lpFees24h)}
         </StyledClickableColumnHeader>
         <StyledClickableColumnHeader
-          color="secondary"
+          color="itemPrimary"
           fontSize="12px"
           bold
           onClick={() => handleSort(SORT_FIELD.lpApr7d)}
@@ -292,7 +302,7 @@ const PoolTable: React.FC<PoolTableProps> = ({ poolDatas, loading }) => {
           {t('LP reward APR')} {arrow(SORT_FIELD.lpApr7d)}
         </StyledClickableColumnHeader>
         <StyledClickableColumnHeader
-          color="secondary"
+          color="itemPrimary"
           fontSize="12px"
           bold
           onClick={() => handleSort(SORT_FIELD.liquidityUSD)}
@@ -326,7 +336,7 @@ const PoolTable: React.FC<PoolTableProps> = ({ poolDatas, loading }) => {
               <ArrowBackIcon color={page === 1 ? 'textDisabled' : 'primary'} />
             </Arrow>
 
-            <Text style={{ color: '#fff', textShadow: '0 0 5px #000' }}>
+            <Text style={{ color: `${theme.isDark ? '#fff' : '#6E6E6E'}` }}>
               {t('Page %page% of %maxPage%', { page, maxPage })}
             </Text>
 

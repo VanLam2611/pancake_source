@@ -1,6 +1,7 @@
 import { Box, ButtonMenu, ButtonMenuItem, Flex } from '@pancakeswap/uikit'
 import { NextLinkFromReactRouter } from 'components/NextLink'
 import { useTranslation } from 'contexts/Localization'
+import useTheme from 'hooks/useTheme'
 import { useRouter } from 'next/router'
 import styled, { css } from 'styled-components'
 import Search from 'views/Info/components/InfoSearch'
@@ -36,9 +37,13 @@ const StyledButtonMenu = styled(ButtonMenu)`
   outline: none;
 `
 
-const StyledButtonMenuItem = styled(ButtonMenuItem)<{ $isActive?: boolean }>`
-  color: #2d022e;
-  background: #2d022e;
+const StyledButtonMenuItem = styled(ButtonMenuItem) <{
+  $isActive?: boolean,
+  $txtColor?: string,
+  $bgColor?: string,
+  $bgColorUnchecked?: string
+}>`
+  background: ${(props) => props.$bgColorUnchecked};
   border-radius: 30px;
   margin-right: 20px;
   width: 180px;
@@ -55,7 +60,6 @@ const StyledButtonMenuItem = styled(ButtonMenuItem)<{ $isActive?: boolean }>`
   font-size: 16px;
   line-height: 16px;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.5);
   flex: none;
   order: 0;
   flex-grow: 0;
@@ -66,23 +70,24 @@ const StyledButtonMenuItem = styled(ButtonMenuItem)<{ $isActive?: boolean }>`
 
   &&:hover {
     backdrop-filter: blur(10px);
-    background: rgba(236, 76, 147, 0.5);
-    color: #fff;
+    color: ${(props) => props.$txtColor || ''};
+    background: ${(props) => `${props.$bgColor}99` || ''};
   }
 
   ${(props) =>
     props.$isActive &&
     css`
-      background: #ec4c93;
-      color: #fff;
+      color: ${props.$txtColor || ''};
+      background: ${props.$bgColor || ''};
 
       &&:hover {
-        background: #ec4c93;
+        background: ${props.$bgColor || ''};
       }
     `}
 `
 
 const InfoNav = () => {
+  const { theme } = useTheme()
   const { t } = useTranslation()
   const router = useRouter()
   const isPools = router.asPath === '/info/pools'
@@ -98,13 +103,31 @@ const InfoNav = () => {
     <NavWrapper>
       <Box>
         <StyledButtonMenu activeIndex={activeIndex} scale="sm" variant="subtle">
-          <StyledButtonMenuItem as={NextLinkFromReactRouter} to="/info" $isActive={activeIndex === 0}>
+          <StyledButtonMenuItem
+            as={NextLinkFromReactRouter} to="/info"
+            $isActive={activeIndex === 0}
+            $txtColor='#fff'
+            $bgColor={theme.colors.itemPrimary}
+            $bgColorUnchecked={theme.isDark ? theme.colors.bgDarkWeaker : '#fff'}
+          >
             {t('Overview')}
           </StyledButtonMenuItem>
-          <StyledButtonMenuItem as={NextLinkFromReactRouter} to="/info/pools" $isActive={activeIndex === 1}>
+          <StyledButtonMenuItem
+            as={NextLinkFromReactRouter} to="/info/pools"
+            $isActive={activeIndex === 1}
+            $txtColor='#fff'
+            $bgColor={theme.colors.itemPrimary}
+            $bgColorUnchecked={theme.isDark ? theme.colors.bgDarkWeaker : '#fff'}
+          >
             {t('Pools')}
           </StyledButtonMenuItem>
-          <StyledButtonMenuItem as={NextLinkFromReactRouter} to="/info/tokens" $isActive={activeIndex === 2}>
+          <StyledButtonMenuItem
+            as={NextLinkFromReactRouter} to="/info/tokens"
+            $isActive={activeIndex === 2}
+            $txtColor='#fff'
+            $bgColor={theme.colors.itemPrimary}
+            $bgColorUnchecked={theme.isDark ? theme.colors.bgDarkWeaker : '#fff'}
+          >
             {t('Tokens')}
           </StyledButtonMenuItem>
         </StyledButtonMenu>

@@ -132,7 +132,7 @@ const CheckPrizesSection = () => {
             onClick={fetchAllRewards}
             isLoading={isFetchingRewards}
             endIcon={isFetchingRewards ? <AutoRenewIcon color="currentColor" spin /> : null}
-            style={{ background: '#EC4C93' }}
+            style={{ background: '#60C5BA' }}
           >
             {checkNowText()}
           </Button>

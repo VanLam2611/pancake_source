@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { Flex, Box, Text, Heading, Card, Skeleton } from '@pancakeswap/uikit'
 import { fromUnixTime } from 'date-fns'
 import { useTranslation } from 'contexts/Localization'
@@ -17,6 +17,7 @@ import {
   useProtocolTransactions,
 } from 'state/info/hooks'
 import TransactionTable from 'views/Info/components/InfoTables/TransactionsTable'
+import useTheme from 'hooks/useTheme'
 // import TradingView from '../components/InfoCharts/TradingView'
 
 export const ChartCardsContainer = styled(Flex)`
@@ -44,14 +45,12 @@ const StyledSection = styled.div`
 `
 
 const StyledHeading = styled(Heading)`
-  color: #ec4c93;
   font-style: normal;
   font-weight: bold;
   font-size: 24px;
   line-height: 24px;
   text-transform: capitalize;
   margin: 0 0 30px 0;
-  text-shadow: 0px 0px 5px #000;
 `
 
 const StyledCardForChart = styled(Card)`
@@ -65,8 +64,9 @@ const StyledCardForChart = styled(Card)`
   }
 `
 
-const StyledBoxForChart = styled(Box)`
-  background: rgba(12, 7, 17, 0.8);
+const StyledBoxForChart = styled(Box) <{ $bgColor?: string, $borderColor?: string }>`
+  background: ${(props) => props.$bgColor || ''};
+  border: ${(props) => `1px solid ${props.$borderColor}` || '1px solid transparent'};
   border-radius: 10px;
 `
 
@@ -81,23 +81,29 @@ const StyledChartTitle = styled(Text)`
   font-weight: bold;
   font-size: 24px;
   line-height: 24px;
-  color: #ec4c93;
 `
 
 const StyledChartValue = styled(Text)`
   font-size: 40px;
   line-height: 40px;
-  color: #ec4c93;
   font-weight: bold;
 `
 
-const StyledChartDate = styled(Text)`
+const StyledChartDate = styled(Text) <{ $isDarkStyle?: boolean }>`
   font-size: 16px;
   line-height: 19px;
-  color: #b5689e;
+  color: #000;
+
+  ${(props) => props.$isDarkStyle ? css`
+    color: #fff;
+  ` : css`
+    color: #6E6E6E;
+  `}
 `
 
 const Overview: React.FC = () => {
+  const { theme } = useTheme()
+
   const {
     t,
     currentLanguage: { locale },
@@ -171,22 +177,26 @@ const Overview: React.FC = () => {
   return (
     <Page>
       <StyledSection>
-        <StyledHeading scale="lg" mb="16px" id="info-overview-title">
+        <StyledHeading color="itemPrimary" scale="lg" mb="16px" id="info-overview-title">
           {t('PancakeSwap Info & Analytics')}
         </StyledHeading>
         <ChartCardsContainer>
           <StyledCardForChart>
-            <StyledBoxForChart p={['16px', '16px', '24px']}>
+            <StyledBoxForChart
+              $bgColor={theme.isDark ? theme.colors.bgDark : '#fff'}
+              $borderColor={theme.isDark ? theme.colors.itemBlueUnhighlight : '#EBEBEB'}
+              p={['16px', '16px', '24px']}
+            >
               <StyledChartHeader>
                 <div>
-                  <StyledChartTitle bold color="secondary">
+                  <StyledChartTitle bold color="itemPrimary">
                     {t('Liquidity')}
                   </StyledChartTitle>
-                  <StyledChartDate>{liquidityDateHover ?? currentDate}</StyledChartDate>
+                  <StyledChartDate $isDarkStyle={theme.isDark}>{liquidityDateHover ?? currentDate}</StyledChartDate>
                 </div>
                 <div>
                   {liquidityHover > 0 ? (
-                    <StyledChartValue bold fontSize="24px">
+                    <StyledChartValue bold color="itemPrimary" fontSize="24px">
                       ${formatAmount(liquidityHover)}
                     </StyledChartValue>
                   ) : (
@@ -199,8 +209,9 @@ const Overview: React.FC = () => {
                   data={formattedLiquidityData}
                   setHoverValue={setLiquidityHover}
                   setHoverDate={setLiquidityDateHover}
-                  customMainColor="#EC4C93"
-                  customYAxisColor="#B5689E"
+                  customMainColor={theme.colors.itemPrimary}
+                  customXAxisColor={theme.isDark ? '#fff' : '#000'}
+                  customYAxisColor={theme.isDark ? '#fff' : '#000'}
                 />
                 {/* <TradingView id="pcs-chart-liquidity" symbol="EIGHTCAP:CAKEUSD" /> */}
               </Box>
@@ -208,17 +219,21 @@ const Overview: React.FC = () => {
           </StyledCardForChart>
 
           <StyledCardForChart>
-            <StyledBoxForChart p={['16px', '16px', '24px']}>
+            <StyledBoxForChart
+              $bgColor={theme.isDark ? theme.colors.bgDark : '#fff'}
+              $borderColor={theme.isDark ? theme.colors.itemBlueUnhighlight : '#EBEBEB'}
+              p={['16px', '16px', '24px']}
+            >
               <StyledChartHeader>
                 <div>
-                  <StyledChartTitle bold color="secondary">
+                  <StyledChartTitle bold color="itemPrimary">
                     {t('Volume 24H')}
                   </StyledChartTitle>
-                  <StyledChartDate>{volumeDateHover ?? currentDate}</StyledChartDate>
+                  <StyledChartDate $isDarkStyle={theme.isDark}>{volumeDateHover ?? currentDate}</StyledChartDate>
                 </div>
                 <div>
                   {volumeHover > 0 ? (
-                    <StyledChartValue bold fontSize="24px">
+                    <StyledChartValue bold color="itemPrimary" fontSize="24px">
                       ${formatAmount(volumeHover)}
                     </StyledChartValue>
                   ) : (
@@ -231,8 +246,9 @@ const Overview: React.FC = () => {
                   data={formattedVolumeData}
                   setHoverValue={setVolumeHover}
                   setHoverDate={setVolumeDateHover}
-                  customMainColor="#EC4C93"
-                  customYAxisColor="#B5689E"
+                  customMainColor={theme.colors.itemBlueHighlight}
+                  customXAxisColor={theme.isDark ? '#fff' : '#000'}
+                  customYAxisColor={theme.isDark ? '#fff' : '#000'}
                 />
               </Box>
             </StyledBoxForChart>
@@ -241,14 +257,14 @@ const Overview: React.FC = () => {
       </StyledSection>
 
       <StyledSection>
-        <StyledHeading scale="lg" mt="40px" mb="16px">
+        <StyledHeading color="itemPrimary" scale="lg" mt="40px" mb="16px">
           {t('Top Tokens')}
         </StyledHeading>
         <TokenTable tokenDatas={formattedTokens} />
       </StyledSection>
 
       <StyledSection>
-        <StyledHeading scale="lg" mt="40px" mb="16px">
+        <StyledHeading color="itemPrimary" scale="lg" mt="40px" mb="16px">
           {t('Top Pools')}
         </StyledHeading>
         <PoolTable poolDatas={poolDatas} loading={somePoolsAreLoading} />

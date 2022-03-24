@@ -8,38 +8,28 @@ import SunburstSvg from './SunburstSvg'
 // import CompositeImage from './CompositeImage'
 
 const StyledHeading = styled(Heading)`
-  color: #ec4c93;
+  color: #60c5ba;
   font-style: normal;
   font-weight: 500;
   font-size: 60px;
   line-height: 63px;
   text-align: center;
-  margin-bottom: 30px;
+  margin-bottom: calc(24px + 16px);
 
   @media screen and (max-width: 1400px) {
     font-size: 50px;
     line-height: 53px;
-    margin-bottom: 20px;
   }
 
   @media screen and (max-width: 576px) {
     font-size: 35px;
     line-height: 38px;
-    margin-bottom: 15px;
   }
 `
 
 const StyledTexts = styled(Text)`
-  margin-bottom: 30px;
+  margin-bottom: 24px;
   text-align: center;
-
-  @media screen and (max-width: 1400px) {
-    margin-bottom: 20px;
-  }
-
-  @media screen and (max-width: 576px) {
-    margin-bottom: 15px;
-  }
 `
 
 const StyledText = styled(Text)`
@@ -51,6 +41,13 @@ const StyledText = styled(Text)`
   text-align: center;
   color: #fff;
   margin: 0;
+`
+
+const StyledLink = styled(Link)`
+  color: #60c5ba;
+  font-weight: 400;
+  font-size: 25px;
+  line-height: 33px;
 `
 
 const BgWrapper = styled.div`
@@ -162,9 +159,9 @@ const Footer = () => {
           </StyledText>
         </StyledTexts>
 
-        <Link external href="https://docs.pancakeswap.finance/" color="#EC4C93">
+        <StyledLink external href="https://docs.pancakeswap.finance/">
           {t('Learn how to start')}
-        </Link>
+        </StyledLink>
         {!account && <ConnectWalletButton mt="24px" />}
       </Wrapper>
     </>

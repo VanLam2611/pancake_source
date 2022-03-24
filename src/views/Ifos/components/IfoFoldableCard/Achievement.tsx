@@ -20,6 +20,7 @@ import { BIG_TEN } from 'utils/bigNumber'
 import { getBscScanLink } from 'utils'
 import { formatBigNumber } from 'utils/formatBalance'
 import { FlexGap } from 'components/Layout/Flex'
+import useTheme from 'hooks/useTheme'
 
 const SmartContractIcon: React.FC<SvgProps> = (props) => {
   return (
@@ -41,7 +42,7 @@ interface Props {
   publicIfoData: PublicIfoData
 }
 
-const Container = styled(Flex)`
+const Container = styled(Flex) <{ $bgColor?: string }>`
   justify-content: space-between;
   flex-direction: column;
   align-items: center;
@@ -51,7 +52,7 @@ const Container = styled(Flex)`
   flex-direction: row;
   align-items: flex-start;
   padding: 24px;
-  background: rgba(12, 7, 17, 0.8);
+  background: ${(props) => props.$bgColor};
   border-radius: 0px 0px 10px 10px;
 
   ${({ theme }) => theme.mediaQueries.md} {
@@ -60,16 +61,16 @@ const Container = styled(Flex)`
   }
 `
 
-const AchievementFlex = styled(Flex)<{ isFinished: boolean }>`
+const AchievementFlex = styled(Flex) <{ isFinished: boolean }>`
   // ${({ isFinished }) => (isFinished ? 'filter: grayscale(100%)' : '')};
   text-align: left;
 `
 
-const InlinePrize = styled(Flex)`
+const InlinePrize = styled(Flex) <{ $bgColor?: string }>`
   display: inline-flex;
   vertical-align: top;
   // Custom style:
-  background: #b5689e;
+  background: ${(props) => props.$bgColor};
   border-radius: 5px;
   margin: 8px 0px;
   display: flex;
@@ -80,6 +81,7 @@ const InlinePrize = styled(Flex)`
 
 const IfoAchievement: React.FC<Props> = ({ ifo, publicIfoData }) => {
   const { t } = useTranslation()
+  const { theme } = useTheme()
   const tokenName = ifo.token.symbol?.toLowerCase()
   const campaignTitle = ifo.name
   const minLpForAchievement = publicIfoData.thresholdPoints
@@ -87,18 +89,21 @@ const IfoAchievement: React.FC<Props> = ({ ifo, publicIfoData }) => {
     : FIXED_MIN_DOLLAR_FOR_ACHIEVEMENT.div(publicIfoData.currencyPriceInUSD).toNumber().toFixed(3)
 
   return (
-    <Container p="16px" pb="32px">
+    <Container
+      p="16px" pb="32px"
+      $bgColor={theme.isDark ? 'rgba(30, 39, 53, 0.8)' : '#fff'}
+    >
       <AchievementFlex isFinished={publicIfoData.status === 'finished'} alignItems="flex-start" flex={1}>
         <Image src={`/images/achievements/ifo-${tokenName}.svg`} width={64} height={64} mr="24px" />
         <Flex flexDirection="column" ml="0px">
-          <Text color="#fff" fontSize="12px">
+          <Text color={theme.isDark ? '#fff' : '#000'} fontSize="12px">
             {`${t('Achievement')}:`}
           </Text>
           <Flex flexDirection="column" alignItems="flex-start">
-            <Text color="#fff" bold mr="0px" lineHeight={1.2}>
+            <Text color={theme.isDark ? '#fff' : '#000'} bold mr="0px" lineHeight={1.2}>
               {t('IFO Shopper: %title%', { title: campaignTitle })}
             </Text>
-            <InlinePrize alignItems="center" ml="8px">
+            <InlinePrize $bgColor={theme.colors.itemPrimary} alignItems="center" ml="8px">
               <PrizeIcon color="#fff" width="18px" mr="8px" />
               <Text color="#fff" lineHeight={1}>
                 {publicIfoData.numberPoints}
@@ -106,7 +111,7 @@ const IfoAchievement: React.FC<Props> = ({ ifo, publicIfoData }) => {
             </InlinePrize>
           </Flex>
           {publicIfoData.currencyPriceInUSD.gt(0) ? (
-            <Text color="#fff" fontSize="12px">
+            <Text color={theme.isDark ? '#fff' : '#000'} fontSize="12px">
               {t('Commit ~%amount% %symbol% in total to earn!', {
                 amount: minLpForAchievement,
                 symbol: ifo.currency === tokens.cake ? 'CAKE' : 'LP',
@@ -117,19 +122,19 @@ const IfoAchievement: React.FC<Props> = ({ ifo, publicIfoData }) => {
           )}
           <FlexGap gap="16px" pt="24px" pl="4px">
             <Link external href={ifo.articleUrl}>
-              <LanguageIcon color="#742145" />
+              <LanguageIcon color={theme.colors.itemPrimary} />
             </Link>
             <Link external href={getBscScanLink(ifo.address, 'address')}>
-              <SmartContractIcon color="#742145" />
+              <SmartContractIcon color={theme.colors.itemPrimary} />
             </Link>
             {ifo.twitterUrl && (
               <Link external href={ifo.twitterUrl}>
-                <TwitterIcon color="#742145" />
+                <TwitterIcon color={theme.colors.itemPrimary} />
               </Link>
             )}
             {ifo.telegramUrl && (
               <Link external href={ifo.telegramUrl}>
-                <TelegramIcon color="#742145" />
+                <TelegramIcon color={theme.colors.itemPrimary} />
               </Link>
             )}
           </FlexGap>
@@ -137,7 +142,7 @@ const IfoAchievement: React.FC<Props> = ({ ifo, publicIfoData }) => {
       </AchievementFlex>
       {ifo.description && (
         <Flex alignItems="flex-end" flexDirection="column" flex={1}>
-          <Text color="#fff" fontSize="14px" lineHeight={1.2} style={{ whiteSpace: 'pre-line' }}>
+          <Text color={theme.isDark ? '#fff' : '#000'} fontSize="14px" lineHeight={1.2} style={{ whiteSpace: 'pre-line' }}>
             {ifo.description}
           </Text>
         </Flex>

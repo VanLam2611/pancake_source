@@ -17,6 +17,7 @@ import tokens from 'config/constants/tokens'
 import { useTranslation } from 'contexts/Localization'
 import useActiveWeb3React from 'hooks/useActiveWeb3React'
 import { useBUSDCakeAmount } from 'hooks/useBUSDPrice'
+import useTheme from 'hooks/useTheme'
 import { useState } from 'react'
 import { useIfoPoolCredit, useIfoPoolVault, useIfoWithApr } from 'state/pools/hooks'
 import { VaultKey } from 'state/types'
@@ -32,9 +33,19 @@ import Staked from 'views/Pools/components/PoolsTable/ActionPanel/Stake'
 import { ActionContainer } from 'views/Pools/components/PoolsTable/ActionPanel/styles'
 import { convertSharesToCake } from '../../Pools/helpers'
 
-const StyledCardMobile = styled(Card)`
+const StyledCardMobile = styled(Card) <{ $bgColor?: string }>`
   max-width: 400px;
   width: 100%;
+  margin: 0 auto 60px auto !important;
+  background: ${props => props.$bgColor};
+
+  > div {
+    background: none;
+    
+    > div {
+      background: transparent;
+    }
+  }
 `
 
 const StyledTokenContent = styled(Flex)`
@@ -64,6 +75,7 @@ const IfoPoolVaultCardMobile: React.FC = () => {
   const { pool } = useIfoWithApr()
   const { account } = useActiveWeb3React()
   const { t } = useTranslation()
+  const { theme } = useTheme()
   const credit = useIfoPoolCredit()
   const {
     fees: { performanceFeeAsDecimal },
@@ -85,7 +97,7 @@ const IfoPoolVaultCardMobile: React.FC = () => {
     },
   )
   return (
-    <StyledCardMobile isActive>
+    <StyledCardMobile isActive $bgColor={theme.isDark ? theme.colors.bgDarkWeaker : '#fff'}>
       <CardHeader p="16px">
         <Flex justifyContent="space-between" alignItems="center">
           <StyledTokenContent alignItems="center" flex={1}>
@@ -138,12 +150,15 @@ const IfoPoolVaultCardMobile: React.FC = () => {
             </ActionContainer>
           </StyledCardBody>
           <StyledCardFooter>
-            <ExpandedFooter account={account} pool={pool} />
+            <ExpandedFooter account={account} pool={pool}
+              labelColor={theme.isDark ? '#fff' : '#000'}
+              valueColor={theme.colors.itemPrimary}
+            />
             <Flex alignItems="center">
               <CompoundingPoolTag />
               {tooltipVisible && tooltip}
               <Flex ref={targetRef}>
-                <HelpIcon ml="4px" width="20px" height="20px" color="textSubtle" />
+                <HelpIcon ml="4px" width="20px" height="20px" color={theme.colors.itemPrimary} />
               </Flex>
             </Flex>
           </StyledCardFooter>

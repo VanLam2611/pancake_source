@@ -5,6 +5,7 @@ import { useRouter } from 'next/router'
 import styled from 'styled-components'
 import { ButtonMenu, ButtonMenuItem, Toggle, Text, NotificationDot } from '@pancakeswap/uikit'
 import { useTranslation } from 'contexts/Localization'
+import useTheme from 'hooks/useTheme'
 
 const ToggleWrapper = styled.div`
   display: flex;
@@ -14,11 +15,9 @@ const ToggleWrapper = styled.div`
   ${Text} {
     margin-left: 8px;
   }
-  .ceCqHK {
-    background: #ec4c93;
-  }
-  .jYEare {
-    background-color: #372f47 !important;
+  div div:last-child{
+    background: #60C5BA;
+    border: 1px solid #0B3854;
   }
 `
 ButtonMenuItem.prototype = styled.div`
@@ -65,6 +64,8 @@ const PoolTabButtons = ({ stakedOnly, setStakedOnly, hasStakeInFinishedPools, vi
 
   const { t } = useTranslation()
 
+  const { isDark } = useTheme()
+
   const isExact = router.asPath === '/pools'
 
   const viewModeToggle = (
@@ -89,7 +90,7 @@ const PoolTabButtons = ({ stakedOnly, setStakedOnly, hasStakeInFinishedPools, vi
   const stakedOnlySwitch = (
     <ToggleWrapper>
       <Toggle checked={stakedOnly} onChange={() => setStakedOnly(!stakedOnly)} scale="sm" />
-      <Text color="#fff"> {t('Staked only')}</Text>
+      <Text color={isDark ? '#fff' : '#000'}> {t('Staked only')}</Text>
     </ToggleWrapper>
   )
 

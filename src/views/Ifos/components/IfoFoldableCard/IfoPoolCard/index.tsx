@@ -7,18 +7,18 @@ import { Ifo, PoolIds } from 'config/constants/types'
 import { useProfile } from 'state/profile/hooks'
 import useCriterias from 'views/Ifos/hooks/v3/useCriterias'
 import { PublicIfoData, WalletIfoData } from 'views/Ifos/types'
+import useTheme from 'hooks/useTheme'
 import { EnableStatus, CardConfigReturn } from '../types'
 import IfoCardTokens from './IfoCardTokens'
 import IfoCardActions from './IfoCardActions'
 import IfoCardDetails from './IfoCardDetails'
 
-const StyledCard = styled(Card)`
-  background: none;
+const StyledCard = styled(Card) <{ $bgColor?: string }>`
+  background: ${(props) => props.$bgColor};
   max-width: 368px;
   width: 100%;
   margin: 0 auto;
   height: fit-content;
-  background: #000;
   border-radius: 10px;
 
   > div {
@@ -34,18 +34,17 @@ const StyledCardHeader = styled(CardHeader)`
 `
 
 const StyledCardHeaderText = styled(Text)`
-  font-weight: bold;
+  font-weight: 500;
   font-size: 24px;
   line-height: 24px;
-  color: #ec4c93;
 `
 
-const StyledCardHeaderIcon = styled.div`
+const StyledCardHeaderIcon = styled.div <{ $color: string }>`
   > svg {
     width: 25px;
     height: 25px;
-    fill: #ec4c93;
     display: block;
+    fill: ${(props) => props.$color};
   }
 `
 
@@ -60,6 +59,7 @@ interface IfoCardProps {
   walletIfoData: WalletIfoData
   onApprove: () => Promise<any>
   enableStatus: EnableStatus
+  bgColor?: string
 }
 
 export const cardConfig = (
@@ -119,17 +119,18 @@ export const cardConfig = (
   }
 }
 
-const SmallCard: React.FC<IfoCardProps> = ({ poolId, ifo, publicIfoData, walletIfoData, onApprove, enableStatus }) => {
+const SmallCard: React.FC<IfoCardProps> = ({ poolId, ifo, publicIfoData, walletIfoData, onApprove, enableStatus, bgColor }) => {
   const { t } = useTranslation()
+  const { theme } = useTheme()
 
   const { admissionProfile, pointThreshold } = publicIfoData[poolId]
 
   const { needQualifiedNFT, needQualifiedPoints } = useMemo(() => {
     return ifo.version === 3.1 && poolId === PoolIds.poolBasic
       ? {
-          needQualifiedNFT: Boolean(admissionProfile),
-          needQualifiedPoints: pointThreshold ? pointThreshold > 0 : false,
-        }
+        needQualifiedNFT: Boolean(admissionProfile),
+        needQualifiedPoints: pointThreshold ? pointThreshold > 0 : false,
+      }
       : {}
   }, [ifo.version, admissionProfile, pointThreshold, poolId])
 
@@ -152,13 +153,13 @@ const SmallCard: React.FC<IfoCardProps> = ({ poolId, ifo, publicIfoData, walletI
   return (
     <>
       {tooltipVisible && tooltip}
-      <StyledCard>
+      <StyledCard $bgColor={theme.isDark ? theme.colors.bgDark : theme.colors.bgBright}>
         <StyledCardHeader p="16px 24px" variant={config.variant}>
           <Flex justifyContent="space-between" alignItems="center">
-            <StyledCardHeaderText bold fontSize="20px" lineHeight={1}>
+            <StyledCardHeaderText color={theme.colors.itemPrimary} bold fontSize="20px" lineHeight={1}>
               {config.title}
             </StyledCardHeaderText>
-            <StyledCardHeaderIcon ref={targetRef}>
+            <StyledCardHeaderIcon $color={theme.colors.itemPrimary} ref={targetRef}>
               <HelpIcon />
             </StyledCardHeaderIcon>
           </Flex>
@@ -175,6 +176,7 @@ const SmallCard: React.FC<IfoCardProps> = ({ poolId, ifo, publicIfoData, walletI
             isLoading={isLoading}
             onApprove={onApprove}
             enableStatus={enableStatus}
+            bgColor={bgColor}
           />
           <Box mt="24px">
             <IfoCardActions

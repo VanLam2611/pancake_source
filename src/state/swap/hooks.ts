@@ -4,7 +4,6 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import useENS from 'hooks/ENS/useENS'
 import useActiveWeb3React from 'hooks/useActiveWeb3React'
-import { useCurrency } from 'hooks/Tokens'
 import { useTradeExactIn, useTradeExactOut } from 'hooks/Trades'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'contexts/Localization'
@@ -90,9 +89,9 @@ export function useSwapActionHandlers(): {
 }
 
 const BAD_RECIPIENT_ADDRESSES: string[] = [
-  '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f', // v2 factory
-  '0xf164fC0Ec4E93095b804a4795bBe1e041497b92a', // v2 router 01
-  '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D', // v2 router 02
+  '0xbe97bF82518bEe0b3fdE0f4014e95746e61d811A', // v2 factory
+  '0x4E02Ff2093b09773Df8433c623dDa28Ece6c4fE1', // v2 router 01
+  '0xf99E874C207e8073427f9735ED266B71474b0192', // v2 router 02
 ]
 
 /**
@@ -108,14 +107,12 @@ function involvesAddress(trade: Trade, checksummedAddress: string): boolean {
 }
 
 // Get swap price for single token disregarding slippage and price impact
-export function useSingleTokenSwapInfo(): { [key: string]: number } {
-  const {
-    [Field.INPUT]: { currencyId: inputCurrencyId },
-    [Field.OUTPUT]: { currencyId: outputCurrencyId },
-  } = useSwapState()
-
-  const inputCurrency = useCurrency(inputCurrencyId)
-  const outputCurrency = useCurrency(outputCurrencyId)
+export function useSingleTokenSwapInfo(
+  inputCurrencyId: string | undefined,
+  inputCurrency: Currency | undefined,
+  outputCurrencyId: string | undefined,
+  outputCurrency: Currency | undefined,
+): { [key: string]: number } {
   const token0Address = getTokenAddress(inputCurrencyId)
   const token1Address = getTokenAddress(outputCurrencyId)
 
@@ -136,7 +133,15 @@ export function useSingleTokenSwapInfo(): { [key: string]: number } {
 }
 
 // from the current swap inputs, compute the best trade and return it.
-export function useDerivedSwapInfo(): {
+export function useDerivedSwapInfo(
+  independentField: Field,
+  typedValue: string,
+  inputCurrencyId: string | undefined,
+  inputCurrency: Currency | undefined,
+  outputCurrencyId: string | undefined,
+  outputCurrency: Currency | undefined,
+  recipient: string,
+): {
   currencies: { [field in Field]?: Currency }
   currencyBalances: { [field in Field]?: CurrencyAmount }
   parsedAmount: CurrencyAmount | undefined
@@ -146,16 +151,6 @@ export function useDerivedSwapInfo(): {
   const { account } = useActiveWeb3React()
   const { t } = useTranslation()
 
-  const {
-    independentField,
-    typedValue,
-    [Field.INPUT]: { currencyId: inputCurrencyId },
-    [Field.OUTPUT]: { currencyId: outputCurrencyId },
-    recipient,
-  } = useSwapState()
-
-  const inputCurrency = useCurrency(inputCurrencyId)
-  const outputCurrency = useCurrency(outputCurrencyId)
   const recipientLookup = useENS(recipient ?? undefined)
   const to: string | null = (recipient === null ? account : recipientLookup.address) ?? null
 
@@ -240,8 +235,7 @@ function parseCurrencyFromURLParameter(urlParam: any): string {
 }
 
 function parseTokenAmountURLParameter(urlParam: any): string {
-  // eslint-disable-next-line no-restricted-globals
-  return typeof urlParam === 'string' && !isNaN(parseFloat(urlParam)) ? urlParam : ''
+  return typeof urlParam === 'string' && !Number.isNaN(parseFloat(urlParam)) ? urlParam : ''
 }
 
 function parseIndependentFieldURLParameter(urlParam: any): Field {

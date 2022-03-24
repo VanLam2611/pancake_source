@@ -15,8 +15,8 @@ const DropDownHeader = styled.div<{ $isDark: boolean }>`
   border-radius: 6px;
   // background: ${({ theme }) => theme.colors.input};
   ${({ theme }) => theme.mediaQueries.sm} {
-    background: ${({ $isDark }) => ($isDark ? '#0C071180' : '#fff')};
-    border: 1px solid ${({ $isDark }) => ($isDark ? '#B5689E' : '#fff')};
+    background: ${({ $isDark }) => ($isDark ? 'rgba(0, 0, 0, 0.5)' : '#fff')};
+    border: 1px solid #60C5BA;
   }
   transition: border-radius 0.15s;
 `

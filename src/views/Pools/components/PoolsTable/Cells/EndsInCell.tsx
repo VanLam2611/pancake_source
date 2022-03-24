@@ -42,7 +42,7 @@ const EndsInCell: React.FC<FinishCellProps> = ({ pool }) => {
           href={getBscScanLink(hasPoolStarted ? endBlock : startBlock, 'countdown')}
           onClick={(e) => e.stopPropagation()}
         >
-          <TimerIcon ml="4px" style={{ background: isDark ? '#742145' : '#fff', borderRadius: '8px' }} />
+          <TimerIcon ml="4px" style={{ background: isDark ? '#60C5BA' : '#fff', borderRadius: '8px' }} />
         </Link>
       </Flex>
     </Flex>
@@ -59,7 +59,7 @@ const EndsInCell: React.FC<FinishCellProps> = ({ pool }) => {
   return (
     <StyledCell role="cell">
       <CellContent>
-        <Text fontSize="12px" color="#B5689E" textAlign="left">
+        <Text fontSize="12px" color="#60C5BA" textAlign="left">
           {hasPoolStarted || !shouldShowBlockCountdown ? t('Ends in') : t('Starts in')}
         </Text>
         {showLoading ? <Skeleton width="80px" height="16px" /> : renderBlocks}

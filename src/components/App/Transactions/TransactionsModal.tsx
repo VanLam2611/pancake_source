@@ -1,6 +1,7 @@
 import { useCallback } from 'react'
 import useActiveWeb3React from 'hooks/useActiveWeb3React'
 import { useDispatch } from 'react-redux'
+import styled from 'styled-components'
 import { Modal, ModalBody, Text, Button, Flex, InjectedModalProps } from '@pancakeswap/uikit'
 import { useTranslation } from 'contexts/Localization'
 import orderBy from 'lodash/orderBy'
@@ -11,6 +12,14 @@ import { clearAllTransactions } from 'state/transactions/actions'
 import { AutoRow } from '../../Layout/Row'
 import Transaction from './Transaction'
 import ConnectWalletButton from '../../ConnectWalletButton'
+
+const ParentModal = styled.div`
+  position: relative;
+  z-index: 100;
+  #modallast h2 {
+    color: #60c5ba;
+  }
+`
 
 function renderTransactions(transactions: TransactionDetails[]) {
   return (
@@ -43,28 +52,35 @@ const TransactionsModal: React.FC<InjectedModalProps> = ({ onDismiss }) => {
   }, [dispatch, chainId])
 
   return (
-    <Modal title={t('Recent Transactions')} headerBackground="gradients.cardHeader" onDismiss={onDismiss}>
-      {account ? (
-        <ModalBody>
-          {!!pending.length || !!confirmed.length ? (
-            <>
-              <AutoRow mb="1rem" style={{ justifyContent: 'space-between' }}>
-                <Text>{t('Recent Transactions')}</Text>
-                <Button variant="tertiary" scale="xs" onClick={clearAllTransactionsCallback}>
-                  {t('clear all')}
-                </Button>
-              </AutoRow>
-              {renderTransactions(pending)}
-              {renderTransactions(confirmed)}
-            </>
-          ) : (
-            <Text>{t('No recent transactions')}</Text>
-          )}
-        </ModalBody>
-      ) : (
-        <ConnectWalletButton />
-      )}
-    </Modal>
+    <ParentModal>
+      <Modal
+        id="modallast"
+        title={t('Recent Transactions')}
+        headerBackground="gradients.cardHeader"
+        onDismiss={onDismiss}
+      >
+        {account ? (
+          <ModalBody>
+            {!!pending.length || !!confirmed.length ? (
+              <>
+                <AutoRow mb="1rem" style={{ justifyContent: 'space-between' }}>
+                  <Text color="#60C5BA">{t('Recent Transactions')}</Text>
+                  <Button variant="tertiary" scale="xs" onClick={clearAllTransactionsCallback}>
+                    {t('clear all')}
+                  </Button>
+                </AutoRow>
+                {renderTransactions(pending)}
+                {renderTransactions(confirmed)}
+              </>
+            ) : (
+              <Text style={{textAlign: 'center'}}>{t('No recent transactions')}</Text>
+            )}
+          </ModalBody>
+        ) : (
+          <ConnectWalletButton />
+        )}
+      </Modal>
+    </ParentModal>
   )
 }
 

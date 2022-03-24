@@ -18,10 +18,13 @@ export const scaleVariants = {
 
 export const styleVariants = {
   [variants.PRIMARY]: {
-    backgroundColor: '#EC4C93',
-    color: 'white',
+    borderRadius: '10px',
+    backgroundColor: '#60c5ba',
+    color: '#fff',
+    fill: "#fff",
   },
   [variants.SECONDARY]: {
+    borderRadius: '10px',
     backgroundColor: 'transparent',
     border: '2px solid',
     borderColor: 'primary',

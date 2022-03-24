@@ -6,6 +6,7 @@ import { useAllPoolData, usePoolDatas } from 'state/info/hooks'
 import { useWatchlistPools } from 'state/user/hooks'
 import { useTranslation } from 'contexts/Localization'
 import styled from 'styled-components'
+import useTheme from 'hooks/useTheme'
 
 const StyledSection = styled.div`
   margin-bottom: 60px;
@@ -16,28 +17,30 @@ const StyledSection = styled.div`
 `
 
 const StyledHeading = styled(Heading)`
-  color: #ec4c93;
   font-style: normal;
   font-weight: bold;
   font-size: 24px;
   line-height: 24px;
   text-transform: capitalize;
   margin: 0 0 30px 0;
-  text-shadow: 0px 0px 5px #000;
 `
 
-const StyledCardForNoSavedPools = styled(Card)`
-  background: rgba(0, 0, 0, 0.8);
+const StyledCardForNoSavedPools = styled(Card) <{
+  $txtColor?: string,
+  $bgColor?: string,
+  $borderColor?: string
+}>`
+  background: ${(props) => props.$bgColor};
   font-style: normal;
   font-weight: normal;
   font-size: 16px;
   line-height: 16px;
   padding: 30px;
   border-radius: 10px;
-  border: 1px solid #ec4c93;
+  border: 1px solid ${(props) => props.$borderColor};
   backdrop-filter: blur(5px);
   // Content:
-  color: #ec4c93;
+  color: ${(props) => props.$txtColor};
   font-style: normal;
   font-weight: normal;
   font-size: 16px;
@@ -49,6 +52,7 @@ const StyledCardForNoSavedPools = styled(Card)`
 `
 
 const PoolsOverview: React.FC = () => {
+  const { theme } = useTheme()
   const { t } = useTranslation()
 
   // get all the pool datas that exist
@@ -66,10 +70,14 @@ const PoolsOverview: React.FC = () => {
     <Page>
       {/* Section 1: */}
       <StyledSection>
-        <StyledHeading scale="lg" mb="16px">
+        <StyledHeading color={theme.colors.itemPrimary} scale="lg" mb="16px">
           {t('Your Watchlist')}
         </StyledHeading>
-        <StyledCardForNoSavedPools>
+        <StyledCardForNoSavedPools
+          $txtColor={theme.isDark ? '#fff' : '#6E6E6E'}
+          $bgColor={theme.isDark ? theme.colors.bgDark : '#fff'}
+          $borderColor={theme.isDark ? theme.colors.itemBlueUnhighlight : '#fff'}
+        >
           {watchlistPools.length > 0 ? (
             <PoolTable poolDatas={watchlistPools} />
           ) : (
@@ -83,7 +91,7 @@ const PoolsOverview: React.FC = () => {
 
       {/* Section 2: */}
       <StyledSection>
-        <StyledHeading scale="lg" mb="16px">
+        <StyledHeading color={theme.colors.itemPrimary} scale="lg" mb="16px">
           {t('All Pools')}
         </StyledHeading>
         <PoolTable poolDatas={poolDatas} />

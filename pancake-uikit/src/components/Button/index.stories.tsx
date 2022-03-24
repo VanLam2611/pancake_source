@@ -3,6 +3,7 @@
 import { capitalize } from 'lodash'
 import React, { useState } from 'react'
 import { BrowserRouter, Link } from 'react-router-dom'
+import { StoryFn } from "@storybook/react";
 import styled from 'styled-components'
 import Box from '../Box/Box'
 import Flex from '../Box/Flex'
@@ -10,10 +11,10 @@ import { AddIcon, AutoRenewIcon, LogoIcon } from '../Svg'
 import IconButton from './IconButton'
 import Button from './Button'
 import { ExpandableButton, ExpandableLabel } from './ExpandableButton'
-import { scales, variants } from './types'
+import { scales, variants, ButtonProps } from './types'
 
 export default {
-  title: 'Components/Button',
+  title: 'Project/Button',
   component: Button,
   argTypes: {
     onClick: { action: 'handleClick' },
@@ -182,12 +183,12 @@ export const Expandable: React.FC = () => {
 /**
  * Customized:
  */
-const Template = (args) => {
+const Template: StoryFn<ButtonProps> = (args) => {
   return <Button {...args} />
 }
 
-export const Basic = Template.bind({})
-Basic.args = {
+export const BasicButton = Template.bind({})
+BasicButton.args = {
   children: 'Hello, world!',
   style: {
     userSelect: 'none',
@@ -197,16 +198,3 @@ Basic.args = {
   // },
 }
 
-export const ConnectWallet: React.FC = () => {
-  const [expanded, setExpanded] = useState(false)
-  return (
-    <Box width="640px">
-      <BrowserRouter>
-        <Row>
-          <ExpandableButton expanded={expanded} onClick={() => setExpanded((prev) => !prev)} />
-          <Button onClick={() => setExpanded((prev) => !prev)}>ExpandableLabel</Button>
-        </Row>
-      </BrowserRouter>
-    </Box>
-  )
-}

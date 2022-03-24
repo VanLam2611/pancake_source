@@ -29,6 +29,7 @@ import TransactionTable from 'views/Info/components/InfoTables/TransactionsTable
 import Percent from 'views/Info/components/Percent'
 import SaveIcon from 'views/Info/components/SaveIcon'
 import { formatAmount } from 'utils/formatInfoNumbers'
+import useTheme from 'hooks/useTheme'
 
 // const ContentLayout = styled.div`
 //   display: grid;
@@ -69,20 +70,26 @@ const StyledSection = styled.div`
   }
 `
 
-const StyledInfoPanel = styled.div`
-  background: rgba(12, 7, 17, 0.8);
-  border: 1px solid #ec4c93;
+const StyledInfoPanel = styled.div <{
+  $txtColor?: string,
+  $bgColor?: string,
+  $borderColor?: string
+}>`
+  background: ${(props) => props.$bgColor};
+  border: 1px solid ${(props) => props.$borderColor};
   box-sizing: border-box;
   border-radius: 10px;
-  margin: 0 0 24px 0px;
+  margin: 0 0 60px 0px;
   padding: 0 24px;
 `
 
-const StyledBoxOfInfoValues = styled(Box)`
+const StyledBoxOfInfoValues = styled(Box) <{
+  $borderColor?: string
+}>`
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  border-top: 1px solid #b5689e;
+  border-top: 1px solid ${(props) => props.$borderColor};
   padding: 24px 0;
 `
 
@@ -90,22 +97,25 @@ const StyledInfoValueTop = styled(Text)`
   font-size: 14px;
   line-height: 14px;
   text-transform: uppercase;
-  color: #fff;
-  font-weight: 300;
+  font-weight: 400;
 `
 
-const StyledInfoValueMid = styled(Text)`
+const StyledInfoValueMid = styled(Text) <{
+  $txtColor?: string,
+}>`
   font-weight: bold;
   font-size: 24px;
   line-height: 24px;
   display: flex;
   align-items: center;
-  color: #ec4c93;
+  color: ${(props) => props.$txtColor};
   margin: 6px 0;
 `
 
-const StyledLockedTokensContainer = styled(LockedTokensContainer)`
-  background: rgba(255, 255, 255, 0.1);
+const StyledLockedTokensContainer = styled(LockedTokensContainer) <{
+  $bgColor?: string,
+}>`
+  background: ${(props) => props.$bgColor};
   border-radius: 10px;
   border: none;
 `
@@ -116,12 +126,18 @@ const StyledButtonMenu = styled(ButtonMenu)`
   border-radius: 0;
 `
 
-const StyledButtonMenuItem = styled(ButtonMenuItem)<{ $isActive?: boolean }>`
+const StyledButtonMenuItem = styled(ButtonMenuItem) <{
+  $isActive?: boolean,
+  $txtColor?: string,
+  $bgColor?: string,
+  $bgColorActive?: string,
+  $borderColor?: string
+}>`
   border-radius: 30px;
   margin-right: 16px;
   padding: 12px 24px;
-  background: rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.5);
+  background: ${(props) => props.$bgColor};
+  color: ${(props) => props.$txtColor};
 
   &&:last-child {
     margin-right: 0;
@@ -130,7 +146,7 @@ const StyledButtonMenuItem = styled(ButtonMenuItem)<{ $isActive?: boolean }>`
   ${(props) =>
     props.$isActive &&
     css`
-      background: #ec4c93;
+      background: ${props.$bgColorActive || ''};
     `}
 `
 
@@ -142,6 +158,8 @@ const PoolPage: React.FC<{ address: string }> = ({ address: routeAddress }) => {
     t(`Based on last 7 days' performance. Does not account for impermanent loss`),
     {},
   )
+
+  const { theme } = useTheme()
 
   // In case somebody pastes checksummed address into url (since GraphQL expects lowercase address)
   const address = routeAddress.toLowerCase()
@@ -157,7 +175,7 @@ const PoolPage: React.FC<{ address: string }> = ({ address: routeAddress }) => {
       {poolData ? (
         <>
           <StyledSection>
-            <Flex justifyContent="space-between" mb="16px" flexDirection={['column', 'column', 'row']}>
+            <Flex justifyContent="space-between" mb="60px" flexDirection={['column', 'column', 'row']}>
               <Breadcrumbs mb="32px">
                 <NextLinkFromReactRouter to="/info">
                   <Text color="primary">{t('Info')}</Text>
@@ -166,12 +184,15 @@ const PoolPage: React.FC<{ address: string }> = ({ address: routeAddress }) => {
                   <Text color="primary">{t('Pools')}</Text>
                 </NextLinkFromReactRouter>
                 <Flex>
-                  <Text color="#EC4C93" mr="8px">{`${poolData.token0.symbol} / ${poolData.token1.symbol}`}</Text>
+                  <Text color={theme.colors.itemPrimary} mr="8px">{`${poolData.token0.symbol} / ${poolData.token1.symbol}`}</Text>
                 </Flex>
               </Breadcrumbs>
             </Flex>
 
-            <StyledInfoPanel>
+            <StyledInfoPanel
+              $bgColor={theme.isDark ? theme.colors.bgDarkWeaker : '#fff'}
+              $borderColor={theme.isDark ? theme.colors.itemBlueUnhighlight : '#fff'}
+            >
               <Flex
                 justifyContent="space-between"
                 alignItems="flex-start"
@@ -193,7 +214,7 @@ const PoolPage: React.FC<{ address: string }> = ({ address: routeAddress }) => {
                         fontSize={isXs || isSm ? '24px' : '32px'}
                         lineHeight={isXs || isSm ? '24px' : '32px'}
                         id="info-pool-pair-title"
-                        color="#fff"
+                        color={theme.isDark ? '#fff' : theme.colors.itemBlueUnhighlight}
                       >
                         {`${poolData.token0.symbol} / ${poolData.token1.symbol}`}
                       </Text>
@@ -210,7 +231,7 @@ const PoolPage: React.FC<{ address: string }> = ({ address: routeAddress }) => {
                             ml="4px"
                             style={{ whiteSpace: 'nowrap' }}
                             width="fit-content"
-                            color="#B5689E"
+                            color={theme.isDark ? '#fff' : '#6E6E6E'}
                           >
                             {`1 ${poolData.token0.symbol} =  ${formatAmount(poolData.token1Price, {
                               notation: 'standard',
@@ -228,7 +249,7 @@ const PoolPage: React.FC<{ address: string }> = ({ address: routeAddress }) => {
                             ml="4px"
                             style={{ whiteSpace: 'nowrap' }}
                             width="fit-content"
-                            color="#B5689E"
+                            color={theme.isDark ? '#fff' : '#6E6E6E'}
                           >
                             {`1 ${poolData.token1.symbol} =  ${formatAmount(poolData.token0Price, {
                               notation: 'standard',
@@ -260,29 +281,29 @@ const PoolPage: React.FC<{ address: string }> = ({ address: routeAddress }) => {
                 </Flex>
               </Flex>
 
-              <StyledBoxOfInfoValues>
+              <StyledBoxOfInfoValues $borderColor={theme.colors.itemPrimary}>
                 <Flex flex="1" flexDirection="row">
                   <Flex flex="1" flexDirection="column">
-                    <StyledInfoValueTop color="secondary" bold fontSize="12px" textTransform="uppercase">
+                    <StyledInfoValueTop color={theme.isDark ? '#fff' : '#6E6E6E'} bold fontSize="12px" textTransform="uppercase">
                       {t('Liquidity')}
                     </StyledInfoValueTop>
-                    <StyledInfoValueMid fontSize="24px" bold>
+                    <StyledInfoValueMid $txtColor={theme.colors.itemPrimary} fontSize="24px" bold>
                       ${formatAmount(poolData.liquidityUSD)}
                     </StyledInfoValueMid>
                     <Percent value={poolData.liquidityUSDChange} />
                   </Flex>
                   <Flex flex="1" flexDirection="column">
-                    <StyledInfoValueTop color="secondary" bold fontSize="12px" textTransform="uppercase">
+                    <StyledInfoValueTop color={theme.isDark ? '#fff' : '#6E6E6E'} bold fontSize="12px" textTransform="uppercase">
                       {t('LP reward APR')}
                     </StyledInfoValueTop>
-                    <StyledInfoValueMid fontSize="24px" bold>
+                    <StyledInfoValueMid $txtColor={theme.colors.itemPrimary} fontSize="24px" bold>
                       {formatAmount(poolData.lpApr7d)}%
                     </StyledInfoValueMid>
                     <Flex alignItems="center">
                       <span ref={targetRef}>
                         <HelpIcon color="textSubtle" />
                       </span>
-                      <Text ml="4px" fontSize="12px" color="#FF0099">
+                      <Text ml="4px" fontSize="12px" color={theme.isDark ? "#fff" : '#6E6E6E'}>
                         {t('7D performance')}
                       </Text>
                       {tooltipVisible && tooltip}
@@ -290,29 +311,29 @@ const PoolPage: React.FC<{ address: string }> = ({ address: routeAddress }) => {
                   </Flex>
                 </Flex>
                 <Flex flex="1" flexDirection="column" justifyContent="space-between">
-                  <StyledInfoValueTop color="secondary" bold mt="0px" fontSize="12px" textTransform="uppercase">
+                  <StyledInfoValueTop color={theme.isDark ? '#fff' : '#6E6E6E'} bold mt="0px" fontSize="12px" textTransform="uppercase">
                     {t('Total Tokens Locked')}
                   </StyledInfoValueTop>
-                  <StyledLockedTokensContainer>
+                  <StyledLockedTokensContainer $bgColor={theme.isDark ? theme.colors.itemBlueUnhighlight : theme.colors.bgBright}>
                     <Flex justifyContent="space-between" alignItems="center">
                       <Flex alignItems="center">
                         <CurrencyLogo address={poolData.token0.address} size="24px" />
-                        <StyledInfoValueTop small color="textSubtle" ml="8px">
+                        <StyledInfoValueTop small color={theme.isDark ? '#fff' : '#6E6E6E'} ml="8px">
                           {poolData.token0.symbol}
                         </StyledInfoValueTop>
                       </Flex>
-                      <Text small color="#EC4C93">
+                      <Text small color={theme.colors.itemPrimary}>
                         {formatAmount(poolData.liquidityToken0)}
                       </Text>
                     </Flex>
                     <Flex justifyContent="space-between" alignItems="center">
                       <Flex alignItems="center">
                         <CurrencyLogo address={poolData.token1.address} size="24px" />
-                        <StyledInfoValueTop small color="textSubtle" ml="8px">
+                        <StyledInfoValueTop small color={theme.isDark ? '#fff' : '#6E6E6E'} ml="8px">
                           {poolData.token1.symbol}
                         </StyledInfoValueTop>
                       </Flex>
-                      <Text small color="#EC4C93">
+                      <Text small color={theme.colors.itemPrimary}>
                         {formatAmount(poolData.liquidityToken1)}
                       </Text>
                     </Flex>
@@ -325,31 +346,43 @@ const PoolPage: React.FC<{ address: string }> = ({ address: routeAddress }) => {
                     scale="sm"
                     variant="subtle"
                   >
-                    <StyledButtonMenuItem $isActive={showWeeklyData === 0} width="100%">
+                    <StyledButtonMenuItem
+                      $isActive={showWeeklyData === 0}
+                      width="100%"
+                      $txtColor='#fff'
+                      $bgColor={theme.colors.itemBlueUnhighlight}
+                      $bgColorActive={theme.colors.itemPrimary}
+                    >
                       {t('24H')}
                     </StyledButtonMenuItem>
-                    <StyledButtonMenuItem $isActive={showWeeklyData === 1} width="100%">
+                    <StyledButtonMenuItem
+                      $isActive={showWeeklyData === 1}
+                      width="100%"
+                      $txtColor='#fff'
+                      $bgColor={theme.colors.itemBlueUnhighlight}
+                      $bgColorActive={theme.colors.itemPrimary}
+                    >
                       {t('7D')}
                     </StyledButtonMenuItem>
                   </StyledButtonMenu>
                   <Flex mt="24px" width="100%">
                     <Flex flex="1" flexDirection="column">
-                      <StyledInfoValueTop color="secondary" fontSize="12px" bold textTransform="uppercase">
+                      <StyledInfoValueTop color={theme.isDark ? '#fff' : '#6E6E6E'} fontSize="12px" bold textTransform="uppercase">
                         {showWeeklyData ? t('Volume 7D') : t('Volume 24H')}
                       </StyledInfoValueTop>
-                      <StyledInfoValueMid fontSize="24px" bold>
+                      <StyledInfoValueMid $txtColor={theme.colors.itemPrimary} fontSize="24px" bold>
                         ${showWeeklyData ? formatAmount(poolData.volumeUSDWeek) : formatAmount(poolData.volumeUSD)}
                       </StyledInfoValueMid>
                       <Percent value={showWeeklyData ? poolData.volumeUSDChangeWeek : poolData.volumeUSDChange} />
                     </Flex>
                     <Flex flex="1" flexDirection="column">
-                      <StyledInfoValueTop color="secondary" fontSize="12px" bold textTransform="uppercase">
+                      <StyledInfoValueTop color={theme.isDark ? '#fff' : '#6E6E6E'} fontSize="12px" bold textTransform="uppercase">
                         {showWeeklyData ? t('LP reward fees 7D') : t('LP reward fees 24H')}
                       </StyledInfoValueTop>
-                      <StyledInfoValueMid fontSize="24px" bold>
+                      <StyledInfoValueMid $txtColor={theme.colors.itemPrimary} fontSize="24px" bold>
                         ${showWeeklyData ? formatAmount(poolData.lpFees7d) : formatAmount(poolData.lpFees24h)}
                       </StyledInfoValueMid>
-                      <Text color="#B5689E" fontSize="12px">
+                      <Text color={theme.isDark ? "#fff" : '#6E6E6E'} fontSize="12px">
                         {t('out of $%totalFees% total fees', {
                           totalFees: showWeeklyData
                             ? formatAmount(poolData.totalFees7d)

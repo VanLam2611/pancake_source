@@ -19,6 +19,7 @@ const useGetTopPoolsByApr = (isIntersecting: boolean) => {
 
   const cakePriceBusd = usePriceCakeBusd()
 
+
   useEffect(() => {
     const fetchPoolsPublicData = async () => {
       setFetchStatus(FetchStatus.Fetching)

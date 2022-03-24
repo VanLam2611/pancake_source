@@ -27,7 +27,7 @@ const BuyTicketsButton: React.FC<BuyTicketsButtonProps> = ({ disabled, ...props 
   }
 
   return (
-    <Button style={{ background: '#EC4C93' }} {...props} disabled={disabled} onClick={onPresentBuyTicketsModal}>
+    <Button style={{ background: '#60C5BA', color: '#fff' }} {...props} disabled={disabled} onClick={onPresentBuyTicketsModal}>
       {getBuyButtonText()}
     </Button>
   )

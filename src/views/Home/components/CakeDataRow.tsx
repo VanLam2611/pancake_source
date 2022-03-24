@@ -6,24 +6,39 @@ import { useTranslation } from 'contexts/Localization'
 import useIntersectionObserver from 'hooks/useIntersectionObserver'
 import { useEffect, useState } from 'react'
 import { usePriceCakeBusd } from 'state/farms/hooks'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { formatBigNumber, formatLocalisedCompactNumber } from 'utils/formatBalance'
 import { multicallv2 } from 'utils/multicall'
 import useSWR from 'swr'
 import { SLOW_INTERVAL } from 'config/constants'
+import useTheme from 'hooks/useTheme'
 
 const styleForBasicColumn = `
-  background: linear-gradient(134.59deg, rgba(181, 104, 158, 0.59) 1.32%, rgba(181, 104, 158, 0) 60.66%);
-  border: 1px solid;
-  border-image-source: linear-gradient(137.94deg, #FF0099 2.56%, rgba(255, 0, 153, 0) 73.01%);
-  border-image-slice: 1;
-  border-radius: 5px;
-  padding: 25px;
+  background: linear-gradient(115.97deg, rgba(96, 197, 186, 0) 1.04%, rgba(96, 197, 186, 0.54) 100%);
+  padding: 16px;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
   color: #fff;
+  // border: 1px solid;
+  // border-image-source: linear-gradient(180deg, #60c5ba 0%, rgba(96, 197, 186, 0) 100%);
+  // border-image-slice: 1;
+  border-radius: 10px;
+  position: relative;
+
+  ::before {
+    content: "";
+    position: absolute;
+    border-radius: 10px;
+    // Change to "padding: 10px" to know why?
+    // padding: 10px;
+    padding: 1px;
+    inset: 0;
+    background: linear-gradient(180deg, #60c5ba 0%, rgba(96, 197, 186, 0) 100%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+  }
   
   @media screen and (max-width: 576px) {
     backdrop-filter: blur(5px);
@@ -31,71 +46,85 @@ const styleForBasicColumn = `
 `
 
 const styleForColumnValue = `
-  font-style: normal;
-  font-weight: 600;
-  font-size: 24px;
-  line-height: 25px;
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 33px;
+  color: #0B3854;
   text-align: center;
-  color: #fff;
-  text-shadow: 0px 0px 5px #000;
-  width: 130px;
-`
-
-const StyledColumnBasic = styled(Flex)`
-  ${styleForBasicColumn}
+  margin-bottom: 11px;
+  width: 185px;
 `
 
 const StyledColumnTitle = styled(Text)`
-  font-style: normal;
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 17px;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 21px;
+  color: #60c5ba;
   text-align: center;
-  color: #ff0099;
-  text-shadow: 0px 0px 5px #000;
   margin-bottom: 6px;
 `
 
-const StyledColumBalanceValue = styled(Balance)`
+const StyledColumBalanceValue = styled(Balance) <{ $isDarkStyle?: boolean }>`
   ${styleForColumnValue}
+
+  ${(props) => props.$isDarkStyle && css`
+    color: #fff;
+  `}
 `
 
-const StyledColumHeadingValue = styled(Heading)`
+const StyledColumHeadingValue = styled(Heading) <{ $isDarkStyle?: boolean }>`
   ${styleForColumnValue}
+
+  ${(props) => props.$isDarkStyle && css`
+    color: #fff;
+  `}
 `
 
-const StyledColumn = styled(Flex)<{ noMobileBorder?: boolean }>`
+const StyledColumn = styled(Flex) <{ noMobileBorder?: boolean }>`
   ${styleForBasicColumn}
 
   flex-direction: column;
   ${({ noMobileBorder, theme }) =>
     noMobileBorder
       ? `${theme.mediaQueries.md} {
-           padding: 0 16px;
-           border-left: 1px ${theme.colors.inputSecondary} solid;
+           padding: 16px 16px;
          }
        `
-      : `border-left: 1px ${theme.colors.inputSecondary} solid;
-         padding: 0 8px;
+      : `padding: 16px 8px;
          ${theme.mediaQueries.sm} {
-           padding: 0 16px;
+           padding: 16px 16px;
          }
        `}
 `
 
 const Grid = styled.div`
-  display: grid;
-  grid-gap: 16px 8px;
-  margin-top: 24px;
-  grid-template-columns: repeat(2, auto);
+  // display: grid;
+  // margin-top: 40px;
+  // grid-gap: 16px 16px;
+  // grid-template-columns: repeat(2, auto);
 
-  ${({ theme }) => theme.mediaQueries.sm} {
-    grid-gap: 16px;
+  // ${({ theme }) => theme.mediaQueries.sm} {
+  //   grid-gap: 16px;
+  // }
+
+  // ${({ theme }) => theme.mediaQueries.md} {
+  //   grid-gap: 40px;
+  //   grid-template-columns: repeat(4, auto);
+  // }
+
+  display: grid;
+  margin-top: 40px;
+  grid-gap: 40px;
+  grid-template-columns: repeat(4, auto);
+
+  @media screen and (max-width: 992px) {
+    grid-gap: 24px;
+    grid-template-columns: repeat(2, auto);
   }
 
-  ${({ theme }) => theme.mediaQueries.md} {
-    grid-gap: 32px;
-    grid-template-columns: repeat(4, auto);
+  @media screen and (max-width: 576px) {
+    grid-gap: 16px;
+    grid-template-columns: repeat(1, auto);
   }
 `
 
@@ -137,6 +166,8 @@ const CakeDataRow = () => {
   const mcap = cakePriceBusd.times(cakeSupply)
   const mcapString = formatLocalisedCompactNumber(mcap.toNumber())
 
+  const { theme } = useTheme()
+
   useEffect(() => {
     if (isIntersecting) {
       setLoadData(true)
@@ -145,37 +176,37 @@ const CakeDataRow = () => {
 
   return (
     <Grid>
-      <StyledColumnBasic flexDirection="column">
+      <StyledColumn flexDirection="column">
         <StyledColumnTitle color="textSubtle">{t('Total supply')}</StyledColumnTitle>
         {cakeSupply ? (
-          <StyledColumBalanceValue decimals={0} lineHeight="1.1" fontSize="24px" bold value={cakeSupply} />
+          <StyledColumBalanceValue $isDarkStyle={theme.isDark} decimals={0} lineHeight="1.1" fontSize="24px" bold value={cakeSupply} />
         ) : (
           <>
             <div ref={observerRef} />
-            <Skeleton height={24} width={126} my="4px" />
+            <Skeleton height={24} width={185} my="4px" />
           </>
         )}
-      </StyledColumnBasic>
+      </StyledColumn>
       <StyledColumn>
         <StyledColumnTitle color="textSubtle">{t('Burned to date')}</StyledColumnTitle>
         {burnedBalance ? (
-          <StyledColumBalanceValue decimals={0} lineHeight="1.1" fontSize="24px" bold value={burnedBalance} />
+          <StyledColumBalanceValue $isDarkStyle={theme.isDark} decimals={0} lineHeight="1.1" fontSize="24px" bold value={burnedBalance} />
         ) : (
-          <Skeleton height={24} width={126} my="4px" />
+          <Skeleton height={24} width={185} my="4px" />
         )}
       </StyledColumn>
       <StyledColumn noMobileBorder>
         <StyledColumnTitle color="textSubtle">{t('Market cap')}</StyledColumnTitle>
         {mcap?.gt(0) && mcapString ? (
-          <StyledColumHeadingValue scale="lg">{t('$%marketCap%', { marketCap: mcapString })}</StyledColumHeadingValue>
+          <StyledColumHeadingValue $isDarkStyle={theme.isDark} scale="lg">{t('$%marketCap%', { marketCap: mcapString })}</StyledColumHeadingValue>
         ) : (
-          <Skeleton height={24} width={126} my="4px" />
+          <Skeleton height={24} width={185} my="4px" />
         )}
       </StyledColumn>
       <StyledColumn>
         <StyledColumnTitle color="textSubtle">{t('Current emissions')}</StyledColumnTitle>
 
-        <StyledColumHeadingValue scale="lg">
+        <StyledColumHeadingValue $isDarkStyle={theme.isDark} scale="lg">
           {t('%cakeEmissions%/block', { cakeEmissions: emissionsPerBlock })}
         </StyledColumHeadingValue>
       </StyledColumn>

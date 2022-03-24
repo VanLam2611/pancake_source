@@ -48,7 +48,7 @@ const Lottery = () => {
       <PageMeta />
       <LotteryPage>
         {/* TITLE_BG */}
-        <PageSection background={'#B5689E'} index={1} hasCurvedDivider={false}>
+        <PageSection background={'#60C5BA'} index={1} hasCurvedDivider={false}>
           <Hero />
         </PageSection>
         <PageSection
@@ -56,7 +56,7 @@ const Lottery = () => {
           // background={GET_TICKETS_BG}
           background={'rgba(12, 7, 17, 0.8)'}
           concaveDivider
-          clipFill={{ light: '#EC4C93' }}
+          clipFill={{ light: '#60C5BA' }}
           dividerPosition="top"
           index={2}
         >
@@ -85,7 +85,7 @@ const Lottery = () => {
         </PageSection>
         <PageSection
           innerProps={{ style: { margin: '0', width: '100%' } }}
-          background={isDark ? '#0C0711CC' : '#B5689E'}
+          background={isDark ? '#0C0711CC' : '#60C5BA'}
           hasCurvedDivider={false}
           index={2}
         >
@@ -112,7 +112,7 @@ const Lottery = () => {
         <PageSection
           dividerPosition="top"
           dividerFill={{ light: theme.colors.background }}
-          clipFill={{ light: '#B5689E', dark: '#B5689E' }}
+          clipFill={{ light: '#60C5BA', dark: '#60C5BA' }}
           index={2}
         >
           <HowToPlay />

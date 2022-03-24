@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Flex, Text, Skeleton, Button, ArrowForwardIcon } from '@pancakeswap/uikit'
+import { Flex, Text, Skeleton, ArrowForwardIcon } from '@pancakeswap/uikit'
 import { NextLinkFromReactRouter } from 'components/NextLink'
 import { useTranslation } from 'contexts/Localization'
 import useIntersectionObserver from 'hooks/useIntersectionObserver'
@@ -11,33 +11,36 @@ import { getBalanceAmount } from 'utils/formatBalance'
 import useSWR from 'swr'
 import { SLOW_INTERVAL } from 'config/constants'
 import useSWRImmutable from 'swr/immutable'
+import { BasicButton } from '../../../../../packages/uikit/src/components/Button/index.stories'
+
+const StyledWrapper = styled.div`
+  padding: 30px;
+`
 
 const StyledLink = styled(NextLinkFromReactRouter)`
   width: 100%;
 `
 
 const StyledBalance = styled(Balance)`
-  background: ${({ theme }) => theme.colors.gradients.gold};
+  // background: ${({ theme }) => theme.colors.gradients.gold};
   background: #fff;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   color: #fff;
-  font-style: normal;
   font-weight: 600;
-  font-size: 24px;
-  line-height: 25px;
+  font-size: 32px;
+  line-height: 33px;
   margin: 0;
   padding: 0;
 `
 
 const StyledCardHeading = styled(Text)`
-  color: #ff0099;
-  font-style: normal;
-  font-weight: 600;
-  font-size: 20px;
-  line-height: 21px;
+  color: #0B3854;
+  font-size: 24px;
+  line-height: 25px;
   text-align: center;
   margin-bottom: 20px;
+  font-weight: 700;
 `
 
 const StyledCardTitle = styled(Text)`
@@ -51,7 +54,7 @@ const StyledCardTitle = styled(Text)`
 
 const StyledCardTitleUnder = styled(Text)`
   color: #fff;
-  font-weight: 300;
+  font-weight: 400;
   font-size: 16px;
   line-height: 17px;
   margin: 0;
@@ -60,7 +63,7 @@ const StyledCardTitleUnder = styled(Text)`
 
 const StyledCardContent = styled(Text)`
   color: #fff;
-  font-weight: 300;
+  font-weight: 400;
   font-size: 16px;
   line-height: 17px;
   text-align: center;
@@ -99,13 +102,17 @@ const LotteryCardContent = () => {
   const currentLotteryPrize = currentLotteryPrizeInCake ? cakePriceBusd.times(currentLotteryPrizeInCake) : null
 
   useEffect(() => {
+    console.log(isIntersecting);
+    
     if (isIntersecting) {
       setLoadData(true)
+      console.log('Cuuren: '+currentLotteryPrize);
+      
     }
   }, [isIntersecting])
 
   return (
-    <>
+    <StyledWrapper>
       <Flex flexDirection="column" mt="0px">
         <StyledCardHeading color="white" bold fontSize="16px">
           {t('Lottery')}
@@ -138,21 +145,21 @@ const LotteryCardContent = () => {
         </StyledCardTitle>
 
         <StyledCardContent color="white" mb="40px">
-          {t('Buy tickets with Womentech, win Womentech if your numbers match')}
+          {t('Buy tickets with OnDefi, win OnDefi if your numbers match')}
         </StyledCardContent>
       </Flex>
 
       <Flex alignItems="center" justifyContent="center">
         <StyledLink to="/lottery" id="homepage-prediction-cta">
-          <Button width="100%" style={{ background: '#EC4C93' }}>
-            <Text bold color="#fff">
+          <BasicButton variant='customPrimary' width="100%" style={{ backgroundColor: '#2370B8' }}>
+            <Text bold color="inherit">
               {t('Buy Tickets')}
             </Text>
-            <ArrowForwardIcon ml="4px" color="#fff" />
-          </Button>
+            <ArrowForwardIcon ml="4px" color="inherit" />
+          </BasicButton>
         </StyledLink>
       </Flex>
-    </>
+    </StyledWrapper>
   )
 }
 

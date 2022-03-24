@@ -34,10 +34,11 @@ import StakeVaultButton from '../StakeVaultButton'
 interface TokenSectionProps extends FlexProps {
   primaryToken?: Token
   secondaryToken?: Token
+  bgColor?: string
 }
 
-const StyledTokenSection = styled(Flex)`
-  background: linear-gradient(183.63deg, #b5689e 2.98%, rgba(181, 104, 158, 0) 174.75%);
+const StyledTokenSection = styled(Flex) <{ $bgColor?: string }>`
+  background: ${(props) => props.$bgColor};
   border-radius: 10px;
   padding: 24px;
   flex-direction: row;
@@ -68,7 +69,7 @@ const TokenSection: React.FC<TokenSectionProps> = ({ primaryToken, secondaryToke
   }
 
   return (
-    <StyledTokenSection {...props}>
+    <StyledTokenSection {...props} $bgColor={props.bgColor}>
       {renderTokenComponent()}
       <div>{children}</div>
     </StyledTokenSection>
@@ -97,39 +98,37 @@ interface IfoCardTokensProps {
   enableStatus: EnableStatus
   criterias?: any
   isEligible?: boolean
+  bgColor?: string
 }
 
 const StyledOnSaleInfoLabel = styled(Label)`
-  font-weight: bold;
+  font-weight: 500;
   font-size: 20px;
-  line-height: 20px;
-  color: #fff;
+  line-height: 27px;
   margin-bottom: 6px;
 `
 
 const StyledOnSaleInfoValue = styled(Value)`
-  font-weight: bold;
+  font-weight: 500;
   font-size: 18px;
-  line-height: 18px;
-  color: #fff;
+  line-height: 25px;
   margin-bottom: 6px;
 `
 
 const StyledOnSaleInfoText = styled(Text)`
   font-weight: 400;
   font-size: 14px;
-  line-height: 14px;
-  color: #fff;
+  line-height: 18px;
 `
 
-const OnSaleInfo = ({ token, saleAmount, distributionRatio }) => {
+const OnSaleInfo = ({ token, saleAmount, distributionRatio, bgColor }) => {
   const { t } = useTranslation()
   return (
-    <TokenSection primaryToken={token}>
+    <TokenSection primaryToken={token} bgColor={bgColor}>
       <Flex flexDirection="column">
-        <StyledOnSaleInfoLabel>{t('On sale').toUpperCase()}</StyledOnSaleInfoLabel>
-        <StyledOnSaleInfoValue>{saleAmount}</StyledOnSaleInfoValue>
-        <StyledOnSaleInfoText fontSize="14px" color="textSubtle">
+        <StyledOnSaleInfoLabel color="#fff">{t('On sale').toUpperCase()}</StyledOnSaleInfoLabel>
+        <StyledOnSaleInfoValue color="#fff">{saleAmount}</StyledOnSaleInfoValue>
+        <StyledOnSaleInfoText color="#fff" fontSize="14px">
           {t('%ratio%% of total sale', { ratio: distributionRatio })}
         </StyledOnSaleInfoText>
       </Flex>
@@ -148,6 +147,7 @@ const IfoCardTokens: React.FC<IfoCardTokensProps> = ({
   isLoading,
   onApprove,
   enableStatus,
+  bgColor,
 }) => {
   const { account } = useWeb3React()
   const { t } = useTranslation()
@@ -172,7 +172,12 @@ const IfoCardTokens: React.FC<IfoCardTokensProps> = ({
       return <SkeletonCardTokens />
     }
     if (!account) {
-      return <OnSaleInfo token={token} distributionRatio={distributionRatio} saleAmount={ifo[poolId].saleAmount} />
+      return <OnSaleInfo
+        token={token}
+        distributionRatio={distributionRatio}
+        saleAmount={ifo[poolId].saleAmount}
+        bgColor={bgColor}
+      />
     }
 
     let message
@@ -240,7 +245,12 @@ const IfoCardTokens: React.FC<IfoCardTokensProps> = ({
     if (account && !hasProfile) {
       return (
         <>
-          <OnSaleInfo token={token} distributionRatio={distributionRatio} saleAmount={ifo[poolId].saleAmount} />
+          <OnSaleInfo
+            token={token}
+            distributionRatio={distributionRatio}
+            saleAmount={ifo[poolId].saleAmount}
+            bgColor={bgColor}
+          />
           {message}
         </>
       )

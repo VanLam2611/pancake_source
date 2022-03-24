@@ -18,6 +18,7 @@ import { currencyId } from '../../utils/currencyId'
 import Dots from '../../components/Loader/Dots'
 import { AppHeader, AppBody } from '../../components/App'
 import Page from '../Page'
+import useTheme from 'hooks/useTheme'
 
 enum Fields {
   TOKEN0 = 0,
@@ -34,6 +35,7 @@ const StyledButton = styled(Button)`
 export default function PoolFinder() {
   const { account } = useActiveWeb3React()
   const { t } = useTranslation()
+  const { isDark } = useTheme()
 
   const [activeField, setActiveField] = useState<number>(Fields.TOKEN1)
   const [currency0, setCurrency0] = useState<Currency | null>(ETHER)
@@ -71,7 +73,7 @@ export default function PoolFinder() {
   )
 
   const prerequisiteMessage = (
-    <LightCard padding="45px 10px">
+    <LightCard padding="45px 10px" style={{border: '1px solid #101722'}}>
       <Text textAlign="center">
         {!account ? t('Connect to a wallet to find pools') : t('Select a token to find your liquidity.')}
       </Text>
@@ -93,13 +95,14 @@ export default function PoolFinder() {
     <Page>
       <AppBody>
         <AppHeader title={t('Import Pool')} subtitle={t('Import an existing pool')} backTo="/liquidity" />
-        <AutoColumn style={{ padding: '1rem' }} gap="md">
+        <AutoColumn style={{ padding: '1rem', background: isDark ? '#1E2735' : '#fff'}} gap="md">
           <StyledButton
             endIcon={<ChevronDownIcon />}
             onClick={() => {
               onPresentCurrencyModal()
               setActiveField(Fields.TOKEN0)
             }}
+            style={{background: isDark ? '#101722' : '#fff',border: '1px solid #0B3854'}}
           >
             {currency0 ? (
               <Row>
@@ -121,6 +124,7 @@ export default function PoolFinder() {
               onPresentCurrencyModal()
               setActiveField(Fields.TOKEN1)
             }}
+            style={{background: isDark ? '#101722' : '#fff' ,border: '1px solid #0B3854'}}
           >
             {currency1 ? (
               <Row>
@@ -156,7 +160,7 @@ export default function PoolFinder() {
                 </LightCard>
               )
             ) : validPairNoLiquidity ? (
-              <LightCard padding="45px 10px">
+              <LightCard padding="45px 10px" style={{background: isDark ? 'rgb(17, 19, 28, 0.3)' : 'transparent', border: '1px solid #101722'}}>
                 <AutoColumn gap="sm" justify="center">
                   <Text textAlign="center">{t('No pool found.')}</Text>
                   <Button

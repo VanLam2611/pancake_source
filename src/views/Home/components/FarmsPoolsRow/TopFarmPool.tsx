@@ -1,8 +1,9 @@
 import { ReactNode } from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { Flex, Skeleton, Text } from '@pancakeswap/uikit'
 import Balance from 'components/Balance'
 import { useTranslation } from 'contexts/Localization'
+import useTheme from 'hooks/useTheme'
 
 interface TopFarmPoolProps {
   title: ReactNode
@@ -12,7 +13,7 @@ interface TopFarmPoolProps {
   style?: any
 }
 
-const StyledWrapper = styled(Flex)<{ index: number }>`
+const StyledWrapper = styled(Flex) <{ index: number }>`
   position: relative;
 
   @media screen and (max-width: 768px) {
@@ -22,22 +23,21 @@ const StyledWrapper = styled(Flex)<{ index: number }>`
   }
 `
 
-const AbsoluteWrapper = styled(Flex)<{ visible: boolean; index: number; topOffset: string }>`
+const AbsoluteWrapper = styled(Flex) <{ visible: boolean; index: number; topOffset: string }>`
   position: absolute;
   top: ${({ topOffset }) => topOffset};
   opacity: ${({ visible }) => (visible ? 1 : 0)};
   margin-top: ${({ visible }) => (visible ? 0 : `50%`)};
   transition: opacity, margin-top, 0.4s ease-out;
   flex-direction: column;
-  padding: 25px;
+  padding: 16px 20px;
   width: 100%;
-  background: linear-gradient(134.59deg, rgba(181, 104, 158, 0.59) 1.32%, rgba(181, 104, 158, 0) 60.66%);
-  border: 1px solid;
-  border-image-source: linear-gradient(137.94deg, #ff0099 2.56%, rgba(255, 0, 153, 0) 73.01%);
-  border-image-slice: 1;
-  border-radius: 5px;
-  max-width: 167px;
-  max-height: 163px;
+  background: linear-gradient(115.97deg, rgba(96, 197, 186, 0) 1.04%, rgba(96, 197, 186, 0.54) 100%);
+  // border: 1px solid;
+  // border-image-source: linear-gradient(180deg, #60C5BA 0%, rgba(96, 197, 186, 0) 100%);
+  // border-image-slice: 1;
+  border-radius: 10px;
+  // max-height: 163px;
   min-height: 163px;
 
   ${({ index, theme }) =>
@@ -46,39 +46,64 @@ const AbsoluteWrapper = styled(Flex)<{ visible: boolean; index: number; topOffse
          ${theme.mediaQueries.sm} {
            height: auto;
            top: 0;
-           border-left: 1px ${theme.colors.inputSecondary} solid;
          }
        `
       : ``}
+
+  ::before {
+    content: "";
+    position: absolute;
+    border-radius: 10px;
+    // Change to "padding: 10px" to know why?
+    // padding: 10px;
+    padding: 1px;
+    inset: 0;
+    background: linear-gradient(180deg, #60C5BA 0%, rgba(96, 197, 186, 0) 100%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+  }
 `
 
 const StyledTextTitle = styled(Text)`
-  margin: 6px 0px;
   font-style: normal;
   font-weight: 500;
-  font-size: 16px;
-  line-height: 17px;
+  font-size: 20px;
+  line-height: 27px;
+  display: flex;
   text-align: center;
-  color: #ff0099;
+  color: #60c5ba;
+  align-self: center;
+  margin: 0;
 `
 
-const StyledTextBalance = styled(Balance)`
+const StyledTextBalance = styled(Balance) <{ $isDarkStyle?: boolean }>`
   font-style: normal;
-  font-weight: 600;
-  font-size: 24px;
-  line-height: 25px;
   text-align: center;
-  color: #fff;
-  margin: 6px 0px;
-`
-
-const StyledTextSubtle = styled(Text)`
-  font-style: normal;
+  color: #000;
   font-weight: 500;
+  font-size: 32px;
+  line-height: 44px;
+
+  ${(props) => props.$isDarkStyle ? css`
+    color: #fff;
+  ` : css`
+    color: #0b3854;
+  `}
+`
+
+const StyledTextSubtle = styled(Text) <{ $isDarkStyle?: boolean }>`
+  font-style: normal;
+  font-weight: 400;
   font-size: 16px;
-  line-height: 17px;
+  line-height: 21px;
   text-align: center;
-  color: #fff;
+  color: #000;
+
+  ${(props) => props.$isDarkStyle ? css`
+    color: #fff;
+  ` : css`
+    color: #0b3854;
+  `}
 `
 
 const StyledAbsoluteWrapper = styled(AbsoluteWrapper)`
@@ -89,6 +114,8 @@ const StyledAbsoluteWrapper = styled(AbsoluteWrapper)`
 
 const TopFarmPool: React.FC<TopFarmPoolProps> = ({ title, percentage, index, visible, style }) => {
   const { t } = useTranslation()
+
+  const { theme } = useTheme()
 
   const topOffset = () => {
     if (index >= 0 && index < 2) {
@@ -114,12 +141,12 @@ const TopFarmPool: React.FC<TopFarmPoolProps> = ({ title, percentage, index, vis
           <Skeleton width={80} height={12} mb="8px" />
         )}
         {percentage ? (
-          <StyledTextBalance lineHeight="1.1" fontSize="16px" bold unit="%" value={percentage} />
+          <StyledTextBalance $isDarkStyle={theme.isDark} lineHeight="1.1" fontSize="16px" bold unit="%" value={percentage} />
         ) : (
           <Skeleton width={60} height={16} />
         )}
         {percentage ? (
-          <StyledTextSubtle fontSize="16px" color="textSubtle">
+          <StyledTextSubtle $isDarkStyle={theme.isDark} fontSize="16px" color="textSubtle">
             {t('APR')}
           </StyledTextSubtle>
         ) : (

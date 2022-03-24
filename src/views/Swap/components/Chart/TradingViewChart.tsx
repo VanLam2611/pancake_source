@@ -15,6 +15,7 @@ import {
   useSwapState,
   useSingleTokenSwapInfo,
 } from 'state/swap/hooks'
+import { useCurrency, useAllTokens } from '../../../../hooks/Tokens'
 import useWrapCallback, { WrapType } from 'hooks/useWrapCallback'
 
 interface TradingViewChartProps {
@@ -25,6 +26,7 @@ interface TradingViewChartProps {
   id: string
   symbol: string
   valueSymbol: string
+  isChartExpanded?: boolean
 }
 interface TradingViewProps {
   id: string
@@ -61,6 +63,7 @@ const TradingViewChart = ({
   id,
   symbol,
   valueSymbol,
+  isChartExpanded,
 }: TradingViewChartProps) => {
   const [isLoading, setIsLoading] = useState(true)
   const { t } = useTranslation()
@@ -95,8 +98,29 @@ const TradingViewChart = ({
   /**
    *
    */
-  const { v2Trade, currencyBalances, parsedAmount, currencies, inputError: swapInputError } = useDerivedSwapInfo()
-  const { independentField, typedValue, recipient } = useSwapState()
+  const { independentField, typedValue } = useSwapState()
+  // Price data
+  const {
+    [Field.INPUT]: { currencyId: inputCurrencyId },
+    [Field.OUTPUT]: { currencyId: outputCurrencyId },
+  } = useSwapState()
+  const inputCurrency = useCurrency(inputCurrencyId)
+  const outputCurrency = useCurrency(outputCurrencyId)
+  const {
+    v2Trade,
+    currencyBalances,
+    parsedAmount,
+    currencies,
+    inputError: swapInputError,
+  } = useDerivedSwapInfo(
+    independentField,
+    typedValue,
+    inputCurrencyId,
+    inputCurrency,
+    outputCurrencyId,
+    outputCurrency,
+    '',
+  )
   const {
     wrapType,
     execute: onWrap,
@@ -135,10 +159,15 @@ const TradingViewChart = ({
     }
   }, [debouncedLoading, hasNoData, isLoading, onTwChartSymbol, symbols])
 
+  //Background color
+  let bTheme = 'dark'
   useEffect(() => {
-    console.log('Format: ' + currencies[Field.INPUT]?.symbol)
+    if (!isDark) {
+      bTheme = 'light'
+    } else {
+      bTheme = 'dark'
+    }
   })
-
   useScript('https://s3.tradingview.com/tv.js')
   const initializeTradingView = (TradingViewObj: any, theme: DefaultTheme, localeCode: string, opts: any) => {
     let timezone = 'Etc/UTC'
@@ -150,7 +179,8 @@ const TradingViewChart = ({
     /* eslint-disable new-cap */
     /* eslint-disable no-new */
     // @ts-ignore
-    let currencySymbol = 'BINANCE:' + currencies[Field.INPUT]?.symbol + 'USDT'
+
+    let currencySymbol = 'BINANCE:' + valueSymbol + 'USDT'
     return new TradingViewObj.widget({
       // Advanced Chart Widget uses the legacy embedding scheme,
       // an id property should be specified in the settings object
@@ -159,12 +189,15 @@ const TradingViewChart = ({
       symbol: currencySymbol,
       interval: 'D',
       timezone,
-      theme: 'dark',
+      theme: bTheme,
       style: '1',
       locale: 'vi_VN',
       toolbar_bg: '#f1f3f6',
       enable_publishing: false,
       allow_symbol_change: true,
+      details: isChartExpanded,//Status Full width or 1/2 width
+      hotlist: isChartExpanded,//volume increase or decrease
+      calendar: isChartExpanded,//economic calendar
       container_id: 'tradingview_82ac1',
     })
   }
@@ -188,15 +221,12 @@ const TradingViewChart = ({
       container_id: 'tradingview_82ac1',
       symbol,
     }
-
     // if (isMobile) {
     //   opts.hide_side_toolbar = true
     // }
-
     // @ts-ignore
     if (window.tv) {
       // @ts-ignore
-
       widgetRef.current = initializeTradingView(window.tv, theme, currentLanguage.code, opts)
     } else {
       tradingViewListener().then((tv) => {

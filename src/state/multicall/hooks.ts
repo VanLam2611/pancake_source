@@ -230,6 +230,7 @@ export function useMultipleContractSingleData(
 
   return useMemo(() => {
     const currentBlockNumber = cache.get('blockNumber')
+    
     return results.map((result) => toCallState(result, contractInterface, fragment, currentBlockNumber))
   }, [fragment, results, contractInterface, cache])
 }

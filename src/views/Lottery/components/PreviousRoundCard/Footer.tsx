@@ -11,9 +11,9 @@ interface PreviousRoundCardFooterProps {
 }
 
 const Sibling = styled.div`
-  color: #ec4c93;
+  color: #60C5BA;
   + svg {
-    fill: #ec4c93;
+    fill: #60C5BA;
   }
 `
 

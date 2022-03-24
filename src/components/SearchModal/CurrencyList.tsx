@@ -1,4 +1,4 @@
-import { CSSProperties, MutableRefObject, useCallback, useMemo } from 'react'
+import { CSSProperties, MutableRefObject, useCallback, useEffect, useMemo } from 'react'
 import { Currency, CurrencyAmount, currencyEquals, ETHER, Token } from '@pancakeswap/sdk'
 import { Text } from '@pancakeswap/uikit'
 import styled from 'styled-components'
@@ -10,7 +10,8 @@ import { useTranslation } from 'contexts/Localization'
 import useActiveWeb3React from 'hooks/useActiveWeb3React'
 import { useCombinedActiveList } from '../../state/lists/hooks'
 import { useCurrencyBalance } from '../../state/wallet/hooks'
-import { useIsUserAddedToken, useAllInactiveTokens } from '../../hooks/Tokens'
+import { useAllTokenBalances } from '../../state/wallet/hooks'
+import { useIsUserAddedToken } from '../../hooks/Tokens'
 import Column from '../Layout/Column'
 import { RowFixed, RowBetween } from '../Layout/Row'
 import { CurrencyLogo } from '../Logo'
@@ -23,6 +24,7 @@ function currencyKey(currency: Currency): string {
 }
 
 const StyledBalanceText = styled(Text)`
+  color: #fff;
   white-space: nowrap;
   overflow: hidden;
   max-width: 5rem;
@@ -50,7 +52,7 @@ const MenuItem = styled(RowBetween)<{ disabled: boolean; selected: boolean }>`
   cursor: ${({ disabled }) => !disabled && 'pointer'};
   pointer-events: ${({ disabled }) => disabled && 'none'};
   :hover {
-    background-color: ${({ theme, disabled }) => !disabled && theme.colors.background};
+    background-color: ${({ theme, disabled }) => !disabled && '#0B3854'};
   }
   opacity: ${({ disabled, selected }) => (disabled || selected ? 0.5 : 1)};
 `
@@ -76,9 +78,10 @@ function CurrencyRow({
   const customAdded = useIsUserAddedToken(currency)
   const balance = useCurrencyBalance(account ?? undefined, currency)
 
-  // const [ valueInput, setValueInput ] = useState('')
-
   // only show add or remove buttons if not on selected list
+  // useEffect(()=>{
+  //   console.log(balance);
+  // })
   return (
     <>
       {isShow ? (
@@ -90,9 +93,12 @@ function CurrencyRow({
           selected={otherSelected}
         >
           <CurrencyLogo currency={currency} size="24px" />
+
           <Column>
-            <Text bold>{currency.symbol}</Text>
-            <Text color="textSubtle" small ellipsis maxWidth="200px">
+            <Text bold color="#60C5BA">
+              {currency.symbol}
+            </Text>
+            <Text color="#fff" small ellipsis maxWidth="200px">
               {!isOnSelectedList && customAdded && 'Added by user •'} {currency.name}
             </Text>
           </Column>
@@ -110,8 +116,10 @@ function CurrencyRow({
         >
           <CurrencyLogo currency={currency} size="24px" />
           <Column>
-            <Text bold>{currency.symbol}</Text>
-            <Text color="textSubtle" small ellipsis maxWidth="200px">
+            <Text bold color="#60C5BA">
+              {currency.symbol}
+            </Text>
+            <Text color="#fff" small ellipsis maxWidth="200px">
               {!isOnSelectedList && customAdded && 'Added by user •'} {currency.name}
             </Text>
           </Column>
@@ -127,6 +135,7 @@ function CurrencyRow({
 export default function CurrencyList({
   height,
   currencies,
+  inactiveCurrencies,
   selectedCurrency,
   onCurrencySelect,
   otherCurrency,
@@ -139,6 +148,7 @@ export default function CurrencyList({
 }: {
   height: number
   currencies: Currency[]
+  inactiveCurrencies: Currency[]
   selectedCurrency?: Currency | null
   onCurrencySelect: (currency: Currency) => void
   otherCurrency?: Currency | null
@@ -150,20 +160,18 @@ export default function CurrencyList({
   isShow: boolean
 }) {
   const itemData: (Currency | undefined)[] = useMemo(() => {
-    let formatted: (Currency | undefined)[] = showETH ? [Currency.ETHER, ...currencies] : currencies
+    let formatted: (Currency | undefined)[] = showETH
+      ? [Currency.ETHER, ...currencies, ...inactiveCurrencies]
+      : [...currencies, ...inactiveCurrencies]
     if (breakIndex !== undefined) {
       formatted = [...formatted.slice(0, breakIndex), undefined, ...formatted.slice(breakIndex, formatted.length)]
     }
     return formatted
-  }, [breakIndex, currencies, showETH])
+  }, [breakIndex, currencies, inactiveCurrencies, showETH])
 
   const { chainId } = useActiveWeb3React()
 
   const { t } = useTranslation()
-
-  const inactiveTokens: {
-    [address: string]: Token
-  } = useAllInactiveTokens()
 
   const Row = useCallback(
     ({ data, index, style }) => {
@@ -174,7 +182,7 @@ export default function CurrencyList({
 
       const token = wrappedCurrency(currency, chainId)
 
-      const showImport = inactiveTokens && token && Object.keys(inactiveTokens).includes(token.address)
+      const showImport = index > currencies.length
 
       if (index === breakIndex || !data) {
         return (
@@ -221,16 +229,18 @@ export default function CurrencyList({
           isShow={isShow}
         />
       )
-    }, [
-      chainId,
-      inactiveTokens,
-      onCurrencySelect,
-      otherCurrency,
+    },
+    [
       selectedCurrency,
-      setImportToken,
-      showImportView,
+      otherCurrency,
+      chainId,
+      currencies.length,
       breakIndex,
+      onCurrencySelect,
       t,
+      showImportView,
+      setImportToken,
+      isShow,
     ],
   )
 

@@ -9,9 +9,9 @@ const StyledInput = styled(Input)<{ $isDark: boolean }>`
   border-radius: 6px;
   margin-left: auto;
   ${({ theme }) => theme.mediaQueries.sm} {
-    background: ${({ $isDark }) => ($isDark ? '#0C071180' : '#fff')};
+    background: ${({ $isDark }) => ($isDark ? 'rgba(0,0,0,0.5)' : '#fff')};
   }
-  border: 1px solid #b5689e;
+  border: 1px solid #60C5BA;
 `
 
 const InputWrapper = styled.div`

@@ -8,7 +8,7 @@ export const Wrapper = styled(Flex)<{ $isDark: boolean }>`
   justify-content: space-between;
   padding: 1rem;
   ${({ theme }) => theme.mediaQueries.sm} {
-    background: ${({ $isDark }) => ($isDark ? '#0C071180' : '#fff')};
+    background: ${({ $isDark }) => ($isDark ? '#1E2735' : '#fff')};
   }
 `
 

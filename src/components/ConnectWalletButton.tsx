@@ -1,8 +1,9 @@
-import { Button, useWalletModal, ButtonProps } from '@pancakeswap/uikit'
+import { useWalletModal, ButtonProps } from '@pancakeswap/uikit'
 import useAuth from 'hooks/useAuth'
 import { useTranslation } from 'contexts/Localization'
 import useTheme from 'hooks/useTheme'
 import Trans from './Trans'
+import { BasicButton } from '../../packages/uikit/src/components/Button/index.stories'
 
 const ConnectWalletButton = ({ children, ...props }: ButtonProps) => {
   const { t } = useTranslation()
@@ -11,16 +12,13 @@ const ConnectWalletButton = ({ children, ...props }: ButtonProps) => {
   const { onPresentConnectModal } = useWalletModal(login, logout, t)
 
   return (
-    <Button
-      style={{
-        background: isDark ? 'transparent' : '#EC4C93',
-        border: isDark ? '1px solid #EC4C93' : '1px solid transparent',
-      }}
+    <BasicButton
       onClick={onPresentConnectModal}
+      variant='customPrimary'
       {...props}
     >
       {children || <Trans>Connect Wallet</Trans>}
-    </Button>
+    </BasicButton>
   )
 }
 

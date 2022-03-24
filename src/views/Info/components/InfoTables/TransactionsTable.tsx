@@ -20,6 +20,7 @@ import truncateHash from 'utils/truncateHash'
 import { Transaction, TransactionType } from 'state/info/types'
 import { ITEMS_PER_INFO_TABLE_PAGE } from 'config/constants/info'
 import { useTranslation } from 'contexts/Localization'
+import useTheme from 'hooks/useTheme'
 import { ClickableColumnHeader, TableWrapper, PageButtons, Arrow } from './shared'
 
 const Wrapper = styled.div`
@@ -74,19 +75,21 @@ const RadioGroup = styled(Flex)`
   cursor: pointer;
 `
 
-const StyledRadio = styled(Radio)`
-  color: #ec4c93;
+const StyledRadio = styled(Radio) <{ $color?: string, $borderColor?: string }>`
+  color: ${(props) => props.$color || ''};
+  border: 1.5px solid ${(props) => props.$borderColor || ''};
   width: 20px;
   height: 20px;
   margin: 0 12px 0 0;
   position: relative;
 
   &&:checked {
-    background: #ec4c93;
+    background: ${(props) => props.$color || ''};
+    border: none;
   }
 
   &&:checked::after {
-    background: #ec4c93;
+    background: ${(props) => props.$color || ''};
     content: '';
     position: absolute;
     top: 0;
@@ -97,16 +100,23 @@ const StyledRadio = styled(Radio)`
 
   &&:focus,
   &&:hover:not(:disabled):not(:checked) {
-    box-shadow: 0px 0px 0px 1px #ec4c93, 0px 0px 0px 4px rgb(236, 76, 147, 0.6);
+    box-shadow:
+      0px 0px 0px 1px ${(props) => props.$color || ''},
+      0px 0px 0px 4px ${(props) => `${props.$color}99` || ''};
   }
 `
 
-const StyledRadioGroupText = styled(Text)`
+const StyledRadioGroupText = styled(Text) <{ $isDarkStyle?: boolean }>`
   font-size: 16px;
   line-height: 24px;
-  color: #fff;
   font-weight: 300;
   margin: 0;
+
+  ${(props) => props.$isDarkStyle ? css`
+    color: #fff;
+  ` : css`
+    color: #000;
+  `}
 `
 
 const StyledTableHeading = styled.div`
@@ -117,14 +127,12 @@ const StyledTableHeading = styled.div`
 `
 
 const StyledHeading = styled(Heading)`
-  color: #ec4c93;
   font-style: normal;
   font-weight: bold;
   font-size: 24px;
   line-height: 24px;
   text-transform: capitalize;
   margin: 0 0 0px 0;
-  text-shadow: 0px 0px 5px #000;
 `
 
 const StyledTableWrapper = styled(TableWrapper)`
@@ -135,15 +143,14 @@ const StyledTableWrapper = styled(TableWrapper)`
   gap: 0px;
 `
 
-const StyledTableHeader = styled(ResponsiveGrid)`
+const StyledTableHeader = styled(ResponsiveGrid) <{ $bgColor?: string }>`
   padding: 20px 30px;
   border-radius: 10px;
-  background: #2d022e;
   margin-bottom: 24px;
+  background: ${(props) => props.$bgColor || ''};
 `
 
 const StyledTableHeaderText = styled(Text)`
-  color: #b5689e;
   font-style: normal;
   font-weight: bold;
   font-size: 16px;
@@ -152,7 +159,6 @@ const StyledTableHeaderText = styled(Text)`
 `
 
 const StyledClickableColumnHeader = styled(ClickableColumnHeader)`
-  color: #b5689e;
   font-style: normal;
   font-weight: bold;
   font-size: 16px;
@@ -160,29 +166,28 @@ const StyledClickableColumnHeader = styled(ClickableColumnHeader)`
   text-transform: uppercase;
 `
 
-const StyledDataRowLinkExternal = styled(LinkExternal)`
-  color: #ec4c93;
+const StyledDataRowLinkExternal = styled(LinkExternal) <{ $txtColor?: string, $iconColor?: string }>`
+  color: ${(props) => props.$txtColor || ''};
 
   && svg {
-    fill: #b5689e;
+    fill: ${(props) => props.$iconColor || ''};
   }
 `
 
-const StyledDataRowText = styled(Text)<{ $isNumber?: boolean }>`
+const StyledDataRowText = styled(Text) <{ $isNumber?: boolean, $txtColor?: string, $numBgColor?: string }>`
   font-style: normal;
   font-weight: normal;
   font-size: 16px;
   line-height: 16px;
   text-transform: capitalize;
-  color: #fff;
+  color: ${(props) => props.$txtColor || ''};
 
   ${(props) =>
     props.$isNumber &&
     css`
       padding: 5px 8px;
-      background: #2d022e;
+      background: ${props.$numBgColor || ''};
       border-radius: 5px;
-      color: #b5689e;
       font-style: normal;
       font-weight: 600;
       font-size: 16px;
@@ -190,12 +195,12 @@ const StyledDataRowText = styled(Text)<{ $isNumber?: boolean }>`
     `}
 `
 
-const StyledDataRowWrapper = styled(ResponsiveGrid)`
+const StyledDataRowWrapper = styled(ResponsiveGrid) <{ $bgColor?: string, $borderColor?: string }>`
   && {
     padding: 20px 30px;
-    background: rgba(12, 7, 17, 0.7);
     border-radius: 0;
-    border-bottom: 1px solid #ec4c93;
+    background: ${(props) => props.$bgColor || ''};
+    border-bottom: ${(props) => `1px solid ${props.$borderColor}` || '1px solid transparent'};
   }
 
   &&:first-of-type {
@@ -249,6 +254,7 @@ const TableLoader: React.FC = () => {
 }
 
 const DataRow: React.FC<{ transaction: Transaction }> = ({ transaction }) => {
+  const { theme } = useTheme()
   const { t } = useTranslation()
   const abs0 = Math.abs(transaction.amountToken0)
   const abs1 = Math.abs(transaction.amountToken1)
@@ -256,27 +262,46 @@ const DataRow: React.FC<{ transaction: Transaction }> = ({ transaction }) => {
   const inputTokenSymbol = transaction.amountToken1 < 0 ? transaction.token0Symbol : transaction.token1Symbol
 
   return (
-    <StyledDataRowWrapper>
-      <StyledDataRowLinkExternal href={getBscScanLink(transaction.hash, 'transaction')}>
-        <StyledDataRowText style={{ color: '#EC4C93' }}>
+    <StyledDataRowWrapper
+      $bgColor={theme.isDark ? theme.colors.bgDarkWeaker : '#fff'}
+      $borderColor={theme.isDark ? theme.colors.itemBlueUnhighlight : '#EBEBEB'}
+    >
+      <StyledDataRowLinkExternal
+        href={getBscScanLink(transaction.hash, 'transaction')}
+        $txtColor={theme.colors.itemPrimary}
+        $iconColor={theme.isDark ? '#fff' : '#6E6E6E'}
+      >
+        <StyledDataRowText $txtColor={theme.colors.itemPrimary}>
           {transaction.type === TransactionType.MINT
             ? t('Add %token0% and %token1%', { token0: transaction.token0Symbol, token1: transaction.token1Symbol })
             : transaction.type === TransactionType.SWAP
-            ? t('Swap %token0% for %token1%', { token0: inputTokenSymbol, token1: outputTokenSymbol })
-            : t('Remove %token0% and %token1%', { token0: transaction.token0Symbol, token1: transaction.token1Symbol })}
+              ? t('Swap %token0% for %token1%', { token0: inputTokenSymbol, token1: outputTokenSymbol })
+              : t('Remove %token0% and %token1%', { token0: transaction.token0Symbol, token1: transaction.token1Symbol })}
         </StyledDataRowText>
       </StyledDataRowLinkExternal>
-      <StyledDataRowText>${formatAmount(transaction.amountUSD)}</StyledDataRowText>
+      <StyledDataRowText $txtColor={theme.isDark ? '#fff' : '#6E6E6E'}>
+        ${formatAmount(transaction.amountUSD)}
+      </StyledDataRowText>
       <Text>
-        <StyledDataRowText>{`${formatAmount(abs0)} ${transaction.token0Symbol}`}</StyledDataRowText>
+        <StyledDataRowText $txtColor={theme.isDark ? '#fff' : '#6E6E6E'}>
+          {`${formatAmount(abs0)} ${transaction.token0Symbol}`}
+        </StyledDataRowText>
       </Text>
       <Text>
-        <StyledDataRowText>{`${formatAmount(abs1)} ${transaction.token1Symbol}`}</StyledDataRowText>
+        <StyledDataRowText $txtColor={theme.isDark ? '#fff' : '#6E6E6E'}>
+          {`${formatAmount(abs1)} ${transaction.token1Symbol}`}
+        </StyledDataRowText>
       </Text>
-      <StyledDataRowLinkExternal href={getBscScanLink(transaction.sender, 'address')}>
+      <StyledDataRowLinkExternal
+        href={getBscScanLink(transaction.sender, 'address')}
+        $txtColor={theme.colors.itemPrimary}
+        $iconColor={theme.isDark ? '#fff' : '#6E6E6E'}
+      >
         {truncateHash(transaction.sender)}
       </StyledDataRowLinkExternal>
-      <StyledDataRowText>{formatDistanceToNowStrict(parseInt(transaction.timestamp, 10) * 1000)}</StyledDataRowText>
+      <StyledDataRowText $txtColor={theme.isDark ? '#fff' : '#6E6E6E'}>
+        {formatDistanceToNowStrict(parseInt(transaction.timestamp, 10) * 1000)}
+      </StyledDataRowText>
     </StyledDataRowWrapper>
   )
 }
@@ -289,6 +314,7 @@ const TransactionTable: React.FC<{
   const [sortDirection, setSortDirection] = useState<boolean>(true)
 
   const { t } = useTranslation()
+  const { theme } = useTheme()
 
   const [page, setPage] = useState(1)
   const [maxPage, setMaxPage] = useState(1)
@@ -299,22 +325,22 @@ const TransactionTable: React.FC<{
     const toBeAbsList = [SORT_FIELD.amountToken0, SORT_FIELD.amountToken1]
     return transactions
       ? transactions
-          .slice()
-          .sort((a, b) => {
-            if (a && b) {
-              const firstField = a[sortField as keyof Transaction]
-              const secondField = b[sortField as keyof Transaction]
-              const [first, second] = toBeAbsList.includes(sortField)
-                ? [Math.abs(firstField as number), Math.abs(secondField as number)]
-                : [firstField, secondField]
-              return first > second ? (sortDirection ? -1 : 1) * 1 : (sortDirection ? -1 : 1) * -1
-            }
-            return -1
-          })
-          .filter((x) => {
-            return txFilter === undefined || x.type === txFilter
-          })
-          .slice(ITEMS_PER_INFO_TABLE_PAGE * (page - 1), page * ITEMS_PER_INFO_TABLE_PAGE)
+        .slice()
+        .sort((a, b) => {
+          if (a && b) {
+            const firstField = a[sortField as keyof Transaction]
+            const secondField = b[sortField as keyof Transaction]
+            const [first, second] = toBeAbsList.includes(sortField)
+              ? [Math.abs(firstField as number), Math.abs(secondField as number)]
+              : [firstField, secondField]
+            return first > second ? (sortDirection ? -1 : 1) * 1 : (sortDirection ? -1 : 1) * -1
+          }
+          return -1
+        })
+        .filter((x) => {
+          return txFilter === undefined || x.type === txFilter
+        })
+        .slice(ITEMS_PER_INFO_TABLE_PAGE * (page - 1), page * ITEMS_PER_INFO_TABLE_PAGE)
       : []
   }, [transactions, page, sortField, sortDirection, txFilter])
 
@@ -362,32 +388,56 @@ const TransactionTable: React.FC<{
     <Wrapper>
       {/* Section 1: */}
       <StyledTableHeading>
-        <StyledHeading scale="lg" mt="40px" mb="16px">
+        <StyledHeading color="itemPrimary" scale="lg" mt="40px" mb="16px">
           {headingContent}
         </StyledHeading>
 
         <Flex mb="0px">
           <Flex flexDirection={['column', 'row']}>
             <RadioGroup onClick={() => handleFilter(undefined)}>
-              <StyledRadio onChange={() => null} scale="sm" checked={txFilter === undefined} />
-              <StyledRadioGroupText ml="8px">{t('All')}</StyledRadioGroupText>
+              <StyledRadio
+                $color={theme.colors.itemPrimary}
+                $borderColor={theme.colors.itemBlueUnhighlight}
+                onChange={() => null}
+                scale="sm"
+                checked={txFilter === undefined}
+              />
+              <StyledRadioGroupText $isDarkStyle={theme.isDark} ml="8px">{t('All')}</StyledRadioGroupText>
             </RadioGroup>
 
             <RadioGroup onClick={() => handleFilter(TransactionType.SWAP)}>
-              <StyledRadio onChange={() => null} scale="sm" checked={txFilter === TransactionType.SWAP} />
-              <StyledRadioGroupText ml="8px">{t('Swaps')}</StyledRadioGroupText>
+              <StyledRadio
+                $color={theme.colors.itemPrimary}
+                $borderColor={theme.colors.itemBlueUnhighlight}
+                onChange={() => null}
+                scale="sm"
+                checked={txFilter === TransactionType.SWAP}
+              />
+              <StyledRadioGroupText $isDarkStyle={theme.isDark} ml="8px">{t('Swaps')}</StyledRadioGroupText>
             </RadioGroup>
           </Flex>
 
           <Flex flexDirection={['column', 'row']}>
             <RadioGroup onClick={() => handleFilter(TransactionType.MINT)}>
-              <StyledRadio onChange={() => null} scale="sm" checked={txFilter === TransactionType.MINT} />
-              <StyledRadioGroupText ml="8px">{t('Adds')}</StyledRadioGroupText>
+              <StyledRadio
+                $color={theme.colors.itemPrimary}
+                $borderColor={theme.colors.itemBlueUnhighlight}
+                onChange={() => null}
+                scale="sm"
+                checked={txFilter === TransactionType.MINT}
+              />
+              <StyledRadioGroupText $isDarkStyle={theme.isDark} ml="8px">{t('Adds')}</StyledRadioGroupText>
             </RadioGroup>
 
             <RadioGroup onClick={() => handleFilter(TransactionType.BURN)}>
-              <StyledRadio onChange={() => null} scale="sm" checked={txFilter === TransactionType.BURN} />
-              <StyledRadioGroupText ml="8px">{t('Removes')}</StyledRadioGroupText>
+              <StyledRadio
+                $color={theme.colors.itemPrimary}
+                $borderColor={theme.colors.itemBlueUnhighlight}
+                onChange={() => null}
+                scale="sm"
+                checked={txFilter === TransactionType.BURN}
+              />
+              <StyledRadioGroupText $isDarkStyle={theme.isDark} ml="8px">{t('Removes')}</StyledRadioGroupText>
             </RadioGroup>
           </Flex>
         </Flex>
@@ -395,12 +445,12 @@ const TransactionTable: React.FC<{
 
       {/* Section 2: */}
       <StyledTableWrapper>
-        <StyledTableHeader>
-          <StyledTableHeaderText color="secondary" fontSize="12px" bold textTransform="uppercase">
+        <StyledTableHeader $bgColor={theme.colors.bgDarkWeaker}>
+          <StyledTableHeaderText color="itemPrimary" fontSize="12px" bold textTransform="uppercase">
             {t('Action')}
           </StyledTableHeaderText>
           <StyledClickableColumnHeader
-            color="secondary"
+            color="itemPrimary"
             fontSize="12px"
             bold
             onClick={() => handleSort(SORT_FIELD.amountUSD)}
@@ -409,7 +459,7 @@ const TransactionTable: React.FC<{
             {t('Total Value')} {arrow(SORT_FIELD.amountUSD)}
           </StyledClickableColumnHeader>
           <StyledClickableColumnHeader
-            color="secondary"
+            color="itemPrimary"
             fontSize="12px"
             bold
             onClick={() => handleSort(SORT_FIELD.amountToken0)}
@@ -418,7 +468,7 @@ const TransactionTable: React.FC<{
             {t('Token Amount')} {arrow(SORT_FIELD.amountToken0)}
           </StyledClickableColumnHeader>
           <StyledClickableColumnHeader
-            color="secondary"
+            color="itemPrimary"
             fontSize="12px"
             bold
             onClick={() => handleSort(SORT_FIELD.amountToken1)}
@@ -427,7 +477,7 @@ const TransactionTable: React.FC<{
             {t('Token Amount')} {arrow(SORT_FIELD.amountToken1)}
           </StyledClickableColumnHeader>
           <StyledClickableColumnHeader
-            color="secondary"
+            color="itemPrimary"
             fontSize="12px"
             bold
             onClick={() => handleSort(SORT_FIELD.sender)}
@@ -436,7 +486,7 @@ const TransactionTable: React.FC<{
             {t('Account')} {arrow(SORT_FIELD.sender)}
           </StyledClickableColumnHeader>
           <StyledClickableColumnHeader
-            color="secondary"
+            color="itemPrimary"
             fontSize="12px"
             bold
             onClick={() => handleSort(SORT_FIELD.timestamp)}
@@ -475,7 +525,7 @@ const TransactionTable: React.FC<{
                 <ArrowBackIcon color={page === 1 ? 'textDisabled' : 'primary'} />
               </Arrow>
 
-              <Text style={{ color: '#fff', textShadow: '0 0 5px #000' }}>
+              <Text style={{ color: `${theme.isDark ? '#fff' : '#6E6E6E'}` }}>
                 {t('Page %page% of %maxPage%', { page, maxPage })}
               </Text>
               <Arrow

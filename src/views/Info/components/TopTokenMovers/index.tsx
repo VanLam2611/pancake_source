@@ -7,9 +7,14 @@ import { TokenData } from 'state/info/types'
 import { CurrencyLogo } from 'views/Info/components/CurrencyLogo'
 import { formatAmount } from 'utils/formatInfoNumbers'
 import Percent from 'views/Info/components/Percent'
+import useTheme from 'hooks/useTheme'
 // import { useTranslation } from 'contexts/Localization'
 
-const CardWrapper = styled(NextLinkFromReactRouter)`
+const CardWrapper = styled(NextLinkFromReactRouter) <{
+  $txtColor?: string,
+  $bgColor?: string,
+  $borderColor?: string
+}>`
   display: inline-block;
   min-width: 190px;
   margin-left: 16px;
@@ -20,8 +25,8 @@ const CardWrapper = styled(NextLinkFromReactRouter)`
 
   && > div {
     border-radius: 10px;
-    border: 1px solid #ec4c93;
-    background: rgba(12, 7, 17, 0.7);
+    border: 1px solid ${(props) => props.$borderColor};
+    background: ${(props) => props.$bgColor};
   }
 `
 
@@ -47,7 +52,6 @@ const StyledDataCardTitle = styled(Text)`
   font-size: 16px;
   line-height: 16px;
   text-transform: capitalize;
-  color: #fff;
   margin-bottom: 4px;
 `
 
@@ -58,7 +62,6 @@ const StyledPriceUSD = styled(Text)`
   line-height: 14px;
   display: flex;
   align-items: center;
-  color: #ec4c93;
   margin-right: 12px;
 `
 
@@ -73,8 +76,13 @@ export const ScrollableRow = styled.div`
 `
 
 const DataCard = ({ tokenData }: { tokenData: TokenData }) => {
+  const { theme } = useTheme()
   return (
-    <CardWrapper to={`/info/token/${tokenData.address}`}>
+    <CardWrapper
+      to={`/info/token/${tokenData.address}`}
+      $bgColor={theme.isDark ? theme.colors.bgDark : '#fff'}
+      $borderColor={theme.isDark ? theme.colors.itemBlueUnhighlight : '#fff'}
+    >
       <TopMoverCard>
         <Flex alignItems="center">
           <Box width="32px" height="32px">
@@ -82,7 +90,7 @@ const DataCard = ({ tokenData }: { tokenData: TokenData }) => {
             <CurrencyLogo address={tokenData.address} size="32px" />
           </Box>
           <Box ml="16px">
-            <StyledDataCardTitle>{tokenData.symbol}</StyledDataCardTitle>
+            <StyledDataCardTitle color={theme.colors.itemPrimary}>{tokenData.symbol}</StyledDataCardTitle>
             <Flex alignItems="center">
               <StyledPriceUSD fontSize="14px" mr="6px" lineHeight="16px">
                 ${formatAmount(tokenData.priceUSD)}
@@ -140,8 +148,8 @@ const TopTokenMovers: React.FC = () => {
     <>
       <StyledCard my="16px">
         {/* <Text ml="16px" mt="8px">
-        {t('Top Movers')}
-      </Text> */}
+          {t('Top Movers')}
+        </Text> */}
         <ScrollableRow ref={increaseRef}>
           {topPriceIncrease.map((entry) =>
             entry.data ? <DataCard key={`top-card-token-${entry.data?.address}`} tokenData={entry.data} /> : null,

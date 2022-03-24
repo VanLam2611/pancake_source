@@ -27,7 +27,7 @@ export const swapSectionData = (t: TranslateFunction): SalesSectionProps => ({
 
 export const earnSectionData = (t: TranslateFunction): SalesSectionProps => ({
   headingText: t('Earn passive income with crypto.'),
-  bodyText: t('Womentech makes it easy to make your crypto work for you.'),
+  bodyText: t('OnDefi makes it easy to make your crypto work for you.'),
   reverse: true,
   primaryButton: {
     to: '/farms',
@@ -50,9 +50,9 @@ export const earnSectionData = (t: TranslateFunction): SalesSectionProps => ({
 })
 
 export const cakeSectionData = (t: TranslateFunction): SalesSectionProps => ({
-  headingText: t('Womentech makes our world go round.'),
+  headingText: t('OnDefi makes our world go round.'),
   bodyText: t(
-    'Womentech token is at the heart of the PancakeSwap ecosystem. Buy it, win it, farm it, spend it, stake it... heck, you can even vote with it!',
+    'OnDefi token is at the heart of the PancakeSwap ecosystem. Buy it, win it, farm it, spend it, stake it... heck, you can even vote with it!',
   ),
   reverse: false,
   primaryButton: {

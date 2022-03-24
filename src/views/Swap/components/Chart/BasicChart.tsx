@@ -17,12 +17,12 @@ const SwapLineChart = dynamic(() => import('./SwapLineChart'), {
 const ParentChart = styled.div`
   :first-child {
     button {
-      background-color: #ec4c93;
+      background-color: #60C5BA;
       color: #fff;
     }
     button.sc-bkkeKt.eGBDrg {
       background-color: transparent !important;
-      color: #ec4c93;
+      color: #60C5BA;
     }
   }
 `
@@ -142,11 +142,11 @@ const BasicChart = ({
             inputSymbol={inputCurrency?.symbol}
             outputSymbol={outputCurrency?.symbol}
           >
-            <Text color="#EC4C93" fontSize="20px" ml="4px" bold mt="-8px" mb="8px">
+            <Text color="#60C5BA" fontSize="20px" ml="4px" bold mt="-8px" mb="8px">
               {`${isChangePositive ? '+' : ''}${changeValue.toFixed(3)} (${changePercentage}%)`}
             </Text>
           </PairPriceDisplay>
-          <Text small color="secondary">
+          <Text small color='light'>
             {hoverDate || currentDate}
           </Text>
         </Flex>

@@ -3489,10 +3489,10 @@
     "eslint-plugin-react" "^7.21.5"
     "eslint-plugin-react-hooks" "^4.0.0"
 
-"@pancakeswap/sdk@^2.4.4":
-  "integrity" "sha512-AjbkAPkHG/Lw5W4TLLnd9Z3jvnSNFBZZFLwGzKd1zB5rF8Vg4LxwB6QT6QKGtNwGkL2CqNo8tPtMCl7YlYiYwQ=="
-  "resolved" "https://registry.npmjs.org/@pancakeswap/sdk/-/sdk-2.4.4.tgz"
-  "version" "2.4.4"
+"@pancakeswap/sdk@^2.4.5":
+  "integrity" "sha512-qfHOPGXitDQ5y1dmYloe6UQe/0Ki0enow4MLtr5W49Jl7ZXr8oB6XV7usYtT63R7vqLSKY83rd8Wyw18vxP7dA=="
+  "resolved" "https://registry.npmjs.org/@pancakeswap/sdk/-/sdk-2.4.5.tgz"
+  "version" "2.4.5"
   dependencies:
     "big.js" "^5.2.2"
     "decimal.js-light" "^2.5.0"
@@ -4189,7 +4189,7 @@
     "ts-dedent" "^2.0.0"
     "util-deprecate" "^1.0.2"
 
-"@storybook/client-logger@6.4.19":
+"@storybook/client-logger@^6.4.0 || >=6.5.0-0", "@storybook/client-logger@6.4.19":
   "integrity" "sha512-zmg/2wyc9W3uZrvxaW4BfHcr40J0v7AGslqYXk9H+ERLVwIvrR4NhxQFaS6uITjBENyRDxwzfU3Va634WcmdDQ=="
   "resolved" "https://registry.npmjs.org/@storybook/client-logger/-/client-logger-6.4.19.tgz"
   "version" "6.4.19"
@@ -4401,6 +4401,16 @@
   dependencies:
     "lodash" "^4.17.15"
 
+"@storybook/instrumenter@^6.4.0 || >=6.5.0-0":
+  "integrity" "sha512-KwOJUW7tItZw1CLffUbaSfEzH1p1HdGmJs1Q42uWGJSbXbVHZ7i7bJWYb3Lf90+yHTlqQjTr1PKAymwDwHseTA=="
+  "resolved" "https://registry.npmjs.org/@storybook/instrumenter/-/instrumenter-6.4.19.tgz"
+  "version" "6.4.19"
+  dependencies:
+    "@storybook/addons" "6.4.19"
+    "@storybook/client-logger" "6.4.19"
+    "@storybook/core-events" "6.4.19"
+    "global" "^4.4.0"
+
 "@storybook/manager-webpack4@6.4.19":
   "integrity" "sha512-R8ugZjTYqXvlc6gDOcw909L65sIleOmIJLZR+N6/H85MivGXHu39jOwONqB7tVACufRty4FNecn8tEiQL2SAKA=="
   "resolved" "https://registry.npmjs.org/@storybook/manager-webpack4/-/manager-webpack4-6.4.19.tgz"
@@ -4588,6 +4598,17 @@
     "ts-dedent" "^2.0.0"
     "util-deprecate" "^1.0.2"
 
+"@storybook/testing-library@^0.0.9":
+  "integrity" "sha512-X4/Tk7RryB0tZ/9NLUHYTBXW01zRpf6+IhdhqsVl6WOWRyUaIv3zEhr43gQyZhBe4ZZyt5d90FJC9qWmY1oFKg=="
+  "resolved" "https://registry.npmjs.org/@storybook/testing-library/-/testing-library-0.0.9.tgz"
+  "version" "0.0.9"
+  dependencies:
+    "@storybook/client-logger" "^6.4.0 || >=6.5.0-0"
+    "@storybook/instrumenter" "^6.4.0 || >=6.5.0-0"
+    "@testing-library/dom" "^8.3.0"
+    "@testing-library/user-event" "^13.2.1"
+    "ts-dedent" "^2.2.0"
+
 "@storybook/theming@6.4.19":
   "integrity" "sha512-V4pWmTvAxmbHR6B3jA4hPkaxZPyExHvCToy7b76DpUTpuHihijNDMAn85KhOQYIeL9q14zP/aiz899tOHsOidg=="
   "resolved" "https://registry.npmjs.org/@storybook/theming/-/theming-6.4.19.tgz"
@@ -4744,7 +4765,7 @@
   dependencies:
     "defer-to-connect" "^1.0.1"
 
-"@testing-library/dom@^8.0.0":
+"@testing-library/dom@^8.0.0", "@testing-library/dom@^8.3.0", "@testing-library/dom@>=7.21.4":
   "integrity" "sha512-9LId28I+lx70wUiZjLvi1DB/WT2zGOxUh46glrSNMaWVx849kKAluezVzZrXJfTKKoQTmEOutLes/bHg4Bj3aA=="
   "resolved" "https://registry.npmjs.org/@testing-library/dom/-/dom-8.11.3.tgz"
   "version" "8.11.3"
@@ -4792,6 +4813,13 @@
     "@babel/runtime" "^7.12.5"
     "@testing-library/dom" "^8.0.0"
     "@types/react-dom" "*"
+
+"@testing-library/user-event@^13.2.1":
+  "integrity" "sha512-5Kwtbo3Y/NowpkbRuSepbyMFkZmHgD+vPzYB/RJ4oxt5Gj/avFFBYjhw27cqSVPVw/3a67NK1PbiIr9k4Gwmdg=="
+  "resolved" "https://registry.npmjs.org/@testing-library/user-event/-/user-event-13.5.0.tgz"
+  "version" "13.5.0"
+  dependencies:
+    "@babel/runtime" "^7.12.5"
 
 "@tootallnate/once@1":
   "integrity" "sha512-RbzJvlNzmRq5c3O09UipeuXno4tA1FE6ikOjxZK0tuxVv3412l64l5t1W5pj4+rJq9vpkm/kwiR07aZXnsKPxw=="
@@ -13275,11 +13303,6 @@
     "@sideway/formula" "^3.0.0"
     "@sideway/pinpoint" "^2.0.0"
 
-"js-cookie@^3.0.1":
-  "integrity" "sha512-+0rgsUXZu4ncpPxRL+lNEptWMOWl9etvPHc/koSRp6MPwpRYAhmk0dUG00J4bxVV3r9uUzfo24wW0knS07SKSw=="
-  "resolved" "https://registry.npmjs.org/js-cookie/-/js-cookie-3.0.1.tgz"
-  "version" "3.0.1"
-
 "js-sha256@0.9.0":
   "integrity" "sha512-sga3MHh9sgQN2+pJ9VYZ+1LPwXOxuBJBA5nrR5/ofPfuiJBE2hnjsaN8se8JznOmGLN2p49Pe5U/ttafcs/apA=="
   "resolved" "https://registry.npmjs.org/js-sha256/-/js-sha256-0.9.0.tgz"
@@ -16883,6 +16906,11 @@
     "react-fast-compare" "^3.2.0"
     "shallowequal" "^1.1.0"
 
+"react-hook@^0.0.1":
+  "integrity" "sha512-2/Guf88/dGyFgUT7QDtBJ1l7V5yqTcAHlNRIZNTu2xg0KkDjaiYZp79ah49NDaLMI/J7voWcKLU8wMONG4A/1g=="
+  "resolved" "https://registry.npmjs.org/react-hook/-/react-hook-0.0.1.tgz"
+  "version" "0.0.1"
+
 "react-inspector@^5.1.0":
   "integrity" "sha512-GURDaYzoLbW8pMGXwYPDBIv6nqei4kK7LPRZ9q9HCZF54wqXz/dnylBp/kfE9XmekBhHvLDdcYeyIwSrvtOiWg=="
   "resolved" "https://registry.npmjs.org/react-inspector/-/react-inspector-5.1.1.tgz"
@@ -17107,7 +17135,7 @@
     "@babel/runtime" "^7.0.0"
     "memoize-one" ">=3.1.1 <6"
 
-"react@*", "react@^0.14.0 || ^15.0.0 || ^16.0.0 || ^17.0.0", "react@^0.14.8 || ^15.0.1 || ^16.0.0 || ^17.0.1", "react@^15.0.0 || ^16.0.0", "react@^15.0.0 || ^16.0.0 || ^17.0.0", "react@^15.0.2 || ^16.0.0 || ^17.0.0", "react@^15.5.x || ^16.x || ^17.x", "react@^16.0.0", "react@^16.0.0 || ^17.0.0", "react@^16.11.0 || ^17.0.0 || ^18.0.0", "react@^16.13.1 || ^17.0.0", "react@^16.6.0 || ^17.0.0", "react@^16.8.0 || ^17", "react@^16.8.0 || ^17.0.0", "react@^16.8.3 || ^17", "react@^16.8.4 || ^17.0.0", "react@^16.9.0 || ^17", "react@^16.9.0 || ^17.0.0 || 18.0.0-beta", "react@^16.x || ^17.x", "react@^17.0.0 || ^16.3.0 || ^15.5.4", "react@^17.0.0 || ^16.9.0", "react@^17.0.1", "react@^17.0.2 || ^18.0.0-0", "react@>= 0.14.0", "react@>= 0.14.0 < 18.0.0", "react@>= 16.3.0", "react@>= 16.8.0", "react@>= 16.8.0 || 17.x.x || 18.x.x", "react@>=15", "react@>=15.0.0", "react@>=16", "react@>=16.12.0", "react@>=16.13.1", "react@>=16.3.0", "react@>=16.6.0", "react@>=16.8", "react@>=16.8 || ^17.0.0", "react@>=16.8.0", "react@>=16.9.0", "react@15.x || 16.x || 17.x", "react@17.0.2":
+"react@*", "react@^0.14.0 || ^15.0.0 || ^16.0.0 || ^17.0.0", "react@^0.14.8 || ^15.0.1 || ^16.0.0 || ^17.0.1", "react@^15.0.0 || ^16.0.0", "react@^15.0.0 || ^16.0.0 || ^17.0.0", "react@^15.0.2 || ^16.0.0 || ^17.0.0", "react@^15.5.x || ^16.x || ^17.x", "react@^16.0.0", "react@^16.0.0 || ^17.0.0", "react@^16.11.0 || ^17.0.0 || ^18.0.0", "react@^16.13.1 || ^17.0.0", "react@^16.6.0 || ^17.0.0", "react@^16.8.0 || ^17", "react@^16.8.0 || ^17.0.0", "react@^16.8.3 || ^17", "react@^16.8.4 || ^17.0.0", "react@^16.9.0 || ^17", "react@^16.9.0 || ^17.0.0 || 18.0.0-beta", "react@^16.x || ^17.x", "react@^17.0.0 || ^16.3.0 || ^15.5.4", "react@^17.0.0 || ^16.9.0", "react@^17.0.1", "react@^17.0.2", "react@^17.0.2 || ^18.0.0-0", "react@>= 0.14.0", "react@>= 0.14.0 < 18.0.0", "react@>= 16.3.0", "react@>= 16.8.0", "react@>= 16.8.0 || 17.x.x || 18.x.x", "react@>=15", "react@>=15.0.0", "react@>=16", "react@>=16.12.0", "react@>=16.13.1", "react@>=16.3.0", "react@>=16.6.0", "react@>=16.8", "react@>=16.8 || ^17.0.0", "react@>=16.8.0", "react@>=16.9.0", "react@15.x || 16.x || 17.x", "react@17.0.2":
   "integrity" "sha512-gnhPt75i/dq/z3/6q/0asP78D0u592D5L1pd7M8P+dck6Fu/jJeL6iVVK23fptSUZj8Vjf++7wXA8UNclGQcbA=="
   "resolved" "https://registry.npmjs.org/react/-/react-17.0.2.tgz"
   "version" "17.0.2"
@@ -19689,7 +19717,7 @@
     "command-line-usage" "^6.1.0"
     "string-format" "^2.0.0"
 
-"ts-dedent@^2.0.0":
+"ts-dedent@^2.0.0", "ts-dedent@^2.2.0":
   "integrity" "sha512-q5W7tVM71e2xjHZTlgfTDoPF/SmqKG5hddq9SzR49CH2hayqRKJtQ4mtRlSxKaJlR/+9rEM+mnBHf7I2/BQcpQ=="
   "resolved" "https://registry.npmjs.org/ts-dedent/-/ts-dedent-2.2.0.tgz"
   "version" "2.2.0"

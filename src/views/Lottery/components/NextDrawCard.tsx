@@ -54,9 +54,9 @@ const NextDrawWrapper = styled.div`
   padding: 24px;
 `
 const Sibling = styled.div`
-  color: #ec4c93;
+  color: #60C5BA;
   + svg {
-    fill: #ec4c93;
+    fill: #60C5BA;
   }
 `
 
@@ -95,7 +95,7 @@ const NextDrawCard = () => {
         ) : (
           <Balance
             fontSize="40px"
-            color="#EC4C93"
+            color="#60C5BA"
             textAlign={['center', null, null, 'left']}
             lineHeight="1"
             bold

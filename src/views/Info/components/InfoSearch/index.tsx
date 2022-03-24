@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect, useMemo } from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { Text, Input, Flex, Skeleton, useMatchBreakpoints } from '@pancakeswap/uikit'
 import useFetchSearchResults from 'state/info/queries/search'
 import { CurrencyLogo, DoubleCurrencyLogo } from 'views/Info/components/CurrencyLogo'
@@ -12,6 +12,7 @@ import useDebounce from 'hooks/useDebounce'
 import { MINIMUM_SEARCH_CHARACTERS } from 'config/constants/info'
 import { PoolData } from 'state/info/types'
 import { useRouter } from 'next/router'
+import useTheme from 'hooks/useTheme'
 
 const Container = styled.div`
   position: relative;
@@ -23,11 +24,19 @@ const StyledInputWrapper = styled.div`
   position: relative;
 `
 
-const StyledSearchSVG = styled.span`
+const StyledSearchSVG = styled.span <{ $isDarkStyle?: boolean }>`
+  border-radius: 50%;
+  padding: 8px;
   position: absolute;
   top: 50%;
-  left: 20px;
+  left: 10px;
   transform: translate(0, -50%);
+
+  ${(props) => props.$isDarkStyle ? css`
+    background: transparent;
+  ` : css`
+    background-color: #ccc;
+  `}
 
   && svg {
     display: block;
@@ -36,25 +45,38 @@ const StyledSearchSVG = styled.span`
   }
 `
 
-const StyledInput = styled(Input)`
+const StyledInput = styled(Input) <{
+  $isDarkStyle?: boolean,
+  $txtColor?: string,
+  $bgColor?: string,
+  $borderColorForDark?: string
+}>`
   z-index: 9999;
-  // border: 1px solid ${({ theme }) => theme.colors.inputSecondary};
-  background: rgba(255, 255, 255, 0.2);
+  color: ${(props) => props.$txtColor};
+  background: ${(props) => props.$bgColor};
   border-radius: 30px;
   border: none;
   outline: none;
   height: 52px;
-  color: #fff;
   font-weight: 300;
   font-size: 20px;
   padding: 0 20px 0 calc(20px + 18px + 20px);
+  
+  ${(props) => props.$isDarkStyle ? css`
+    border: 1px solid ${props.$borderColorForDark || ''};
+  ` : css`
+    border: none;
+  `}
 
   &&:focus {
-    box-shadow: 0px 0px 0px 1px #ec4c93, 0px 0px 5px 5px rgb(236 76 147 /50%);
+    box-shadow: none;
+    // box-shadow:
+    //   0px 0px 0px 1px ${(props) => props.$bgColor},
+    //   0px 0px 5px 5px ${(props) => `${props.$bgColor}99`};
   }
 
   &&::placeholder {
-    color: rgba(255, 255, 255, 0.5);
+    color: ${(props) => `${props.$txtColor}99`};
   }
 `
 
@@ -190,6 +212,8 @@ const Search = () => {
   const [tokensShown, setTokensShown] = useState(3)
   const [poolsShown, setPoolsShown] = useState(3)
 
+  const { theme } = useTheme()
+
   useEffect(() => {
     setTokensShown(3)
     setPoolsShown(3)
@@ -306,8 +330,12 @@ const Search = () => {
             onFocus={() => {
               setShowMenu(true)
             }}
+            $isDarkStyle={theme.isDark}
+            $txtColor={theme.isDark ? '#fff' : '#000'}
+            $bgColor={theme.isDark ? theme.colors.bgDark : '#fff'}
+            $borderColorForDark={theme.colors.itemBlueUnhighlight}
           />
-          <StyledSearchSVG>
+          <StyledSearchSVG $isDarkStyle={theme.isDark}>
             <svg width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path
                 d="M16 15.5L13 12.5M13 6.5C13 9.81371 10.3137 12.5 7 12.5C3.68629 12.5 1 9.81371 1 6.5C1 3.18629 3.68629 0.5 7 0.5C10.3137 0.5 13 3.18629 13 6.5Z"

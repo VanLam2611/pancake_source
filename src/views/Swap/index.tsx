@@ -45,13 +45,13 @@ import { ApprovalState, useApproveCallbackFromTrade } from '../../hooks/useAppro
 import { useSwapCallback } from '../../hooks/useSwapCallback'
 import useWrapCallback, { WrapType } from '../../hooks/useWrapCallback'
 import { Field } from '../../state/swap/actions'
-import {
-  useDefaultsFromURLSearch,
-  useDerivedSwapInfo,
-  useSwapActionHandlers,
-  useSwapState,
-  useSingleTokenSwapInfo,
-} from '../../state/swap/hooks'
+  import {
+    useDefaultsFromURLSearch,
+    useDerivedSwapInfo,
+    useSwapActionHandlers,
+    useSwapState,
+    useSingleTokenSwapInfo,
+  } from '../../state/swap/hooks'
 import {
   useExpertModeManager,
   useUserSlippageTolerance,
@@ -87,7 +87,7 @@ const SwitchIconButton = styled(IconButton)`
     }
     .icon-up-down {
       display: block;
-      fill: #ec4c93;
+      fill: #60C5BA;
     }
   }
 `
@@ -137,15 +137,31 @@ export default function Swap() {
   // get custom setting values for user
   const [allowedSlippage] = useUserSlippageTolerance()
 
-  // swap state
-  const { independentField, typedValue, recipient } = useSwapState()
-  const { v2Trade, currencyBalances, parsedAmount, currencies, inputError: swapInputError } = useDerivedSwapInfo()
-
-  // Price data
+  // swap state & price data
   const {
+    independentField,
+    typedValue,
+    recipient,
     [Field.INPUT]: { currencyId: inputCurrencyId },
     [Field.OUTPUT]: { currencyId: outputCurrencyId },
   } = useSwapState()
+  const inputCurrency = useCurrency(inputCurrencyId)
+  const outputCurrency = useCurrency(outputCurrencyId)
+  const {
+    v2Trade,
+    currencyBalances,
+    parsedAmount,
+    currencies,
+    inputError: swapInputError,
+  } = useDerivedSwapInfo(
+    independentField,
+    typedValue,
+    inputCurrencyId,
+    inputCurrency,
+    outputCurrencyId,
+    outputCurrency,
+    recipient,
+  )
 
   const {
     wrapType,
@@ -155,7 +171,7 @@ export default function Swap() {
   const showWrap: boolean = wrapType !== WrapType.NOT_APPLICABLE
   const trade = showWrap ? undefined : v2Trade
 
-  const singleTokenPrice = useSingleTokenSwapInfo()
+  const singleTokenPrice = useSingleTokenSwapInfo(inputCurrencyId, inputCurrency, outputCurrencyId, outputCurrency)
 
   const parsedAmounts = showWrap
     ? {
@@ -302,12 +318,12 @@ export default function Swap() {
   }, [swapWarningCurrency])
 
   const handleInputSelect = useCallback(
-    (inputCurrency) => {
+    (currencyInput) => {
       setApprovalSubmitted(false) // reset 2 step UI for approvals
-      onCurrencySelection(Field.INPUT, inputCurrency)
-      const showSwapWarning = shouldShowSwapWarning(inputCurrency)
+      onCurrencySelection(Field.INPUT, currencyInput)
+      const showSwapWarning = shouldShowSwapWarning(currencyInput)
       if (showSwapWarning) {
-        setSwapWarningCurrency(inputCurrency)
+        setSwapWarningCurrency(currencyInput)
       } else {
         setSwapWarningCurrency(null)
       }
@@ -322,11 +338,11 @@ export default function Swap() {
   }, [maxAmountInput, onUserInput])
 
   const handleOutputSelect = useCallback(
-    (outputCurrency) => {
-      onCurrencySelection(Field.OUTPUT, outputCurrency)
-      const showSwapWarning = shouldShowSwapWarning(outputCurrency)
+    (currencyOutput) => {
+      onCurrencySelection(Field.OUTPUT, currencyOutput)
+      const showSwapWarning = shouldShowSwapWarning(currencyOutput)
       if (showSwapWarning) {
-        setSwapWarningCurrency(outputCurrency)
+        setSwapWarningCurrency(currencyOutput)
       } else {
         setSwapWarningCurrency(null)
       }
@@ -376,12 +392,11 @@ export default function Swap() {
       refreshBlockNumber()
     }
   }, [hasAmount, refreshBlockNumber])
-
+  
   return (
     <>
-      
       <Page removePadding={isChartExpanded} hideFooterOnDesktop={isChartExpanded}>
-      <ActiveLink route={router.route}/>
+        <ActiveLink route={router.route} />
         {isMobile ? (
           <Box width="100%" position="relative">
             <PriceChartContainer
@@ -394,7 +409,7 @@ export default function Swap() {
               isChartDisplayed={isChartDisplayed}
               currentSwapPrice={singleTokenPrice}
             />
-            <Flex mt="20px" flexDirection="column" justifyContent='center' alignItems='center'>
+            <Flex mt="20px" flexDirection="column" justifyContent="center" alignItems="center">
               <StyledSwapContainer $isChartExpanded={isChartExpanded}>
                 <StyledInputCurrencyWrapper mt={isChartExpanded ? '24px' : '0'}>
                   <AppBody>
@@ -433,8 +448,8 @@ export default function Swap() {
                                 onSwitchTokens()
                               }}
                             >
-                              <ArrowDownIcon className="icon-down" color="#EC4C93" />
-                              <ArrowUpDownIcon className="icon-up-down" color="#EC4C93" />
+                              <ArrowDownIcon className="icon-down" color="#60C5BA" />
+                              <ArrowUpDownIcon className="icon-up-down" color="#60C5BA" />
                             </SwitchIconButton>
                             {recipient === null && !showWrap && isExpertMode ? (
                               <Button variant="text" id="add-recipient-button" onClick={() => onChangeRecipient('')}>
@@ -492,8 +507,8 @@ export default function Swap() {
                               )}
                             </RowBetween>
                             <RowBetween align="center">
-                              <Label color="#EC4C93">{t('Slippage Tolerance')}</Label>
-                              <Text bold color="#EC4C93">
+                              <Label color="#60C5BA">{t('Slippage Tolerance')}</Label>
+                              <Text bold color="#60C5BA">
                                 {allowedSlippage / 100}%
                               </Text>
                             </RowBetween>
@@ -667,8 +682,8 @@ export default function Swap() {
                                 onSwitchTokens()
                               }}
                             >
-                              <ArrowDownIcon className="icon-down" color="#EC4C93" />
-                              <ArrowUpDownIcon className="icon-up-down" color="#EC4C93" />
+                              <ArrowDownIcon className="icon-down" color="#60C5BA" />
+                              <ArrowUpDownIcon className="icon-up-down" color="#60C5BA" />
                             </SwitchIconButton>
                             {recipient === null && !showWrap && isExpertMode ? (
                               <Button variant="text" id="add-recipient-button" onClick={() => onChangeRecipient('')}>
@@ -686,7 +701,7 @@ export default function Swap() {
                           onCurrencySelect={handleOutputSelect}
                           otherCurrency={currencies[Field.INPUT]}
                           id="swap-currency-output"
-                          isShow
+                          isShow={true}
                         />
 
                         {isExpertMode && recipient !== null && !showWrap ? (
@@ -726,8 +741,8 @@ export default function Swap() {
                               )}
                             </RowBetween>
                             <RowBetween align="center">
-                              <Label color="#EC4C93">{t('Slippage Tolerance')}</Label>
-                              <Text bold color="#EC4C93">
+                              <Label color="#60C5BA">{t('Slippage Tolerance')}</Label>
+                              <Text bold color="#60C5BA">
                                 {allowedSlippage / 100}%
                               </Text>
                             </RowBetween>

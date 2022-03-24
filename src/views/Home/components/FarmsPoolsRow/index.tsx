@@ -7,6 +7,7 @@ import useIntersectionObserver from 'hooks/useIntersectionObserver'
 import useGetTopFarmsByApr from 'views/Home/hooks/useGetTopFarmsByApr'
 import useGetTopPoolsByApr from 'views/Home/hooks/useGetTopPoolsByApr'
 import { vaultPoolConfig } from 'config/constants/pools'
+import useTheme from 'hooks/useTheme'
 import TopFarmPool from './TopFarmPool'
 import RowHeading from './RowHeading'
 
@@ -26,35 +27,46 @@ const Grid = styled.div`
 
 const StyledTopFarmPoolList = styled(Grid)`
   display: flex;
+  grid-gap: 40px;
 
-  @media screen and (max-width: 768px) {
+  @media screen and (max-width: 992px) {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     flex-direction: row;
     flex-wrap: wrap;
+    grid-gap: 24px;
 
     &&:nth-child(2) {
       position: absolute;
       top: 0;
       left: 0;
+      width: 100%;
     }
   }
 
   @media screen and (max-width: 576px) {
-    justify-content: space-between;
+    justify-content: flex-start;
+    grid-gap: 16px 16px;
   }
 `
 
 const StyledTopFarmPool = styled.div`
   flex: 1 1 0%;
 
-  @media screen and (max-width: 768px) {
-    max-width: 167px;
+  @media screen and (max-width: 992px) {
     margin-bottom: 163px;
+    min-width: 208px;
+    max-width: 208px;
   }
 
   @media screen and (max-width: 576px) {
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+    margin-bottom: 125px;
+
     && > div > div {
+      min-height: 125px;
       backdrop-filter: blur(5px);
     }
   }
@@ -67,8 +79,7 @@ const StyledRowHeading = styled(RowHeading)`
   font-size: 30px;
   line-height: 31px;
   text-align: center;
-  color: #fff;
-  margin: 0px 20px;
+  margin: 0px 20px 0 0;
 
   @media screen and (max-width: 576px) {
     font-size: 23px;
@@ -132,6 +143,8 @@ const StyledBoxForTopFarmPool = styled(Box)`
 // `
 
 const FarmsPoolsRow = () => {
+  const { theme } = useTheme()
+
   // const [scrollValue, setScrollValue] = useState('0')
   const slidesRef = useRef(null)
 
@@ -185,11 +198,12 @@ const FarmsPoolsRow = () => {
 
   return (
     <div ref={observerRef}>
-      <Flex flexDirection="column" mt="24px">
+      <Flex flexDirection="column" mt="40px">
         <Flex mb="24px" alignItems="center">
           <StyledRowHeading
             text={showFarms ? t('Top Farms') : t('Top Syrup Pools')}
-            highlightedColor="#ff0099"
+            color={theme.isDark ? '#fff' : '#0b3854'}
+            highlightedColor="#60c5ba"
             unhighlightedWords={1}
           />
           <IconButton
@@ -203,7 +217,7 @@ const FarmsPoolsRow = () => {
             }}
             style={{ backgroundColor: '#fff' }}
           >
-            <SwapVertIcon height="24px" width="24px" color="textSubtle" style={{ fill: '#ec4b93' }} />
+            <SwapVertIcon height="24px" width="24px" color="textSubtle" style={{ fill: '#60c5ba' }} />
           </IconButton>
         </Flex>
 

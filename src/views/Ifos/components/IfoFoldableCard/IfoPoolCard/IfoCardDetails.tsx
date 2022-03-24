@@ -8,6 +8,7 @@ import { Ifo, PoolIds } from 'config/constants/types'
 import { getBalanceNumber, formatNumber } from 'utils/formatBalance'
 import useBUSDPrice from 'hooks/useBUSDPrice'
 import { multiplyPriceByAmount } from 'utils/prices'
+import useTheme from 'hooks/useTheme'
 import { SkeletonCardDetails } from './Skeletons'
 
 export interface IfoCardDetailsProps {
@@ -23,22 +24,23 @@ export interface FooterEntryProps {
   value: ReactNode
 }
 
-const StyledFooterEntryLabel = styled(Text)`
-  color: #fff;
+const StyledFooterEntryLabel = styled(Text) <{ $color?: string }>`
+  color: ${(props) => props.$color};
 `
 
-const StyledFooterEntryValue = styled(Text)`
-  color: #ec4c93;
+const StyledFooterEntryValue = styled(Text) <{ $color?: string }>`
+  color: ${(props) => props.$color};
 `
 
 const FooterEntry: React.FC<FooterEntryProps> = ({ label, value }) => {
+  const { theme } = useTheme()
   return (
     <Flex justifyContent="space-between" alignItems="center">
-      <StyledFooterEntryLabel small color="textSubtle">
+      <StyledFooterEntryLabel small color={theme.isDark ? '#fff' : '#000'}>
         {label}
       </StyledFooterEntryLabel>
       {value ? (
-        <StyledFooterEntryValue small textAlign="right">
+        <StyledFooterEntryValue small color={theme.colors.itemPrimary} textAlign="right">
           {value}
         </StyledFooterEntryValue>
       ) : (
@@ -49,6 +51,8 @@ const FooterEntry: React.FC<FooterEntryProps> = ({ label, value }) => {
 }
 
 const MaxTokenEntry = ({ maxToken, ifo, poolId }: { maxToken: number; ifo: Ifo; poolId: PoolIds }) => {
+  const { theme } = useTheme()
+
   const isCurrencyCake = ifo.currency === tokens.cake
   const isV3 = ifo.version === 3 || ifo.version === 3.1
   const { t } = useTranslation()
@@ -56,20 +60,20 @@ const MaxTokenEntry = ({ maxToken, ifo, poolId }: { maxToken: number; ifo: Ifo; 
   const basicTooltipContent =
     ifo.version === 3.1
       ? t(
-          'For the private sale, each eligible participant will be able to commit any amount of CAKE up to the maximum commit limit, which is published along with the IFO voting proposal.',
-        )
+        'For the private sale, each eligible participant will be able to commit any amount of CAKE up to the maximum commit limit, which is published along with the IFO voting proposal.',
+      )
       : t(
-          'For the basic sale, Max CAKE entry is capped by minimum between your average CAKE balance in the IFO CAKE pool, or the pool’s hard cap. To increase the max entry, Stake more CAKE into the IFO CAKE pool',
-        )
+        'For the basic sale, Max CAKE entry is capped by minimum between your average CAKE balance in the IFO CAKE pool, or the pool’s hard cap. To increase the max entry, Stake more CAKE into the IFO CAKE pool',
+      )
 
   const unlimitedToolipContent =
     ifo.version === 3.1
       ? t(
-          'For the public sale, Max CAKE entry is capped by your average CAKE balance in the IFO CAKE pool. To increase the max entry, Stake more CAKE into the IFO CAKE pool',
-        )
+        'For the public sale, Max CAKE entry is capped by your average CAKE balance in the IFO CAKE pool. To increase the max entry, Stake more CAKE into the IFO CAKE pool',
+      )
       : t(
-          'For the unlimited sale, Max CAKE entry is capped by your average CAKE balance in the IFO CAKE pool. To increase the max entry, Stake more CAKE into the IFO CAKE pool',
-        )
+        'For the unlimited sale, Max CAKE entry is capped by your average CAKE balance in the IFO CAKE pool. To increase the max entry, Stake more CAKE into the IFO CAKE pool',
+      )
 
   const tooltipContent = poolId === PoolIds.poolBasic ? basicTooltipContent : unlimitedToolipContent
 
@@ -85,7 +89,7 @@ const MaxTokenEntry = ({ maxToken, ifo, poolId }: { maxToken: number; ifo: Ifo; 
       <FooterEntry
         label={
           isV3 ? (
-            <TooltipText small color="#fff" ref={targetRef}>
+            <TooltipText small color={theme.isDark ? '#fff' : '#000'} ref={targetRef}>
               {label}
             </TooltipText>
           ) : (
@@ -93,10 +97,9 @@ const MaxTokenEntry = ({ maxToken, ifo, poolId }: { maxToken: number; ifo: Ifo; 
           )
         }
         value={
-          <Text small textAlign="right" color={maxToken > 0 ? 'text' : 'failure'}>
-            {`${formatNumber(maxToken, 3, 3)} ${
-              !isCurrencyCake ? ifo.currency.symbol : ''
-            } ${` ~($${dollarValueOfToken.toFixed(0)})`}`}
+          <Text small textAlign="right" color={theme.colors.itemPrimary}>
+            {`${formatNumber(maxToken, 3, 3)} ${!isCurrencyCake ? ifo.currency.symbol : ''
+              } ${` ~($${dollarValueOfToken.toFixed(0)})`}`}
           </Text>
         }
       />
@@ -112,9 +115,9 @@ const IfoCardDetails: React.FC<IfoCardDetailsProps> = ({ isEligible, poolId, ifo
 
   let version3MaxTokens = walletIfoData.ifoCredit?.creditLeft
     ? // if creditLeft > limit show limit else show creditLeft
-      walletIfoData.ifoCredit.creditLeft.gt(
-        poolCharacteristic.limitPerUserInLP.minus(walletCharacteristic.amountTokenCommittedInLP),
-      )
+    walletIfoData.ifoCredit.creditLeft.gt(
+      poolCharacteristic.limitPerUserInLP.minus(walletCharacteristic.amountTokenCommittedInLP),
+    )
       ? poolCharacteristic.limitPerUserInLP.minus(walletCharacteristic.amountTokenCommittedInLP)
       : walletIfoData.ifoCredit.creditLeft
     : null

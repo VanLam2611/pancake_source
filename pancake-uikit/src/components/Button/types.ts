@@ -18,6 +18,7 @@ export const variants = {
   SUCCESS: 'success',
   LIGHT: 'light',
   INPUT: 'input',
+  CUSTOM_COLOR_FIND: 'customFind'
 } as const
 
 export type Scale = typeof scales[keyof typeof scales]

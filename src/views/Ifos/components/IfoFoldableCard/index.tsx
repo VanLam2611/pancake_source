@@ -22,6 +22,7 @@ import { useFastRefreshEffect } from 'hooks/useRefreshEffect'
 import useCatchTxError from 'hooks/useCatchTxError'
 import useIsWindowVisible from 'hooks/useIsWindowVisible'
 import { PublicIfoData, WalletIfoData } from 'views/Ifos/types'
+import useTheme from 'hooks/useTheme'
 import useIfoApprove from '../../hooks/useIfoApprove'
 import IfoAchievement from './Achievement'
 import IfoPoolCard from './IfoPoolCard'
@@ -35,14 +36,19 @@ interface IfoFoldableCardProps {
   walletIfoData: WalletIfoData
 }
 
-const StyledCard = styled(Card)<{ $isCurrent?: boolean }>`
+const StyledCard = styled(Card) <{
+  $isCurrent?: boolean,
+  $bgColor?: string,
+  $borderColor?: string
+}>`
   width: 100%;
   margin: auto;
   padding: 0;
   border-radius: 10px;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
-  background: rgba(12, 7, 17, 0.8);
+  background: ${(props) => props.$bgColor};
+  border: 1px solid ${(props) => props.$borderColor};
   margin-bottom: 30px;
 
   ${({ $isCurrent }) =>
@@ -58,7 +64,7 @@ const StyledCard = styled(Card)<{ $isCurrent?: boolean }>`
 
   > div {
     // background: ${({ theme, $isCurrent }) =>
-      $isCurrent ? theme.colors.gradients.bubblegum : theme.colors.dropdown};
+    $isCurrent ? theme.colors.gradients.bubblegum : theme.colors.dropdown};
     background: none;
     border-radius: 10px;
   }
@@ -74,7 +80,7 @@ const StyledCard = styled(Card)<{ $isCurrent?: boolean }>`
   }
 `
 
-const Header = styled(CardHeader)<{ ifoId: string; $isCurrent?: boolean }>`
+const Header = styled(CardHeader) <{ ifoId: string; $isCurrent?: boolean }>`
   display: flex;
   justify-content: flex-end;
   align-items: center;
@@ -91,7 +97,7 @@ const Header = styled(CardHeader)<{ ifoId: string; $isCurrent?: boolean }>`
   }
 `
 
-const StyledCardsWrapper = styled(CardsWrapper)<{ singleCard: boolean; shouldReverse: boolean }>`
+const StyledCardsWrapper = styled(CardsWrapper) <{ singleCard: boolean; shouldReverse: boolean }>`
   display: grid;
   grid-gap: 32px;
   grid-template-columns: 1fr;
@@ -170,9 +176,9 @@ const NoHatBunny = ({ isLive, isCurrent }: { isLive?: boolean; isCurrent?: boole
   )
 }
 
-const StyledExpandableLabelWrapper = styled.div<{ $isExpanded: boolean }>`
-  background: #2d022e;
-  // border-radius: 10px 10px 0px 0px;
+const StyledExpandableLabelWrapper = styled.div <{ $isExpanded: boolean, $bgColor?: string, $borderColor?: string }>`
+  background: ${(props) => props.$bgColor};
+  border: 1px solid ${(props) => props.$borderColor};
   border-radius: ${({ $isExpanded }) => ($isExpanded ? '10px 10px 0 0' : '10px')};
 `
 
@@ -188,6 +194,7 @@ export const IfoCurrentCard = ({
 }) => {
   const [isExpanded, setIsExpanded] = useState(false)
   const { t } = useTranslation()
+  const { theme } = useTheme()
   const { isMobile } = useMatchBreakpoints()
 
   const shouldShowBunny = publicIfoData.status === 'live' || publicIfoData.status === 'coming_soon'
@@ -210,7 +217,11 @@ export const IfoCurrentCard = ({
       )}
       <Box position="relative" width="100%" maxWidth={['400px', '400px', '400px', '100%']}>
         {!isMobile && shouldShowBunny && <NoHatBunny isCurrent isLive={publicIfoData.status === 'live'} />}
-        <StyledCard $isCurrent>
+        <StyledCard
+          $isCurrent
+          $bgColor={theme.isDark ? theme.colors.bgDarkWeaker : '#fff'}
+          $borderColor={theme.isDark ? theme.colors.itemBlueUnhighlight : '#fff'}
+        >
           {!isMobile && (
             <>
               {/* <Header $isCurrent ifoId={ifo.id} /> */}
@@ -220,7 +231,11 @@ export const IfoCurrentCard = ({
           <IfoCard ifo={ifo} publicIfoData={publicIfoData} walletIfoData={walletIfoData} />
         </StyledCard>
         <StyledCardFooter>
-          <StyledExpandableLabelWrapper $isExpanded={isExpanded}>
+          <StyledExpandableLabelWrapper
+            $isExpanded={isExpanded}
+            $bgColor={theme.isDark ? theme.colors.bgDark : '#fff'}
+            $borderColor={theme.isDark ? theme.colors.itemBlueUnhighlight : '#fff'}
+          >
             <ExpandableLabel expanded={isExpanded} onClick={() => setIsExpanded(!isExpanded)}>
               {isExpanded ? t('Hide') : t('Details')}
             </ExpandableLabel>
@@ -273,6 +288,8 @@ const IfoFoldableCard = ({
 }
 
 const IfoCard: React.FC<IfoFoldableCardProps> = ({ ifo, publicIfoData, walletIfoData }) => {
+  const { theme } = useTheme()
+
   const currentBlock = useCurrentBlock()
   const { fetchIfoData: fetchPublicIfoData, isInitialized: isPublicIfoDataInitialized, secondsUntilEnd } = publicIfoData
   const {
@@ -356,6 +373,7 @@ const IfoCard: React.FC<IfoFoldableCardProps> = ({ ifo, publicIfoData, walletIfo
               walletIfoData={walletIfoData}
               onApprove={handleApprove}
               enableStatus={enableStatus}
+              bgColor={theme.colors.itemBlueHighlight}
             />
           )}
           <IfoPoolCard
@@ -365,6 +383,7 @@ const IfoCard: React.FC<IfoFoldableCardProps> = ({ ifo, publicIfoData, walletIfo
             walletIfoData={walletIfoData}
             onApprove={handleApprove}
             enableStatus={enableStatus}
+            bgColor={theme.colors.itemPrimary}
           />
         </StyledCardsWrapper>
       </StyledCardBody>

@@ -9,13 +9,13 @@
 //   },
 // }
 
-// Other solution:
+// Solution:
 import React from 'react'
 import { withThemesProvider } from 'themeprovider-storybook'
-import light from '../pancake-uikit/src/theme/light'
-import dark from '../pancake-uikit/src/theme/dark'
-import ResetCSS from '../pancake-uikit/src/ResetCSS'
-import { ModalProvider } from '../pancake-uikit/src/widgets/Modal'
+import light from '../packages/uikit/src/theme/light'
+import dark from '../packages/uikit/src/theme/dark'
+import ResetCSS from '../packages/uikit/src/ResetCSS'
+import { ModalProvider } from '../packages/uikit/src/widgets/Modal'
 
 const globalDecorator = (StoryFn) => (
   <ModalProvider>

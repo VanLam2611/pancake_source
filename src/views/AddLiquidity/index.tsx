@@ -37,10 +37,12 @@ import Dots from '../../components/Loader/Dots'
 import { currencyId } from '../../utils/currencyId'
 import PoolPriceBar from './PoolPriceBar'
 import Page from '../Page'
+import useTheme from 'hooks/useTheme'
 import ConfirmAddLiquidityModal from '../Swap/components/ConfirmAddLiquidityModal'
 
 export default function AddLiquidity() {
   const router = useRouter()
+  const { isDark } = useTheme()
   const [currencyIdA, currencyIdB] = router.query.currency || []
 
   const { account, chainId, library } = useActiveWeb3React()
@@ -139,6 +141,7 @@ export default function AddLiquidity() {
 
     const { [Field.CURRENCY_A]: parsedAmountA, [Field.CURRENCY_B]: parsedAmountB } = parsedAmounts
     if (!parsedAmountA || !parsedAmountB || !currencyA || !currencyB || !deadline) {
+      
       return
     }
 
@@ -289,7 +292,7 @@ export default function AddLiquidity() {
           )}
           backTo="/liquidity"
         />
-        <CardBody>
+        <CardBody style={{background: isDark ? '#1E2735' : '#fff'}}>
           <AutoColumn gap="20px">
             {noLiquidity && (
               <ColumnCenter>
@@ -315,7 +318,7 @@ export default function AddLiquidity() {
               currency={currencies[Field.CURRENCY_A]}
               id="add-liquidity-input-tokena"
               showCommonBases
-              isShow={true}
+              isShow
             />
             <ColumnCenter>
               <AddIcon width="16px" />
@@ -331,7 +334,7 @@ export default function AddLiquidity() {
               currency={currencies[Field.CURRENCY_B]}
               id="add-liquidity-input-tokenb"
               showCommonBases
-              isShow={true}
+              isShow
             />
 
             {currencies[Field.CURRENCY_A] && currencies[Field.CURRENCY_B] && pairState !== PairState.INVALID && (

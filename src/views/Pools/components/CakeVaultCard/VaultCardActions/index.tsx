@@ -91,7 +91,7 @@ const CakeVaultCardActions: React.FC<{
         {isVaultApproved && pool.vaultKey === VaultKey.IfoPool && <IfoVaultCardAvgBalance />}
         <Box display="inline">
           <InlineText
-            color={accountHasSharesStaked ? 'secondary' : 'textSubtle'}
+            color={accountHasSharesStaked ? 'secondary' : '#fff'}
             textTransform="uppercase"
             bold
             fontSize="12px"
@@ -99,7 +99,7 @@ const CakeVaultCardActions: React.FC<{
             {accountHasSharesStaked ? stakingToken.symbol : t('Stake')}{' '}
           </InlineText>
           <InlineText
-            color={accountHasSharesStaked ? 'textSubtle' : 'secondary'}
+            color={accountHasSharesStaked ? '#fff' : '#60C5BA'}
             textTransform="uppercase"
             bold
             fontSize="12px"

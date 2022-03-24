@@ -66,7 +66,7 @@ const ApyButton: React.FC<ApyButtonProps> = ({
       {displayApr}%
       {variant === 'text-and-button' && (
         <IconButton variant="text" scale="sm" ml="4px">
-          <CalculateIcon style={{ background: isDark ? '#742145' : '#fff', borderRadius: '2px' }} width="18px" />
+          <CalculateIcon style={{ background: isDark ? '#60C5BA' : '#fff', borderRadius: '2px' }} width="18px" />
         </IconButton>
       )}
     </ApyLabelContainer>

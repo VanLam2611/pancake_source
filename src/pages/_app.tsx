@@ -11,6 +11,7 @@ import useSentryUser from 'hooks/useSentryUser'
 import useUserAgent from 'hooks/useUserAgent'
 import type { AppProps } from 'next/app'
 import Head from 'next/head'
+import useTheme from 'hooks/useTheme'
 import { Fragment } from 'react'
 import { PersistGate } from 'redux-persist/integration/react'
 import { useStore, persistor } from 'state'
@@ -106,6 +107,8 @@ type AppPropsWithLayout = AppProps & {
 const ProductionErrorBoundary = process.env.NODE_ENV === 'production' ? ErrorBoundary : Fragment
 
 const App = ({ Component, pageProps }: AppPropsWithLayout) => {
+  const { theme } = useTheme()
+
   // Use the layout defined at the page level, if available
   const Layout = Component.Layout || Fragment
   return (
@@ -113,12 +116,7 @@ const App = ({ Component, pageProps }: AppPropsWithLayout) => {
       <div
         id="menu-wrapper"
         style={{
-          backgroundColor: '#000',
-          backgroundImage: `url('/imagesForWomenTechFinance/home/WomenTech_finance_01_1.png')`,
-          backgroundAttachment: 'fixed',
-          backgroundSize: `cover`,
-          backgroundPosition: 'center center',
-          backgroundRepeat: 'no-repeat',
+          backgroundColor: `${theme.isDark ? theme.colors.bgDark : theme.colors.bgBright}`
         }}
       >
         <Menu>

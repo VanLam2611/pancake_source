@@ -1,8 +1,9 @@
 import { CardHeader, Flex, Heading, Text } from '@pancakeswap/uikit'
+import useTheme from 'hooks/useTheme';
 import { ReactNode } from 'react'
 import styled from 'styled-components'
 
-const Wrapper = styled(CardHeader)<{ isFinished?: boolean; background?: string }>`
+const Wrapper = styled(CardHeader) <{ isFinished?: boolean; background?: string }>`
   background: ${({ isFinished, background, theme }) =>
     isFinished ? theme.colors.backgroundDisabled : theme.colors.gradients[background]};
   // border-radius: ${({ theme }) => `${theme.radii.card} ${theme.radii.card} 0 0`};
@@ -17,7 +18,6 @@ const StyledTitle = styled(Heading)`
   font-weight: bold;
   font-size: 24px;
   line-height: 24px;
-  color: #ec4c93;
 `
 
 const StyledSubTitle = styled(Text)`
@@ -25,7 +25,6 @@ const StyledSubTitle = styled(Text)`
   font-weight: 600;
   font-size: 14px;
   line-height: 14px;
-  color: #b5689e;
 `
 
 const PoolCardHeader: React.FC<{
@@ -48,12 +47,13 @@ export const PoolCardHeaderTitle: React.FC<{ isFinished?: boolean; title: ReactN
   title,
   subTitle,
 }) => {
+  const { theme } = useTheme()
   return (
     <Flex flexDirection="column">
-      <StyledTitle color={isFinished ? 'textDisabled' : 'body'} scale="lg">
+      <StyledTitle color={theme.colors.itemPrimary} scale="lg">
         {title}
       </StyledTitle>
-      <StyledSubTitle fontSize="14px" color={isFinished ? 'textDisabled' : 'textSubtle'}>
+      <StyledSubTitle color={theme.colors.itemPrimary} fontSize="14px" >
         {subTitle}
       </StyledSubTitle>
     </Flex>

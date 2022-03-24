@@ -1,8 +1,10 @@
 import styled, { css } from 'styled-components'
-import { Flex, Text, Button, Link } from '@pancakeswap/uikit'
+import { Flex, Text, Link } from '@pancakeswap/uikit'
 import { NextLinkFromReactRouter as RouterLink } from 'components/NextLink'
+import useTheme from 'hooks/useTheme'
 import { CompositeImageProps } from '../CompositeImage'
 // import ColoredWordHeading from '../ColoredWordHeading'
+import { BasicButton } from '../../../../../packages/uikit/src/components/Button/index.stories'
 
 interface SalesSectionButton {
   to: string
@@ -18,41 +20,74 @@ export interface SalesSectionProps {
   secondaryButton: SalesSectionButton
   images: CompositeImageProps
   numberOfWords: number
+  layoutType?: string
 }
 
-const StyledHeadingWrapper = styled(Text)`
+const StyledSectionWrapper = styled(Flex) <{ $type?: string }>`
+  ${(props) =>
+    props.$type === 'to-left' &&
+    css`
+      width: 50%;
+      // padding-right: 24px;
+    `}
+`
+
+const StyledContentWrapper = styled(Flex) <{ $type?: string }>`
+  ${(props) =>
+    props.$type === 'to-left' &&
+    css`
+      align-items: flex-start;
+    `}
+`
+
+const StyledHeadingWrapper = styled(Text) <{ $type?: string }>`
   display: inline-block;
   text-align: center;
-  margin-bottom: 40px;
+  // margin-bottom: 40px;
+  margin-bottom: 12px;
+
+  ${(props) =>
+    props.$type === 'to-left' &&
+    css`
+      text-align: left;
+    `}
 
   && div {
     display: inline;
   }
 
   @media screen and (max-width: 1400px) {
-    margin-bottom: 20px;
+    // margin-bottom: 20px;
   }
 
   @media screen and (max-width: 576px) {
-    margin-bottom: 15px;
+    // margin-bottom: 15px;
   }
 `
 
-const StyledHeading = styled(Text)<{ $isHighlighted?: boolean }>`
-  color: #fff;
+const StyledHeading = styled(Text) <{ $isHighlighted?: boolean, $type?: string, $isDarkStyle?: boolean }>`
+  color: #000;
   font-style: normal;
   font-weight: 500;
-  font-size: 60px;
-  line-height: 63px;
+  font-size: 64px;
+  line-height: 100%;
   text-align: center;
   margin: 0;
   padding: 0;
 
-  ${(props) =>
-    props.$isHighlighted &&
-    css`
-      color: #ec4b93;
-    `}
+  ${(props) => props.$isDarkStyle ? css`
+    color: #fff;
+  ` : css`
+    color: #0b3854;
+  `}
+
+  ${(props) => props.$isHighlighted && css`
+    color: #60c5ba;
+  `}
+
+  ${(props) => props.$type === 'to-left' && css`
+    text-align: left;
+  `}
 
   @media screen and (max-width: 1400px) {
     font-size: 50px;
@@ -65,58 +100,70 @@ const StyledHeading = styled(Text)<{ $isHighlighted?: boolean }>`
   }
 `
 
-const StyledText = styled(Text)`
-  color: #fff;
+const StyledText = styled(Text) <{ $type?: string, $isDarkStyle?: boolean }>`
+  color: #000;
   font-style: normal;
   font-weight: 300;
-  font-size: 25px;
-  line-height: 26px;
+  font-size: 24px;
+  line-height: 100%;
   text-align: center;
   margin-bottom: 40px;
+
+  ${(props) => props.$isDarkStyle ? css`
+    color: #fff;
+  ` : css`
+    color: #000;
+  `}
+
+  ${(props) => props.$type === 'to-left' && css`
+    text-align: left;
+  `}
 
   @media screen and (max-width: 1400px) {
     font-size: 23px;
     line-height: 24px;
-    margin-bottom: 20px;
+    // margin-bottom: 20px;
   }
 
   @media screen and (max-width: 576px) {
     font-size: 23px;
     line-height: 24px;
-    margin-bottom: 15px;
+    // margin-bottom: 15px;
   }
 `
 
 const SalesSection: React.FC<SalesSectionProps> = (props) => {
-  const { headingText, bodyText, reverse, primaryButton, secondaryButton, numberOfWords = 0 } = props
+  const { headingText, bodyText, reverse, primaryButton, secondaryButton, numberOfWords = 0, layoutType = 'default' } = props
   const highlightedWords = numberOfWords === 0 ? 0 : numberOfWords
+  const { theme } = useTheme()
 
   return (
-    <Flex flexDirection="column">
+    <StyledSectionWrapper flexDirection="column" $type={layoutType}>
       <Flex
         flexDirection={['column-reverse', null, null, reverse ? 'row-reverse' : 'row']}
         alignItems={['flex-end', null, null, 'center']}
         justifyContent="center"
       >
-        <Flex
+        <StyledContentWrapper
           flexDirection="column"
           justifyContent="center"
           alignItems="center"
           flex="1"
           alignSelf={['flex-start', null, null, 'center']}
+          $type={layoutType}
         >
-          <StyledHeadingWrapper>
-            <StyledHeading $isHighlighted>{headingText.split(' ', highlightedWords).join(' ')}</StyledHeading>
-            <StyledHeading> </StyledHeading>
-            <StyledHeading>{headingText.split(' ').slice(highlightedWords).join(' ')}</StyledHeading>
+          <StyledHeadingWrapper $type={layoutType}>
+            <StyledHeading $type={layoutType} $isDarkStyle={theme.isDark} $isHighlighted>{headingText.split(' ', highlightedWords).join(' ')}</StyledHeading>
+            <StyledHeading $type={layoutType} $isDarkStyle={theme.isDark}> </StyledHeading>
+            <StyledHeading $type={layoutType} $isDarkStyle={theme.isDark}>{headingText.split(' ').slice(highlightedWords).join(' ')}</StyledHeading>
           </StyledHeadingWrapper>
 
-          <StyledText color="textSubtle" mb="24px">
+          <StyledText $type={layoutType} $isDarkStyle={theme.isDark} color="textSubtle" mb="24px">
             {bodyText}
           </StyledText>
 
           <Flex justifyContent="center" alignItems="center">
-            <Button mr="16px" style={{ backgroundColor: '#EC4C93' }}>
+            <BasicButton variant='customPrimary' mr="16px">
               {primaryButton.external ? (
                 <Link external href={primaryButton.to}>
                   <Text color="#EC4C93" bold fontSize="16px">
@@ -130,24 +177,25 @@ const SalesSection: React.FC<SalesSectionProps> = (props) => {
                   </Text>
                 </RouterLink>
               )}
-            </Button>
+            </BasicButton>
             {secondaryButton.external ? (
               <Link
                 external
                 href={secondaryButton.to}
                 color="#fff"
-                p="10px 20px"
-                style={{ border: '1px solid #EC4C93', borderRadius: '16px' }}
+                p="0"
               >
-                {secondaryButton.text}
+                <BasicButton variant='customSecondary' mr="0px">
+                  {secondaryButton.text}
+                </BasicButton>
               </Link>
             ) : (
               <RouterLink to={secondaryButton.to}>{secondaryButton.text}</RouterLink>
             )}
           </Flex>
-        </Flex>
+        </StyledContentWrapper>
       </Flex>
-    </Flex>
+    </StyledSectionWrapper>
   )
 }
 

@@ -20,6 +20,7 @@ import { convertSharesToCake } from 'views/Pools/helpers'
 import { FlexGap } from 'components/Layout/Flex'
 import { vaultPoolConfig } from 'config/constants/pools'
 import { getBscScanLink } from 'utils'
+import useTheme from 'hooks/useTheme'
 import AprRow from '../PoolCard/AprRow'
 import { StyledCard } from '../PoolCard/StyledCard'
 import CardFooter from '../PoolCard/CardFooter'
@@ -38,9 +39,9 @@ const StyledCardBodyTop = styled.div`
   margin: 0 0 24px 0;
 `
 
-const StyledCardBodyInfoBox = styled(Box)`
-  background: #0c0711;
-  border: 1px solid #ec4c93;
+const StyledCardBodyInfoBox = styled(Box) <{ $bgColor?: string, $borderColor?: string }>`
+  background: ${(props) => props.$bgColor || ''};
+  border: 1px solid ${(props) => props.$borderColor || ''};
   box-sizing: border-box;
   border-radius: 10px;
   align-self: stretch;
@@ -61,6 +62,7 @@ interface CakeVaultProps extends CardProps {
 export const CreditCalcBlock = () => {
   const { creditStartBlock, creditEndBlock, hasEndBlockOver } = useIfoPoolCreditBlock()
   const { t } = useTranslation()
+  const { theme } = useTheme()
 
   const { tooltip, tooltipVisible, targetRef } = useTooltip(
     hasEndBlockOver ? (
@@ -91,7 +93,7 @@ export const CreditCalcBlock = () => {
 
   return (
     <Flex mt="8px" justifyContent="space-between">
-      <Text color="#fff" fontSize="14px">
+      <Text color={theme.isDark ? '#fff' : '#000'} fontSize="14px">
         {hasEndBlockOver ? t('Credit calculation ended:') : t('Credit calculation starts:')}
       </Text>
       <Flex mr="6px" alignItems="center">
@@ -101,12 +103,12 @@ export const CreditCalcBlock = () => {
           mr="4px"
           color={hasEndBlockOver ? 'warning' : 'primary'}
           fontSize="14px"
-          style={{ color: '#EC4C93' }}
+          style={{ color: theme.colors.itemPrimary }}
         >
           {hasEndBlockOver ? creditEndBlock : creditStartBlock}
         </Link>
         <span ref={targetRef}>
-          <HelpIcon color="#EC4C93" />
+          <HelpIcon color={theme.colors.itemPrimary} />
         </span>
       </Flex>
       {tooltipVisible && tooltip}
@@ -116,6 +118,7 @@ export const CreditCalcBlock = () => {
 
 const CakeVaultCard: React.FC<CakeVaultProps> = ({ pool, showStakedOnly, defaultFooterExpanded, ...props }) => {
   const { t } = useTranslation()
+  const { theme } = useTheme()
   const { account } = useWeb3React()
   const {
     userData: { userShares, isLoading: isVaultUserDataLoading },
@@ -133,7 +136,12 @@ const CakeVaultCard: React.FC<CakeVaultProps> = ({ pool, showStakedOnly, default
   }
 
   return (
-    <StyledCard isActive {...props}>
+    <StyledCard
+      isActive
+      {...props}
+      cBgColor={theme.isDark ? theme.colors.bgDarkWeaker : '#fff'}
+      cBorderColor={theme.isDark ? theme.colors.itemBlueUnhighlight : '#fff'}
+    >
       <PoolCardHeader isStaking={accountHasSharesStaked}>
         <PoolCardHeaderTitle
           title={vaultPoolConfig[pool.vaultKey].name}
@@ -149,14 +157,17 @@ const CakeVaultCard: React.FC<CakeVaultProps> = ({ pool, showStakedOnly, default
         </StyledCardBodyTop>
         {/* Body - section 2: */}
         <FlexGap mt="0px" gap="24px" flexDirection={accountHasSharesStaked ? 'column-reverse' : 'column'}>
-          <StyledCardBodyInfoBox>
+          <StyledCardBodyInfoBox
+            $bgColor={theme.isDark ? theme.colors.bgDark : theme.colors.bgBright}
+            $borderColor={theme.isDark ? theme.colors.itemBlueUnhighlight : theme.colors.bgBright}
+          >
             <Box mt="0px">
               <RecentCakeProfitRow pool={pool} />
             </Box>
             <Box mt="8px">
               <UnstakingFeeCountdownRow
                 vaultKey={pool.vaultKey}
-                style={{ color: '#B5689E', textDecoration: 'underline' }}
+                style={{ color: `${theme.colors.itemPrimary}`, textDecoration: 'underline' }}
               />
             </Box>
           </StyledCardBodyInfoBox>
@@ -170,7 +181,7 @@ const CakeVaultCard: React.FC<CakeVaultProps> = ({ pool, showStakedOnly, default
               />
             ) : (
               <>
-                <Text mb="10px" textTransform="uppercase" fontSize="12px" color="#EC4C93" bold>
+                <Text mb="10px" textTransform="uppercase" fontSize="12px" color={theme.colors.itemPrimary} bold>
                   {t('Start earning')}
                 </Text>
                 <ConnectWalletButton />
@@ -181,7 +192,13 @@ const CakeVaultCard: React.FC<CakeVaultProps> = ({ pool, showStakedOnly, default
       </StyledCardBody>
 
       <StyledCardFooterWrapper>
-        <CardFooter defaultExpanded={defaultFooterExpanded} pool={pool} account={account} txtColor='#fff' txtColorMain='#EC4C93' />
+        <CardFooter
+          defaultExpanded={defaultFooterExpanded}
+          pool={pool}
+          account={account}
+          txtColor={theme.isDark ? '#fff' : '#000'}
+          txtColorMain={theme.colors.itemPrimary}
+        />
       </StyledCardFooterWrapper>
     </StyledCard>
   )

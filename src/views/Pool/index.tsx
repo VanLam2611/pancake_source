@@ -3,10 +3,11 @@ import styled from 'styled-components'
 import useTheme from 'hooks/useTheme'
 import { useRouter } from 'next/router'
 import { Pair } from '@pancakeswap/sdk'
-import { Text, Flex, CardBody, CardFooter, Button, AddIcon } from '@pancakeswap/uikit'
+import { Text, Flex, CardBody, CardFooter, AddIcon } from '@pancakeswap/uikit'
 import Link from 'next/link'
 import { useTranslation } from 'contexts/Localization'
 import useActiveWeb3React from 'hooks/useActiveWeb3React'
+import ActiveLink from 'views/Swap/components/ActiveLink'
 import FullPositionCard from '../../components/PositionCard'
 import { useTokenBalancesWithLoadingIndicator } from '../../state/wallet/hooks'
 import { usePairs } from '../../hooks/usePairs'
@@ -14,16 +15,16 @@ import { toV2LiquidityToken, useTrackedTokenPairs } from '../../state/user/hooks
 import Dots from '../../components/Loader/Dots'
 import { AppHeader, AppBody } from '../../components/App'
 import Page from '../Page'
-import ActiveLink from 'views/Swap/components/ActiveLink'
+import { BasicButton, FindButton } from '../../../packages/uikit/src/components/Button/index.stories'
 
-const Body = styled(CardBody)`
+const Body = styled(CardBody) <{ $isDark: boolean }>`
   padding: 1rem;
-  background-color: ${({ theme }) => theme.colors.dropdownDeep};
+  background-color: ${({ $isDark }) => ($isDark ? '#1E2735' : ' #fff')};
 `
 
 const Footer = styled.div<{ $isDark: boolean }>`
   ${({ theme }) => theme.mediaQueries.sm} {
-    background: ${({ $isDark }) => ($isDark ? '#0C0711CC' : ' #fff')};
+    background: ${({ $isDark }) => ($isDark ? '#1E2735' : ' #fff')};
   }
 `
 
@@ -31,8 +32,9 @@ const Content = styled.div<{ $isDark: boolean }>`
   padding: 20px 0 32px;
   border-radius: 7px;
   ${({ theme }) => theme.mediaQueries.sm} {
-    background: ${({ $isDark }) => ($isDark ? '#EC4C9380' : ' #fff')};
+    background: ${({ $isDark }) => ($isDark ? '#101722' : ' #fff')};
   }
+  border: 1px solid #0b3854;
 `
 
 export default function Pool() {
@@ -104,22 +106,28 @@ export default function Pool() {
 
   return (
     <Page>
-      <ActiveLink route={router.route}/>
+      <ActiveLink route={router.route} />
       <AppBody>
         <AppHeader title={t('Your Liquidity')} subtitle={t('Remove liquidity to receive tokens back')} />
-        <Body>
+        <Body $isDark={isDark}>
           {renderBody()}
           {account && !v2IsLoading && (
             <Content $isDark={isDark}>
               <Flex flexDirection="column" alignItems="center" mt="24px">
-                <Text color={isDark ? 'textSubtle' : '#EC4C93'} mb="8px">
+                <Text color={isDark ? 'textSubtle' : '#60C5BA'} mb="8px">
                   {t("Don't see a pool you joined?")}
                 </Text>
                 <Link href="/find" passHref>
-                <Button id="import-pool-link" style={{border: '2px solid #EC4C93', background: 'transparent', color: '#EC4C93'}} scale="sm" as="a">
-                  {t('Find other LP tokens')}
-                </Button>
-              </Link>
+                  {/* <Button
+                    id="import-pool-link"
+                    style={{ border: '2px solid #60C5BA', background: 'transparent', color: '#60C5BA' }}
+                    scale="sm"
+                    as="a"
+                  >
+                    {t('Find other LP tokens')}
+                  </Button> */}
+                  <BasicButton id="import-pool-link" variant="customFind" scale='sm'>{t('Find other LP tokens')}</BasicButton>
+                </Link>
               </Flex>
             </Content>
           )}
@@ -127,14 +135,21 @@ export default function Pool() {
         <Footer $isDark={isDark}>
           <CardFooter style={{ textAlign: 'center' }}>
             <Link href="/add" passHref>
-              <Button
-                style={{ background: isDark ? '#2E001780' : '#EC4C93', border: '1px solid #EC4C93' }}
+              <BasicButton
+                variant="primary"
+                style={{ textShadow: isDark ? 'none' : 'none' }}
                 id="join-pool-button"
                 width="100%"
-                startIcon={<AddIcon color="white" />}
+                startIcon={<AddIcon color="inherit" />}
               >
+                {/* <Button
+                style={{ background: isDark ? '#60C5BA80' : '#60C5BA80', border: '1px solid #60C5BA', color:'#60C5BA', padding: '30px 0' }}
+                id="join-pool-button"
+                width="100%"
+                startIcon={<AddIcon color="#60C5BA" />}
+              > */}
                 {t('Add Liquidity')}
-              </Button>
+              </BasicButton>
             </Link>
           </CardFooter>
         </Footer>

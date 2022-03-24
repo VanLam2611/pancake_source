@@ -53,7 +53,7 @@ const StakedCell: React.FC<StakedCellProps> = ({ pool, account, userDataLoaded }
   return (
     <StyledCell role="cell">
       <CellContent>
-        <Text fontSize="12px" color="#B5689E" textAlign="left">
+        <Text fontSize="12px" color="#60C5BA" textAlign="left">
           {labelText}
         </Text>
         {userDataLoading && account ? (

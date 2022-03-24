@@ -40,17 +40,17 @@ const Grid = styled.div`
 const StyledCardRibbon = styled(CardRibbon)`
   right: -20px;
   top: -20px;
-  background: #ec4c93;
+  background: #60C5BA;
 
   ${({ theme }) => theme.mediaQueries.xs} {
     right: -10px;
     top: -10px;
   }
   ::before {
-    background: #ec4c93;
+    background: #60C5BA;
   }
   ::after {
-    background: #ec4c93;
+    background: #60C5BA;
   }
 `
 
@@ -93,7 +93,7 @@ const PreviousRoundCardBody: React.FC<{ lotteryNodeData: LotteryRound; lotteryId
         </Flex>
         <Flex maxWidth={['240px', null, null, '100%']} justifyContent={['center', null, null, 'flex-start']}>
           {lotteryId ? (
-            lotteryNodeData ? (
+            lotteryNodeData?.finalNumber ? (
               <WinningNumbers
                 rotateText={isLargerScreen || false}
                 number={lotteryNodeData?.finalNumber.toString()}

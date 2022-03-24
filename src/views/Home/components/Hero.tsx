@@ -1,63 +1,68 @@
 // import styled from 'styled-components'
 import { NextLinkFromReactRouter } from 'components/NextLink'
-import styled, { useTheme } from 'styled-components'
-import { Flex, Button } from '@pancakeswap/uikit'
+import styled, { css } from 'styled-components'
+import { Flex } from '@pancakeswap/uikit'
 import { useWeb3React } from '@web3-react/core'
 import { useTranslation } from 'contexts/Localization'
 import ConnectWalletButton from 'components/ConnectWalletButton'
-// import useTheme from 'hooks/useTheme'
+import useTheme from 'hooks/useTheme'
 // import { SlideSvgDark, SlideSvgLight } from './SlideSvg'
 // import CompositeImage, { getSrcSet, CompositeImageProps } from './CompositeImage'
+import { BasicButton } from '../../../../packages/uikit/src/components/Button/index.stories'
 
-const StyledHeroHeading = styled.div`
-  color: #fff;
-  font-weight: 500;
-  font-size: 60px;
-  line-height: 63px;
+const StyledHeroHeading = styled.div <{ $isDarkStyle?: boolean }>`
+  color: #000;
+  font-size: 64px;
+  line-height: 100%;
+  font-style: normal;
+  font-weight: 600;
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: 12px;
+
+  ${(props) => props.$isDarkStyle ? css`
+    color: #fff;
+  ` : css`
+    color: #0b3854;
+  `}
 
   @media screen and (max-width: 1400px) {
     font-size: 50px;
     line-height: 53px;
-    margin-bottom: 20px;
   }
 
   @media screen and (max-width: 576px) {
     font-size: 35px;
     line-height: 38px;
-    margin-bottom: 15px;
   }
 `
-const StyledHeroIntroText = styled.div`
-  color: #fff;
+const StyledHeroIntroText = styled.div <{ $isDarkStyle?: boolean }>`
+  color: #000;
   font-style: normal;
   font-weight: 300;
-  font-size: 25px;
-  line-height: 26px;
+  font-size: 24px;
+  line-height: 100%;
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: 30px;
   max-width: 650px;
 
+  ${(props) => props.$isDarkStyle ? css`
+    color: #fff;
+  ` : css`
+    color: #000;
+  `}
+
   @media screen and (max-width: 1400px) {
-    font-size: 23px;
-    line-height: 24px;
-    margin-bottom: 20px;
     max-width: 500px;
   }
 
   @media screen and (max-width: 576px) {
-    font-size: 23px;
-    line-height: 24px;
-    margin-bottom: 15px;
   }
 `
 
 const Hero = () => {
   const { t } = useTranslation()
   const { account } = useWeb3React()
-  const { isDark } = useTheme()
-  // const { theme } = useTheme()
+  const { theme } = useTheme()
 
   return (
     <>
@@ -71,26 +76,27 @@ const Hero = () => {
         justifyContent="center"
         // mt={[account ? '280px' : '50px', null, 0]}
         id="homepage-hero"
-      >
-        <Flex flex="1" flexDirection="column" style={{ justifyContent: 'center', alignItems: 'center' }}>
-          <StyledHeroHeading>
-            {t('The moon is made of ')}
-            <span className="heading-highlighted" style={{ color: '#EC4C93' }}>
-              Womentech.
-            </span>
+      > 
+        <Flex flex="1" flexDirection="column" style={{ justifyContent: 'flex-start', alignItems: 'center' }}>
+          <StyledHeroHeading $isDarkStyle={theme.isDark}>
+            <div>{t('The moon is made of ')}</div>
+            {/* <BasicText color='tomato'>
+              OnDefi.
+            </BasicText> */}
+            <span style={{ color: '#60c5ba' }}>OnDefi.</span>
           </StyledHeroHeading>
 
-          <StyledHeroIntroText>
+          <StyledHeroIntroText $isDarkStyle={theme.isDark}>
             {t('Trade, earn, and win crypto on the most popular decentralized platform in the galaxy.')}
           </StyledHeroIntroText>
 
           <Flex style={{ justifyContent: 'center', alignItems: 'center' }}>
             <NextLinkFromReactRouter to="/swap" style={{ marginRight: '30px' }}>
-              <Button style={{ background: isDark ? '#EC4C93' : 'transparent', border: '1px solid #EC4C93' }}>
+              <BasicButton variant='customSecondary'>
                 {t('Trade Now')}
-              </Button>
+              </BasicButton>
             </NextLinkFromReactRouter>
-            {!account && <ConnectWalletButton mr="0px" />}
+            {!account && <ConnectWalletButton variant='customPrimary' mr="0px" />}
           </Flex>
         </Flex>
       </Flex>

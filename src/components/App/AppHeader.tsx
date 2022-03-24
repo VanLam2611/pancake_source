@@ -16,13 +16,17 @@ interface Props {
 }
 
 const AppHeaderContainer = styled(Flex)<{ $isDark: boolean }>`
+  position: relative;
   align-items: center;
   justify-content: space-between;
   padding: 24px;
   width: 100%;
   border-bottom: 1px solid ${({ theme }) => theme.colors.cardBorder};
   ${({ theme }) => theme.mediaQueries.sm} {
-    background: ${({ $isDark }) => ($isDark ? '#0C0711CC' : '#fff')};
+    background: ${({ $isDark }) => ($isDark ? '#1E2735' : '#fff')};
+  }
+  #top-header-liquidity a svg{
+    fill: #0B3854;
   }
 `
 
@@ -32,28 +36,28 @@ const AppHeader: React.FC<Props> = ({ title, subtitle, helper, backTo, noConfig 
 
   return (
     <AppHeaderContainer $isDark={isDark}>
-      <Flex alignItems="center" mr={noConfig ? 0 : '16px'}>
+      <div style={{ width: '100%', display: 'block', textAlign: 'center' }} id='top-header-liquidity'>
         {backTo && (
           <Link passHref href={backTo}>
-            <IconButton as="a">
+            <IconButton as="a" style={{ position: 'absolute', top: '50%', left: '5%', transform: 'translateY(-50%)'}}>
               <ArrowBackIcon width="32px" />
             </IconButton>
           </Link>
         )}
         <Flex flexDirection="column">
-          <Heading as="h2" mb="8px" style={{ color: '#EC4C93' }}>
+          <Heading as="h2" mb="8px" style={{ color: '#60C5BA' }}>
             {title}
           </Heading>
-          <Flex alignItems="center">
-            {helper && <QuestionHelper text={helper} mr="4px" placement="top-start" />}
-            <Text style={{ color: isDark ? '#fff' : '#7A6EAA' }} fontSize="14px">
+          <div>
+            <Text style={{ color: isDark ? '#fff' : '#7A6EAA' }} fontSize="14px" mt="5px">
               {subtitle}
             </Text>
-          </Flex>
+            {/* {helper && <QuestionHelper text={helper} mr="4px" placement="top-start" />} */}
+          </div>
         </Flex>
-      </Flex>
+      </div>
       {!noConfig && (
-        <Flex alignItems="center">
+        <Flex alignItems="center" style={{ position: 'absolute', top: '10%', right: '5%' }}>
           <NotificationDot show={expertMode}>
             <GlobalSettings />
           </NotificationDot>

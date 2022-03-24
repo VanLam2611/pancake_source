@@ -30,7 +30,7 @@ const Details: React.FC<DetailsProps> = ({ actionPanelToggled }) => {
   return (
     <Container>
       {!isDesktop && t('Details')}
-      <ArrowIcon color="#EC4C93" toggled={actionPanelToggled} />
+      <ArrowIcon color="#60C5BA" toggled={actionPanelToggled} />
     </Container>
   )
 }

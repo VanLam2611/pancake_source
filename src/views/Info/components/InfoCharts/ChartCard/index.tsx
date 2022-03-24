@@ -9,6 +9,7 @@ import { formatAmount } from 'utils/formatInfoNumbers'
 import { ChartEntry, TokenData, PriceChartEntry } from 'state/info/types'
 import { fromUnixTime } from 'date-fns'
 import dynamic from 'next/dynamic'
+import useTheme from 'hooks/useTheme'
 
 const StyledTabToggleList = styled.div`
   display: flex;
@@ -17,9 +18,16 @@ const StyledTabToggleList = styled.div`
   right: 24px;
 `
 
-const StyledTabToggle = styled(TabToggle)<{ $isActive?: boolean }>`
-  background: #0c0711;
-  border: 1px solid #ec4c93;
+const StyledTabToggle = styled(TabToggle) <{
+  $isActive?: boolean,
+  $txtColor?: string,
+  $bgColor?: string,
+  $bgColorActive?: string,
+  $borderColor?: string,
+  $borderColorActive?: string
+}>`
+  background: ${(props) => props.$bgColor};
+  border: 1px solid ${(props) => props.$borderColor};
   box-sizing: border-box;
   border-radius: 5px;
   padding: 12px 24px;
@@ -32,7 +40,8 @@ const StyledTabToggle = styled(TabToggle)<{ $isActive?: boolean }>`
   ${(props) =>
     props.$isActive &&
     css`
-      background: #ec4c93;
+      background: ${props.$bgColorActive};
+      border: 1px solid ${props.$borderColorActive};
     `}
 `
 
@@ -42,30 +51,37 @@ const StyledTabToggleText = styled(Text)`
   color: #fff;
 `
 
-const ChartCardWrapper = styled.div`
+const ChartCardWrapper = styled.div <{
+  $bgColor?: string,
+  $borderColor?: string
+}>`
   position: relative;
-  background: rgba(12, 7, 17, 0.8);
-  border: 1px solid #ec4c93;
+  background: ${(props) => props.$bgColor};
+  border: 1px solid ${(props) => props.$borderColor};
   box-sizing: border-box;
   border-radius: 10px;
 `
 
-const StyledTextForLatestValue = styled(Text)`
+const StyledTextForLatestValue = styled(Text) <{
+  $txtColor?: string,
+}>`
   font-weight: bold;
   font-size: 32px;
   line-height: 32px;
   display: flex;
   align-items: center;
-  color: #ec4c93;
+  color: ${(props) => props.$txtColor};
   margin-bottom: 15px;
 `
 
-const StyledTextForDate = styled(Text)`
+const StyledTextForDate = styled(Text) <{
+  $txtColor?: string,
+}>`
   font-size: 20px;
   line-height: 20px;
   display: flex;
   align-items: center;
-  color: #b5689e;
+  color: ${(props) => props.$txtColor};
 `
 
 const CandleChart = dynamic(() => import('views/Info/components/InfoCharts/CandleChart'), {
@@ -86,6 +102,8 @@ interface ChartCardProps {
 }
 
 const ChartCard: React.FC<ChartCardProps> = ({ variant, chartData, tokenData, tokenPriceData }) => {
+  const { theme } = useTheme()
+
   const [view, setView] = useState(ChartView.VOLUME)
   const [hoverValue, setHoverValue] = useState<number | undefined>()
   const [hoverDate, setHoverDate] = useState<string | undefined>()
@@ -132,7 +150,7 @@ const ChartCard: React.FC<ChartCardProps> = ({ variant, chartData, tokenData, to
     }
 
     return valueToDisplay ? (
-      <StyledTextForLatestValue fontSize="24px" bold>
+      <StyledTextForLatestValue color={theme.colors.itemPrimary} fontSize="24px" bold>
         ${valueToDisplay}
       </StyledTextForLatestValue>
     ) : (
@@ -141,12 +159,19 @@ const ChartCard: React.FC<ChartCardProps> = ({ variant, chartData, tokenData, to
   }
 
   return (
-    <ChartCardWrapper>
+    <ChartCardWrapper
+      $bgColor={theme.isDark ? theme.colors.bgDarkWeaker : '#fff'}
+      $borderColor={theme.isDark ? theme.colors.itemBlueUnhighlight : '#fff'}
+    >
       <StyledTabToggleList>
         <StyledTabToggle
           isActive={view === ChartView.VOLUME}
           $isActive={view === ChartView.VOLUME}
           onClick={() => setView(ChartView.VOLUME)}
+          $bgColor={theme.colors.bgDark}
+          $bgColorActive={theme.colors.itemPrimary}
+          $borderColor={theme.colors.itemBlueUnhighlight}
+          $borderColorActive={theme.colors.itemPrimary}
         >
           <StyledTabToggleText>{t('Volume')}</StyledTabToggleText>
         </StyledTabToggle>
@@ -154,6 +179,10 @@ const ChartCard: React.FC<ChartCardProps> = ({ variant, chartData, tokenData, to
           isActive={view === ChartView.LIQUIDITY}
           $isActive={view === ChartView.LIQUIDITY}
           onClick={() => setView(ChartView.LIQUIDITY)}
+          $bgColor={theme.colors.bgDark}
+          $bgColorActive={theme.colors.itemPrimary}
+          $borderColor={theme.colors.itemBlueUnhighlight}
+          $borderColorActive={theme.colors.itemPrimary}
         >
           <StyledTabToggleText>{t('Liquidity')}</StyledTabToggleText>
         </StyledTabToggle>
@@ -162,6 +191,10 @@ const ChartCard: React.FC<ChartCardProps> = ({ variant, chartData, tokenData, to
             isActive={view === ChartView.PRICE}
             $isActive={view === ChartView.PRICE}
             onClick={() => setView(ChartView.PRICE)}
+            $bgColor={theme.colors.bgDark}
+            $bgColorActive={theme.colors.itemPrimary}
+            $borderColor={theme.colors.itemBlueUnhighlight}
+            $borderColorActive={theme.colors.itemPrimary}
           >
             <StyledTabToggleText>{t('Price')}</StyledTabToggleText>
           </StyledTabToggle>
@@ -170,7 +203,7 @@ const ChartCard: React.FC<ChartCardProps> = ({ variant, chartData, tokenData, to
 
       <Flex flexDirection="column" px="24px" pt="24px">
         {getLatestValueDisplay()}
-        <StyledTextForDate small color="secondary">
+        <StyledTextForDate small color={theme.isDark ? '#fff' : '#6E6E6E'}>
           {hoverDate || currentDate}
         </StyledTextForDate>
       </Flex>
@@ -181,16 +214,18 @@ const ChartCard: React.FC<ChartCardProps> = ({ variant, chartData, tokenData, to
             data={formattedTvlData}
             setHoverValue={setHoverValue}
             setHoverDate={setHoverDate}
-            customMainColor="#EC4C93"
-            customYAxisColor="#B5689E"
+            customMainColor={theme.colors.itemBlueHighlight}
+            customXAxisColor={theme.isDark ? '#fff' : '#000'}
+            customYAxisColor={theme.isDark ? '#fff' : '#000'}
           />
         ) : view === ChartView.VOLUME ? (
           <BarChart
             data={formattedVolumeData}
             setHoverValue={setHoverValue}
             setHoverDate={setHoverDate}
-            customMainColor="#EC4C93"
-            customYAxisColor="#B5689E"
+            customMainColor={theme.colors.itemBlueHighlight}
+            customXAxisColor={theme.isDark ? '#fff' : '#000'}
+            customYAxisColor={theme.isDark ? '#fff' : '#000'}
           />
         ) : view === ChartView.PRICE ? (
           <CandleChart data={tokenPriceData} setValue={setHoverValue} setLabel={setHoverDate} />

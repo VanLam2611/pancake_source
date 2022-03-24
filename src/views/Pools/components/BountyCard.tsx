@@ -27,6 +27,7 @@ const StyledCard = styled(Card)`
   flex: 1;
   ${({ theme }) => theme.mediaQueries.sm} {
     min-width: 240px;
+    max-width: 340px;
   }
   background: transparent;
 `
@@ -86,14 +87,14 @@ const BountyCard = () => {
     <>
       {tooltipVisible && tooltip}
       <StyledCard>
-        <CardBody style={{ background: isDark ? '#6800A899' : '#fff' }}>
+        <CardBody style={{ background: isDark ? '#50A69C' : '#fff', boxShadow: '0px 0px 20px rgba(0, 0, 0, 0.1)' }}>
           <Flex flexDirection="column">
             <Flex alignItems="center" mb="12px">
-              <Text fontSize="16px" bold color="textSubtle" mr="4px">
+              <Text fontSize="16px" bold color={isDark ? '#fff' : '#000'} mr="4px">
                 {t('Auto CAKE Bounty')}
               </Text>
               <Box ref={targetRef}>
-                <HelpIcon color="textSubtle" />
+                <HelpIcon color={isDark ? '#fff' : '#000'} />
               </Box>
             </Flex>
           </Flex>
@@ -123,8 +124,10 @@ const BountyCard = () => {
               disabled={!dollarBountyToDisplay || !cakeBountyToDisplay || !callFee}
               onClick={onPresentBountyModal}
               scale="sm"
+              px='24px'
+              py='23px'
               id="clickClaimVaultBounty"
-              style={{ background: isDark ? '#2E001780' : '#EC4C93', border: '1px solid #EC4C93' }}
+              style={{ background: isDark ? '#60C5BA' : '#60C5BA', border: '1px solid #60C5BA', color: '#fff', borderRadius: '30px' }}
             >
               {t('Claim')}
             </Button>

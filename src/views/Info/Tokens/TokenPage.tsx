@@ -39,6 +39,7 @@ import { useWatchlistTokens } from 'state/user/hooks'
 import { ONE_HOUR_SECONDS } from 'config/constants/info'
 import { useTranslation } from 'contexts/Localization'
 import ChartCard from 'views/Info/components/InfoCharts/ChartCard'
+import useTheme from 'hooks/useTheme'
 
 // const ContentLayout = styled.div`
 //   margin-top: 16px;
@@ -70,30 +71,34 @@ const StyledSection = styled.div`
 `
 
 const StyledHeading = styled(Heading)`
-  color: #ec4c93;
   font-style: normal;
   font-weight: bold;
   font-size: 24px;
   line-height: 24px;
   text-transform: capitalize;
   margin: 0 0 30px 0;
-  text-shadow: 0px 0px 5px #000;
 `
 
-const StyledInfoPanel = styled.div`
-  background: rgba(12, 7, 17, 0.8);
-  border: 1px solid #ec4c93;
+const StyledInfoPanel = styled.div <{
+  $txtColor?: string,
+  $bgColor?: string,
+  $borderColor?: string
+}>`
+  background: ${(props) => props.$bgColor};
+  border: 1px solid ${(props) => props.$borderColor};
   box-sizing: border-box;
   border-radius: 10px;
-  margin: 0 0 24px 0px;
+  margin: 0 0 60px 0px;
   padding: 0 24px;
 `
 
-const StyledBoxOfInfoValues = styled(Box)`
+const StyledBoxOfInfoValues = styled(Box) <{
+  $borderColor?: string
+}>`
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  border-top: 1px solid #b5689e;
+  border-top: 1px solid ${(props) => props.$borderColor};
   padding: 24px 0;
 `
 
@@ -108,17 +113,18 @@ const StyledInfoValueTop = styled(Text)`
   font-size: 14px;
   line-height: 14px;
   text-transform: uppercase;
-  color: #fff;
-  font-weight: 300;
+  font-weight: 400;
 `
 
-const StyledInfoValueMid = styled(Text)`
+const StyledInfoValueMid = styled(Text) <{
+  $txtColor?: string,
+}>`
   font-weight: bold;
   font-size: 24px;
   line-height: 24px;
   display: flex;
   align-items: center;
-  color: #ec4c93;
+  color: ${(props) => props.$txtColor};
   margin: 6px 0;
 `
 
@@ -128,17 +134,21 @@ const StyledInfoPanelPrice = styled(Text)`
   line-height: 24px;
   display: flex;
   align-items: center;
-  color: #b5689e;
 `
 
-const StyledInfoPanelPercentWrapper = styled.span`
-  background: #ff0099;
+const StyledInfoPanelPercentWrapper = styled.span <{
+  $txtColor?: string,
+  $bgColor?: string,
+  $borderColor?: string
+}>`
+  background: ${(props) => props.$bgColor};
+  border: 1px solid ${(props) => props.$borderColor};
   border-radius: 30px;
-  padding: 3px 10px;
+  padding: 6px 12px;
 
   && div {
-    color: #fff;
-    font-weight: 300;
+    color: ${(props) => props.$txtColor};
+    font-weight: 400;
     font-size: 16px;
     line-height: 16px;
   }
@@ -147,6 +157,8 @@ const StyledInfoPanelPercentWrapper = styled.span`
 const DEFAULT_TIME_WINDOW: Duration = { weeks: 1 }
 
 const TokenPage: React.FC<{ routeAddress: string }> = ({ routeAddress }) => {
+  const { theme } = useTheme()
+
   const { isXs, isSm } = useMatchBreakpoints()
   const { t } = useTranslation()
 
@@ -200,7 +212,7 @@ const TokenPage: React.FC<{ routeAddress: string }> = ({ routeAddress }) => {
           <>
             <StyledSection>
               {/* Stuff on top */}
-              <Flex justifyContent="space-between" mb="24px" flexDirection={['column', 'column', 'row']}>
+              <Flex justifyContent="space-between" mb="60px" flexDirection={['column', 'column', 'row']}>
                 <Breadcrumbs mb="32px">
                   <NextLinkFromReactRouter to="/info">
                     <Text color="primary">{t('Info')}</Text>
@@ -209,15 +221,18 @@ const TokenPage: React.FC<{ routeAddress: string }> = ({ routeAddress }) => {
                     <Text color="primary">{t('Tokens')}</Text>
                   </NextLinkFromReactRouter>
                   <Flex>
-                    <Text color="#EC4C93" mr="8px">
+                    <Text color={theme.colors.itemPrimary} mr="8px">
                       {tokenData.symbol}
                     </Text>
-                    <Text color="#EC4C93">{`(${truncateHash(address)})`}</Text>
+                    <Text color={theme.colors.itemPrimary}>{`(${truncateHash(address)})`}</Text>
                   </Flex>
                 </Breadcrumbs>
               </Flex>
 
-              <StyledInfoPanel>
+              <StyledInfoPanel
+                $bgColor={theme.isDark ? theme.colors.bgDarkWeaker : '#fff'}
+                $borderColor={theme.isDark ? theme.colors.itemBlueUnhighlight : '#fff'}
+              >
                 <Flex
                   justifyContent="space-between"
                   alignItems="flex-start"
@@ -234,16 +249,16 @@ const TokenPage: React.FC<{ routeAddress: string }> = ({ routeAddress }) => {
                           fontSize={isXs || isSm ? '24px' : '32px'}
                           lineHeight={isXs || isSm ? '24px' : '32px'}
                           id="info-token-name-title"
-                          color="#fff"
+                          color={theme.isDark ? '#fff' : theme.colors.itemBlueUnhighlight}
                         >
                           {tokenData.name}
                         </Text>
                         <Text
                           ml="0px"
                           lineHeight="1"
-                          color="textSubtle"
                           fontSize={isXs || isSm ? '14px' : '20px'}
                           mr="16px"
+                          color={theme.colors.itemPrimary}
                         >
                           ({tokenData.symbol})
                         </Text>
@@ -265,10 +280,14 @@ const TokenPage: React.FC<{ routeAddress: string }> = ({ routeAddress }) => {
                         </Flex>
                       </Flex>
                       <Flex mt="0px" ml="0px" alignItems="center">
-                        <StyledInfoPanelPrice mr="16px" bold fontSize="24px">
+                        <StyledInfoPanelPrice mr="16px" bold fontSize="24px" color={theme.colors.itemPrimary}>
                           ${formatAmount(tokenData.priceUSD, { notation: 'standard' })}
                         </StyledInfoPanelPrice>
-                        <StyledInfoPanelPercentWrapper>
+                        <StyledInfoPanelPercentWrapper
+                          $txtColor='#fff'
+                          $bgColor={theme.colors.itemPrimary}
+                          style={{ border: 'none' }}
+                        >
                           <Percent value={tokenData.priceUSDChange} fontWeight={600} />
                         </StyledInfoPanelPercentWrapper>
                       </Flex>
@@ -289,41 +308,41 @@ const TokenPage: React.FC<{ routeAddress: string }> = ({ routeAddress }) => {
                   </Flex>
                 </Flex>
 
-                <StyledBoxOfInfoValues p="24px">
+                <StyledBoxOfInfoValues p="24px" $borderColor={theme.colors.itemPrimary}>
                   <StyledInfoValue>
-                    <StyledInfoValueTop bold small color="secondary" fontSize="12px" textTransform="uppercase">
+                    <StyledInfoValueTop color={theme.isDark ? '#fff' : '#6E6E6E'} bold small fontSize="12px" textTransform="uppercase">
                       {t('Liquidity')}
                     </StyledInfoValueTop>
-                    <StyledInfoValueMid bold fontSize="24px">
+                    <StyledInfoValueMid $txtColor={theme.colors.itemPrimary} bold fontSize="24px">
                       ${formatAmount(tokenData.liquidityUSD)}
                     </StyledInfoValueMid>
                     <Percent value={tokenData.liquidityUSDChange} />
                   </StyledInfoValue>
 
                   <StyledInfoValue>
-                    <StyledInfoValueTop mt="0px" bold color="secondary" fontSize="12px" textTransform="uppercase">
+                    <StyledInfoValueTop color={theme.isDark ? '#fff' : '#6E6E6E'} mt="0px" bold fontSize="12px" textTransform="uppercase">
                       {t('Volume 24H')}
                     </StyledInfoValueTop>
-                    <StyledInfoValueMid bold fontSize="24px" textTransform="uppercase">
+                    <StyledInfoValueMid $txtColor={theme.colors.itemPrimary} bold fontSize="24px" textTransform="uppercase">
                       ${formatAmount(tokenData.volumeUSD)}
                     </StyledInfoValueMid>
                     <Percent value={tokenData.volumeUSDChange} />
                   </StyledInfoValue>
 
                   <StyledInfoValue>
-                    <StyledInfoValueTop mt="0px" bold color="secondary" fontSize="12px" textTransform="uppercase">
+                    <StyledInfoValueTop color={theme.isDark ? '#fff' : '#6E6E6E'} mt="0px" bold fontSize="12px" textTransform="uppercase">
                       {t('Volume 7D')}
                     </StyledInfoValueTop>
-                    <StyledInfoValueMid bold fontSize="24px">
+                    <StyledInfoValueMid $txtColor={theme.colors.itemPrimary} bold fontSize="24px">
                       ${formatAmount(tokenData.volumeUSDWeek)}
                     </StyledInfoValueMid>
                   </StyledInfoValue>
 
                   <StyledInfoValue>
-                    <StyledInfoValueTop mt="0px" bold color="secondary" fontSize="12px" textTransform="uppercase">
+                    <StyledInfoValueTop color={theme.isDark ? '#fff' : '#6E6E6E'} mt="0px" bold fontSize="12px" textTransform="uppercase">
                       {t('Transactions 24H')}
                     </StyledInfoValueTop>
-                    <StyledInfoValueMid bold fontSize="24px">
+                    <StyledInfoValueMid $txtColor={theme.colors.itemPrimary} bold fontSize="24px">
                       {formatAmount(tokenData.txCount, { isInteger: true })}
                     </StyledInfoValueMid>
                   </StyledInfoValue>
@@ -341,7 +360,7 @@ const TokenPage: React.FC<{ routeAddress: string }> = ({ routeAddress }) => {
 
             {/* pools table: */}
             <StyledSection>
-              <StyledHeading scale="lg" mb="16px" mt="40px">
+              <StyledHeading color={theme.colors.itemPrimary} scale="lg" mb="16px" mt="40px">
                 {t('Pools')}
               </StyledHeading>
               <PoolTable poolDatas={poolDatas} />

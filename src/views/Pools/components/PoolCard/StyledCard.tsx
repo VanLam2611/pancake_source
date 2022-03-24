@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import { Card } from '@pancakeswap/uikit'
 
-export const StyledCard = styled(Card)<{ isFinished?: boolean }>`
+export const StyledCard = styled(Card) <{ isFinished?: boolean, cBgColor?: string, cBorderColor?: string, isDark: boolean }>`
   max-width: 352px;
   margin: 0 8px 24px;
   width: 100%;
@@ -12,7 +12,9 @@ export const StyledCard = styled(Card)<{ isFinished?: boolean }>`
   position: relative;
   color: ${({ isFinished, theme }) => theme.colors[isFinished ? 'textDisabled' : 'secondary']};
   // Custom style:
-  background: rgba(12, 7, 17, 0.8);
+  background: ${({ isDark }) => isDark ? '#1e2735' : '#fff'};
+  background: ${({ cBgColor }) => cBgColor || ''};
+  border: 1px solid #60C5BA;
   border-radius: 10px;
   padding: 0;
 

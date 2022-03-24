@@ -13,7 +13,7 @@ const Container = styled.div`
   margin-right: 16px;
   display: flex;
   justify-content: flex-end;
-
+  display: none;
   ${({ theme }) => theme.mediaQueries.sm} {
     flex: 1;
   }

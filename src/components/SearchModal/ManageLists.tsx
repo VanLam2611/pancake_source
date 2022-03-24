@@ -92,7 +92,7 @@ const ListRow = memo(function ListRow({ listUrl }: { listUrl: string }) {
   if (!list) return null
 
   return (
-    <RowWrapper active={isActive} key={listUrl} id={listUrlRowHTMLId(listUrl)}>
+    <RowWrapper active={isActive} key={listUrl} id={listUrlRowHTMLId(listUrl)} style={{border: '1px solid #60C5BA'}}>
       {tooltipVisible && tooltip}
       {list.logoURI ? (
         <ListLogo size="40px" style={{ marginRight: '1rem' }} logoURI={list.logoURI} alt={`${list.name} list logo`} />
@@ -101,14 +101,14 @@ const ListRow = memo(function ListRow({ listUrl }: { listUrl: string }) {
       )}
       <Column style={{ flex: '1' }}>
         <Row>
-          <Text bold>{list.name}</Text>
+          <Text bold color='#fff'>{list.name}</Text>
         </Row>
         <RowFixed mt="4px">
-          <Text fontSize="12px" mr="6px" textTransform="lowercase">
+          <Text fontSize="12px" mr="6px" textTransform="lowercase" color='#fff'>
             {list.tokens.length} {t('Tokens')}
           </Text>
           <span ref={targetRef}>
-            <CogIcon color="text" width="12px" />
+            <CogIcon color="#fff" width="12px" />
           </span>
         </RowFixed>
       </Column>

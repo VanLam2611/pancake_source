@@ -11,10 +11,12 @@ import { StyledCard } from './StyledCard'
 import CardFooter from './CardFooter'
 import PoolCardHeader, { PoolCardHeaderTitle } from './PoolCardHeader'
 import CardActions from './CardActions'
+import useTheme from 'hooks/useTheme'
 
 const PoolCard: React.FC<{ pool: DeserializedPool; account: string }> = ({ pool, account }) => {
   const { sousId, stakingToken, earningToken, isFinished, userData } = pool
   const { t } = useTranslation()
+  const {isDark} = useTheme()
   const stakedBalance = userData?.stakedBalance ? new BigNumber(userData.stakedBalance) : BIG_ZERO
   const accountHasStakedBalance = stakedBalance.gt(0)
 
@@ -22,6 +24,7 @@ const PoolCard: React.FC<{ pool: DeserializedPool; account: string }> = ({ pool,
 
   return (
     <StyledCard
+      isDark={isDark}
       isFinished={isFinished && sousId !== 0}
       ribbon={isFinished && <CardRibbon variantColor="textDisabled" text={t('Finished')} />}
     >

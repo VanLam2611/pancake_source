@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { ArrowForwardIcon, Button, Flex, Heading, Skeleton, Text } from '@pancakeswap/uikit'
+import { ArrowForwardIcon, Flex, Heading, Skeleton, Text } from '@pancakeswap/uikit'
 import { NextLinkFromReactRouter } from 'components/NextLink'
 import { useTranslation } from 'contexts/Localization'
 import { formatLocalisedCompactNumber } from 'utils/formatBalance'
@@ -10,19 +10,22 @@ import { useBNBBusdPrice } from 'hooks/useBUSDPrice'
 import { multiplyPriceByAmount } from 'utils/prices'
 import useSWR from 'swr'
 import { SLOW_INTERVAL } from 'config/constants'
+import { BasicButton } from '../../../../../packages/uikit/src/components/Button/index.stories'
+
+const StyledWrapper = styled.div`
+  padding: 30px;
+`
 
 const StyledLink = styled(NextLinkFromReactRouter)`
   width: 100%;
 `
 const StyledCardHeading = styled(Text)`
-  color: #ff0099;
-  font-style: normal;
-  font-weight: 600;
-  font-size: 20px;
-  line-height: 21px;
+  color: #0B3854;
+  font-size: 24px;
+  line-height: 25px;
   text-align: center;
   margin-bottom: 20px;
-  text-shadow: 0px 0px 5px #000;
+  font-weight: 700;
 `
 
 const StyledCardTitle = styled(Text)`
@@ -35,8 +38,8 @@ const StyledCardTitle = styled(Text)`
 `
 
 const StyledCardTitleUnder = styled(Text)`
-  color: #fff;
-  font-weight: 300;
+  color: #0B3854;
+  font-weight: 400;
   font-size: 16px;
   line-height: 17px;
   margin: 0;
@@ -44,18 +47,18 @@ const StyledCardTitleUnder = styled(Text)`
 `
 
 const StyledCardTitleMain = styled(Heading)`
-  color: #fff;
+  color: #0B3854;
   font-style: normal;
   font-weight: 600;
-  font-size: 24px;
-  line-height: 25px;
+  font-size: 32px;
+  line-height: 43px;
   margin: 0;
   padding: 0;
 `
 
 const StyledCardContent = styled(Text)`
-  color: #fff;
-  font-weight: 300;
+  color: #0B3854;
+  font-weight: 400;
   font-size: 16px;
   line-height: 17px;
   text-align: center;
@@ -83,7 +86,7 @@ const PredictionCardContent = () => {
   }, [isIntersecting])
 
   return (
-    <>
+    <StyledWrapper>
       <Flex flexDirection="column" mt="0px">
         <StyledCardHeading color="#280D5F" bold fontSize="16px">
           {t('Prediction')}
@@ -113,15 +116,15 @@ const PredictionCardContent = () => {
 
       <Flex alignItems="center" justifyContent="center">
         <StyledLink to="/prediction" id="homepage-prediction-cta">
-          <Button width="100%" style={{ background: '#EC4C93' }}>
-            <Text bold color="#fff">
+          <BasicButton variant='customPrimary' width="100%">
+            <Text bold color="inherit">
               {t('Play')}
             </Text>
-            <ArrowForwardIcon ml="4px" color="#fff" />
-          </Button>
+            <ArrowForwardIcon ml="4px" color="inherit" />
+          </BasicButton>
         </StyledLink>
       </Flex>
-    </>
+    </StyledWrapper>
   )
 }
 

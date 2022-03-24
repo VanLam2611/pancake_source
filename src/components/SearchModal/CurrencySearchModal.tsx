@@ -30,11 +30,17 @@ const Footer = styled.div`
 const StyledModalContainer = styled(ModalContainer)`
   max-width: 420px;
   width: 100%;
+  background-color: #1E2735;
+  border: 1px solid #0B3854;
+  border-bottom: none;
 `
 
 const StyledModalBody = styled(ModalBody)`
   padding: 24px;
   overflow-y: auto;
+  background-color: #1E2735;
+  border: 1px solid #0B3854;
+  border-top: none;
   -ms-overflow-style: none;
   scrollbar-width: none;
   &::-webkit-scrollbar {
@@ -94,7 +100,7 @@ export default function CurrencySearchModal({
       <ModalHeader>
         <ModalTitle>
           {config[modalView].onBack && <ModalBackButton onBack={config[modalView].onBack} />}
-          <Heading>{config[modalView].title}</Heading>
+          <Heading color='#fff'>{config[modalView].title}</Heading>
         </ModalTitle>
         <ModalCloseButton onDismiss={onDismiss} />
       </ModalHeader>
@@ -123,7 +129,7 @@ export default function CurrencySearchModal({
           ''
         )}
         {modalView === CurrencyModalView.search && (
-          <Footer>
+          <Footer style={{background: 'transparent'}}>
             <Button
               scale="sm"
               variant="text"

@@ -16,18 +16,11 @@ import { CurrencyLogo, DoubleCurrencyLogo } from 'components/Logo'
 import { TradingViewLabel } from 'components/TradingView'
 import { useTranslation } from 'contexts/Localization'
 import { ChartViewMode } from 'state/user/actions'
-import {
-  useExchangeChartViewManager,
-  useUserSlippageTolerance,
-} from 'state/user/hooks'
+import { useExchangeChartViewManager, useUserSlippageTolerance } from 'state/user/hooks'
 import styled from 'styled-components'
 import { CurrencyAmount } from '@pancakeswap/sdk'
 import CurrencyInputPanel from 'components/CurrencyInputPanel'
-import {
-  useDerivedSwapInfo,
-  useSwapActionHandlers,
-  useSwapState,
-} from 'state/swap/hooks'
+import { useDerivedSwapInfo, useSwapActionHandlers, useSwapState } from 'state/swap/hooks'
 import { Field } from 'state/swap/actions'
 import useWrapCallback, { WrapType } from 'hooks/useWrapCallback'
 import { maxAmountSpend } from 'utils/maxAmountSpend'
@@ -36,22 +29,29 @@ import SwapWarningTokens from 'config/constants/swapWarningTokens'
 import TradingViewChart from './TradingViewChart'
 import { StyledPriceChart } from './styles'
 import BasicChart from './BasicChart'
+import useTheme from 'hooks/useTheme'
 
-const ChartButton = styled(Button)`
+const ChartButton = styled(Button)<{$isDark: boolean}>`
   // background-color: ${({ $active, theme }) => $active && `${theme.colors.primary}0f`};
-  background-color: #74214580;
-  color: #b5689e;
+  ${({ theme }) => theme.mediaQueries.sm} {
+    background-color: ${({$isDark}) => ($isDark ? '#0B3854' : "#fff")};
+    border: 1px solid ${({ $isDark })=>($isDark ? 'transparent' : '#0B3854')};
+  }
+  color: #60C5BA;
   padding: 4px 8px;
   border-radius: 5px;
 `
 
-const BIcon = styled(Button)`
-  background-color: #74214580;
+const BIcon = styled(Button)<{$isDark: boolean}>`
+  ${({ theme }) => theme.mediaQueries.sm} {
+    background-color: ${({$isDark}) => ($isDark ? '#0B3854' : "#fff")};
+    border: 1px solid ${({ $isDark })=>($isDark ? 'transparent' : '#0B3854')};
+  }
   width: 32px;
   height: 32px;
   border-radius: 5px !important;
   display: inline-block;
-  padding: 0px !important;
+  padding: 0px 20px 0px 0px !important;
 `
 
 const PriceChart = ({
@@ -68,7 +68,9 @@ const PriceChart = ({
   currentSwapPrice,
 }) => {
   const { isDesktop } = useMatchBreakpoints()
-  const toggleExpanded = () => setIsChartExpanded((currentIsExpanded) => !currentIsExpanded)
+  const toggleExpanded = () => {
+    setIsChartExpanded((currentIsExpanded) => !currentIsExpanded)
+  }
   const [chartView, setChartView] = useExchangeChartViewManager()
   const [twChartSymbol, setTwChartSymbol] = useState('')
   const { t } = useTranslation()
@@ -78,25 +80,22 @@ const PriceChart = ({
   }, [])
   const StypeParent = styled(Box)<{ $isDark: boolean }>`
     ${({ theme }) => theme.mediaQueries.sm} {
-      background: ${({ $isDark }) => ($isDark ? '#74214580' : '#fff')};
+      background: ${({ $isDark }) => ($isDark ? '#0B3854' : '#fff')};
     }
   `
-  const [textInput] = useState('NASDAQ:AAPL')
 
   // get custom setting values for user
   const [allowedSlippage] = useUserSlippageTolerance()
 
   // swap state
   const { independentField, typedValue } = useSwapState()
-  const { v2Trade, currencyBalances, parsedAmount, currencies } = useDerivedSwapInfo()
   // Price data
   const {
     [Field.INPUT]: { currencyId: inputCurrencyId },
     [Field.OUTPUT]: { currencyId: outputCurrencyId },
   } = useSwapState()
-  const {
-    wrapType,
-  } = useWrapCallback(currencies[Field.INPUT], currencies[Field.OUTPUT], typedValue)
+  const { v2Trade, currencyBalances, parsedAmount, currencies } = useDerivedSwapInfo(independentField, typedValue, inputCurrencyId, inputCurrency, outputCurrencyId, outputCurrency, '')
+  const { wrapType } = useWrapCallback(currencies[Field.INPUT], currencies[Field.OUTPUT], typedValue)
   const showWrap: boolean = wrapType !== WrapType.NOT_APPLICABLE
   const trade = showWrap ? undefined : v2Trade
   const dependentField: Field = independentField === Field.INPUT ? Field.OUTPUT : Field.INPUT
@@ -141,7 +140,7 @@ const PriceChart = ({
       setApprovalSubmitted(true)
     }
   }, [approval, approvalSubmitted])
-  useEffect(()=>{
+  useEffect(() => {
     setChartView(ChartViewMode.BASIC)
   }, [chartView])
   const shouldShowSwapWarning = (swapCurrency) => {
@@ -173,7 +172,7 @@ const PriceChart = ({
       overflow={chartView === ChartViewMode.TRADING_VIEW ? 'hidden' : 'unset'}
       $isDark={isDark}
       $isExpanded={isChartExpanded}
-      style={{ padding: '10px', border: '1px solid #EC4C93' }}
+      style={{ padding: '10px', border: '1px solid #0B3854' }}
       $isFullWidthContainer={isFullWidthContainer}
     >
       <Flex justifyContent="space-between" px="24px">
@@ -185,18 +184,19 @@ const PriceChart = ({
               inputCurrency && <CurrencyLogo currency={inputCurrency} size="24px" style={{ marginRight: '8px' }} />
             )}
             {inputCurrency && (
-              <Text color="#EC4C93" bold>
+              <Text color="#60C5BA" bold>
                 {outputCurrency ? `${inputCurrency.symbol}/${outputCurrency.symbol}` : inputCurrency.symbol}
               </Text>
             )}
           </StypeParent>
           <IconButton variant="text" onClick={onSwitchTokens}>
-            <BIcon>
-              <SyncAltIcon ml="6px" color="#B5689E" />
+            <BIcon $isDark={isDark}>
+              <SyncAltIcon ml="6px" color="#60C5BA" />
             </BIcon>
           </IconButton>
           <Flex>
             <ChartButton
+            $isDark={isDark}
               aria-label={t('Basic')}
               title={t('Basic')}
               $active={chartView === ChartViewMode.BASIC}
@@ -223,7 +223,7 @@ const PriceChart = ({
         {!isMobile && (
           <Flex>
             <IconButton variant="text" onClick={toggleExpanded}>
-              {isChartExpanded ? <ShrinkIcon color="text" /> : <ExpandIcon color="#742145" />}
+              {isChartExpanded ? <ShrinkIcon color="text" /> : <ExpandIcon color="#0B3854" />}
             </IconButton>
           </Flex>
         )}
@@ -270,7 +270,7 @@ const PriceChart = ({
         //         id="swap-currency-input"
         //         isShow={false}
         //       />
-                
+
         //     </Flex>
         //   </Flex>
 

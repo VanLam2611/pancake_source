@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import PageSection from 'components/PageSection'
 import { useWeb3React } from '@web3-react/core'
 import useTheme from 'hooks/useTheme'
@@ -18,22 +18,29 @@ import CakeDataRow from './components/CakeDataRow'
 // import MultipleBanner from './components/Banners/MultipleBanner'
 
 const StyledHeroSection = styled(PageSection)`
-  background-image: url('/imagesForWomenTechFinance/home/WomenTech_finance_02_1.png');
-  background-size: cover;
+  background-image: url('/imagesForOnDefi/home/OnDefi_Home_Hero.png');
+  background-size: 100vw auto;
   background-position: center center;
   background-repeat: no-repeat;
-  min-height: calc(100vh - 57px);
-  max-height: calc(100vh - 57px);
+  min-height: calc(768px - 57px);
+  max-height: calc(1080px - 57px);
   height: calc(100vh - 57px);
   overflow: hidden;
   padding: 40px 0;
   margin-bottom: 100px;
 
+  > div {
+    // transform: translateX(-2vw);
+    padding: 40px 40px 40px 40px;
+  }
+
   @media screen and (max-width: 1400px) {
     padding: 0px 0;
+  }
 
-    && > div {
-      padding: 40px;
+  @media screen and (max-width: 768px) {
+    > div {
+      transform: translateX(0);
     }
   }
 
@@ -47,11 +54,17 @@ const StyledHeroSection = styled(PageSection)`
 `
 
 const StyledMetricsSection = styled(PageSection)`
-  min-height: calc(100vh);
+  background: transparent;
+  min-height: 768px;
+  max-height: 1080px;
+  height: 100vh;
   overflow: hidden;
-  background-color: transparent;
   padding: 40px 0;
   margin-bottom: 100px;
+
+  > div {
+    overflow: hidden;
+  }
 
   @media screen and (max-width: 1400px) {
     padding: 0px 0;
@@ -59,6 +72,15 @@ const StyledMetricsSection = styled(PageSection)`
     && > div {
       padding: 40px;
     }
+  }
+
+  @media screen and (max-width: 992px) {
+    background-size: auto 60vh;
+    height: auto; max-height: none;
+  }
+
+  @media screen and (max-width: 768px) {
+    background-size: auto 50vh;
   }
 
   @media screen and (max-width: 576px) {
@@ -71,11 +93,13 @@ const StyledMetricsSection = styled(PageSection)`
 `
 
 const StyledSwapSection = styled(PageSection)`
-  background-image: url('/imagesForWomenTechFinance/home/WomenTech_finance_SwapSection.png');
-  background-size: cover;
+  background-image: url('/imagesForOnDefi/home/OnDefi_Home_Swap.png');
+  background-size: 100vw auto;
   background-position: center center;
   background-repeat: no-repeat;
-  min-height: calc(100vh);
+  min-height: 768px;
+  max-height: 1080px;
+  height: 100vh;
   overflow: hidden;
   background-color: transparent;
   padding: 40px 0;
@@ -89,6 +113,12 @@ const StyledSwapSection = styled(PageSection)`
     }
   }
 
+  @media screen and (max-width: 992px) {
+  }
+
+  @media screen and (max-width: 768px) {
+  }
+
   @media screen and (max-width: 576px) {
     padding: 0px 0;
 
@@ -99,11 +129,13 @@ const StyledSwapSection = styled(PageSection)`
 `
 
 const StyledSalesSection = styled(PageSection)`
-  background-image: url('/imagesForWomenTechFinance/home/WomenTech_finance_SalesSection.png');
-  background-size: cover;
-  background-position: center center;
+  background-image: url('/imagesForOnDefi/home/OnDefi_Home_Trade2.png');
+  background-size: 100vw auto;
+  background-position: center top;
   background-repeat: no-repeat;
-  min-height: calc(100vh);
+  min-height: 768px;
+  max-height: 1080px;
+  height: 100vh;
   overflow: hidden;
   background-color: transparent;
   padding: 40px 0;
@@ -120,8 +152,15 @@ const StyledSalesSection = styled(PageSection)`
     padding: 0px 0;
 
     && > div {
-      padding: 40px;
+      padding: 72px 40px 40px 40px;
     }
+  }
+
+  @media screen and (max-width: 992px) {
+    height: auto; max-height: none;
+  }
+
+  @media screen and (max-width: 768px) {
   }
 
   @media screen and (max-width: 576px) {
@@ -134,11 +173,13 @@ const StyledSalesSection = styled(PageSection)`
 `
 
 const StyledWinSection = styled(PageSection)`
-  background-image: url('/imagesForWomenTechFinance/home/WomenTech_finance_WinSection.png');
-  background-size: cover;
+  background-image: url('/imagesForOnDefi/home/OnDefi_Home_Win.png');
+  background-size: 100vw auto;
   background-position: center center;
   background-repeat: no-repeat;
-  min-height: calc(100vh);
+  min-height: 768px;
+  max-height: 1080px;
+  height: 100vh;
   overflow: hidden;
   background-color: transparent;
   padding: 40px 0;
@@ -159,6 +200,16 @@ const StyledWinSection = styled(PageSection)`
     }
   }
 
+  @media screen and (max-width: 1200px) {
+    height: auto; max-height: none;
+  }
+
+  @media screen and (max-width: 992px) {
+  }
+
+  @media screen and (max-width: 768px) {
+  }
+
   @media screen and (max-width: 576px) {
     padding: 0px 0;
 
@@ -169,11 +220,13 @@ const StyledWinSection = styled(PageSection)`
 `
 
 const StyledTokenSection = styled(PageSection)`
-  background-image: url('/imagesForWomenTechFinance/home/WomenTech_finance_TokenSection.png');
-  background-size: cover;
-  background-position: center center;
+  background-image: url('/imagesForOnDefi/home/OnDefi_Home_Token.png');
+  background-size: 100vw auto;
+  background-position: center top;
   background-repeat: no-repeat;
-  min-height: calc(100vh);
+  min-height: 768px;
+  max-height: 1080px;
+  height: 100vh;
   overflow: hidden;
   background-color: transparent;
   padding: 40px 0;
@@ -194,8 +247,15 @@ const StyledTokenSection = styled(PageSection)`
     }
   }
 
+  @media screen and (max-width: 992px) {
+  }
+
+  @media screen and (max-width: 768px) {
+  }
+
   @media screen and (max-width: 576px) {
     padding: 0px 0;
+    height: auto; max-height: none;
 
     && > div {
       padding: 20px;
@@ -206,11 +266,8 @@ const StyledTokenSection = styled(PageSection)`
 const StyledHomeFooter = styled(PageSection)`
   max-height: calc(100vh);
   background: transparent;
-  padding: 40px 0;
-  background-image: url('/imagesForWomenTechFinance/home/WomenTech_finance_Footer.png');
-  background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
+  padding: 60px 0;
+  background: #0B3854;
 `
 
 const UserBannerWrapper = styled(Container)`
@@ -229,7 +286,13 @@ const UserBannerWrapper = styled(Container)`
   }
 `
 
-const HomeWrapper = styled.div`
+const HomeWrapper = styled.div <{ $isDarkStyle?: boolean }>`
+  ${(props) => props.$isDarkStyle ? css`
+    background-color: #101722;
+  ` : css`
+    background-color: #fff;
+  `}
+
   @media screen and (max-width: 1366px) {
     font-size: 23px;
   }
@@ -239,15 +302,16 @@ const Home: React.FC = () => {
   const { theme } = useTheme()
   const { account } = useWeb3React()
 
-  const HomeSectionContainerStyles = { margin: '0', width: '100%', maxWidth: '968px' }
+  // const HomeSectionContainerStyles = { margin: '0', width: '100%', maxWidth: '968px' }
+  const HomeSectionContainerStyles = { margin: '0', width: '100%' }
 
   const { t } = useTranslation()
 
   return (
-    <HomeWrapper>
+    <HomeWrapper $isDarkStyle={theme.isDark}>
       <PageMeta />
       <StyledHeroSection
-        innerProps={{ style: { margin: '0', width: '100%' } }}
+        innerProps={{ style: { margin: '0' } }}
         background={
           theme.isDark
             ? 'radial-gradient(103.12% 50% at 50% 50%, #21193A 0%, #191326 100%)'
@@ -256,11 +320,7 @@ const Home: React.FC = () => {
         index={2}
         hasCurvedDivider={false}
       >
-        {account && (
-          <UserBannerWrapper>
-            {/* <UserBanner /> */}
-          </UserBannerWrapper>
-        )}
+        {account && <UserBannerWrapper>{/* <UserBanner /> */}</UserBannerWrapper>}
         {/* <MultipleBanner /> */}
         <Hero />
       </StyledHeroSection>
@@ -295,7 +355,7 @@ const Home: React.FC = () => {
         hasCurvedDivider={false}
         style={{ backgroundColor: 'transparent' }}
       >
-        <SalesSection {...earnSectionData(t)} numberOfWords={3} />
+        <SalesSection {...earnSectionData(t)} numberOfWords={3} layoutType='to-left' />
         <FarmsPoolsRow />
       </StyledSalesSection>
 
@@ -319,7 +379,7 @@ const Home: React.FC = () => {
         hasCurvedDivider={false}
         style={{ backgroundColor: 'transparent' }}
       >
-        <SalesSection {...cakeSectionData(t)} numberOfWords={1} />
+        <SalesSection {...cakeSectionData(t)} numberOfWords={1} layoutType='to-left' />
         <CakeDataRow />
       </StyledTokenSection>
 
@@ -328,7 +388,6 @@ const Home: React.FC = () => {
         background="linear-gradient(180deg, #7645D9 0%, #5121B1 100%)"
         index={2}
         hasCurvedDivider={false}
-        style={{ backgroundColor: 'transparent' }}
       >
         <Footer />
       </StyledHomeFooter>

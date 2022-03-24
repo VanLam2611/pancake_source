@@ -10,7 +10,7 @@ const Trans = ({ children, ...props }: TransProps) => {
   if (typeof children !== 'string') {
     throw new Error('children not string in Trans is not supported yet')
   }
-  return <>{t(children, props)}</>
+  return <div>{t(children, props)}</div>
 }
 
 export default Trans

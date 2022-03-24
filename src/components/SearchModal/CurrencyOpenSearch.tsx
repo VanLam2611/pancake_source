@@ -188,7 +188,7 @@ function CurrencyOpenSearch({
                   breakIndex={inactiveTokens && filteredSortedTokens ? filteredSortedTokens.length : undefined}
                   onCurrencySelect={handleCurrencySelect}
                   otherCurrency={otherSelectedCurrency}
-                  //   parentValue={valueInput}
+                  // parentValue={valueInput}
                   selectedCurrency={selectedCurrency}
                   fixedListRef={fixedList}
                   showImportView={showImportView}

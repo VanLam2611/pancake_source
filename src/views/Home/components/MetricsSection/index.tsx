@@ -11,25 +11,26 @@ import StatCardContent from './StatCardContent'
 const StyledHeadingsWrapper = styled.div`
   && {
     text-align: center;
-    margin-bottom: 40px;
+    // margin-bottom: 40px;
+    margin-bottom: 12px;
   }
 
   @media screen and (max-width: 1400px) {
     && {
-      margin-bottom: 20px;
+      // margin-bottom: 20px;
     }
   }
 
   @media screen and (max-width: 576px) {
     && {
-      margin-bottom: 15px;
+      // margin-bottom: 15px;
     }
   }
 `
 
-const StyledTextsWrapper = styled.div`
+const StyledTextsWrapper = styled.div <{ $isDarkStyle?: boolean }>`
   && {
-    margin-bottom: 140px;
+    margin-bottom: 168px;
   }
 
   && div {
@@ -38,35 +39,29 @@ const StyledTextsWrapper = styled.div`
 
   &&,
   && div {
-    color: #fff;
+    color: #000;
     font-style: normal;
     font-weight: 300;
-    font-size: 25px;
-    line-height: 26px;
+    font-size: 24px;
+    line-height: 100%;
     text-align: center;
+
+    ${(props) => props.$isDarkStyle ? css`
+      color: #fff;
+    ` : css`
+      color: #000;
+    `}
   }
 
-  @media screen and (max-width: 1400px) {
+  @media screen and (max-width: 992px) {
     && {
-      margin-bottom: 140px;
-    }
-
-    &&,
-    && div {
-      font-size: 23px;
-      line-height: 24px;
+      margin-bottom: 96px;
     }
   }
 
   @media screen and (max-width: 576px) {
     && {
-      margin-bottom: 140px;
-    }
-
-    &&,
-    && div {
-      font-size: 23px;
-      line-height: 24px;
+      margin-bottom: 24px;
     }
   }
 `
@@ -88,17 +83,18 @@ const StyledBubbleWrapper = styled.div`
     background: transparent;
     top: 0;
     left: 0;
-    // animation: bubbling 1s ease 0s infinite alternate;
+    z-index: 1;
+    animation: bubbling calc(1s * var(--num)) ease 0s infinite alternate;
   }
 
-  // @keyframes bubbling {
-  //   from {
-  //     top: 0;
-  //   }
-  //   to {
-  //     top: 30px;
-  //   }
-  // }
+  @keyframes bubbling {
+    from {
+      top: 0;
+    }
+    to {
+      top: 30px;
+    }
+  }
 `
 
 const StyledBubble = styled.div`
@@ -123,25 +119,25 @@ const StyledBubble = styled.div`
   }
 `
 
-const StyledIconCard = styled(IconCard)<{ $isCircle?: boolean }>`
+const StyledIconCard = styled(IconCard) <{ $isCircle?: boolean }>`
   && {
     width: 258px;
     height: 258px;
-    background: #da54d8;
+    background: #60c5ba;
     background: linear-gradient(
       -60deg,
-      #da54d8 0%,
-      rgba(218, 84, 216, 0.5) 20%,
-      rgba(218, 84, 216, 0) 60%,
-      rgba(218, 84, 216, 0) 100%
+      #60c5ba 0%,
+      rgba(96, 197, 186, 0.5) 20%,
+      rgba(96, 197, 186, 0) 60%,
+      rgba(96, 197, 186, 0) 100%
     );
-    box-shadow: 20px 20px 30px -15px #ec4c93a6;
+    box-shadow: 20px 20px 30px -15px #60c5ba;
     margin: 0;
     overflow: visible;
 
     ${(props) =>
-      props.$isCircle &&
-      css`
+    props.$isCircle &&
+    css`
         border-radius: 50%;
       `}
   }
@@ -161,26 +157,30 @@ const StyledIconCard = styled(IconCard)<{ $isCircle?: boolean }>`
     position: absolute;
     top: 100%;
     left: 100%;
-    box-shadow: -250px -250px 50px 0px rgba(165, 7, 125, 0.5);
+    box-shadow: -250px -250px 50px 0px rgba(96, 197, 186, 0.25);
     border-radius: 50%;
   }
 `
 
-const StyledHeading = styled(Heading)<{ $isHighlighted?: boolean }>`
+const StyledHeading = styled(Heading) <{ $isHighlighted?: boolean, $isDarkStyle?: boolean }>`
   && {
-    color: #fff;
+    color: #000;
     font-weight: 500;
-    font-size: 60px;
-    line-height: 63px;
+    font-size: 64px;
+    line-height: 100%;
     text-align: center;
     margin: 0;
     display: inline;
 
-    ${(props) =>
-      props.$isHighlighted &&
-      css`
-        color: #ec4b93;
-      `}
+    ${(props) => props.$isDarkStyle ? css`
+      color: #fff;
+    ` : css`
+      color: #0b3854;
+    `}
+
+    ${(props) => props.$isHighlighted && css`
+      color: #60c5ba;
+    `}
   }
 
   @media screen and (max-width: 1400px) {
@@ -200,7 +200,7 @@ const StyledHeading = styled(Heading)<{ $isHighlighted?: boolean }>`
 
 const StyledIconCardList = styled(Flex)`
   && {
-    margin: 40px 0 40px 0;
+    margin: 0;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -208,28 +208,20 @@ const StyledIconCardList = styled(Flex)`
   }
 
   @media screen and (max-width: 1400px) {
-    && {
-      margin: 20px 0 20px 0;
-    }
-
-    && > div,
-    && > div:first-child,
-    && > div:last-child {
-      margin: 0 20px 20px 20px;
+    && > div {
+      margin: 0 24px 40px 24px;
     }
   }
 
   @media screen and (max-width: 992px) {
-    && > div,
-    && > div:first-child,
-    && > div:last-child {
-      margin: 40px 20px 40px 20px;
+    && > div {
+      margin: 0 24px 40px 24px;
     }
   }
 
   @media screen and (max-width: 576px) {
-    && {
-      margin: 20px 0 20px 0;
+    && > div {
+      margin: 0px 0px 24px 0px;
     }
   }
 `
@@ -263,21 +255,21 @@ const Stats = () => {
   return (
     <Flex justifyContent="center" alignItems="center" flexDirection="column">
       <StyledHeadingsWrapper>
-        <StyledHeading textAlign="center" scale="xl">
+        <StyledHeading $isDarkStyle={theme.isDark} textAlign="center" scale="xl">
           {t('Used by millions.')}
         </StyledHeading>
         <span> </span>
-        <StyledHeading $isHighlighted textAlign="center" scale="xl" mb="32px">
+        <StyledHeading $isDarkStyle={theme.isDark} $isHighlighted textAlign="center" scale="xl" mb="32px">
           {t('Trusted with billions.')}
         </StyledHeading>
       </StyledHeadingsWrapper>
 
-      <StyledTextsWrapper>
+      <StyledTextsWrapper $isDarkStyle={theme.isDark}>
         <Text textAlign="center" color="textSubtle">
           {t('Womentech has the most users of any decentralized platform, ever.')}
         </Text>
         <Flex flexWrap="wrap">
-          <Text display="inline" textAlign="center" color="textSubtle" mb="20px">
+          <Text textAlign="center" color="textSubtle" display="inline" mb="20px">
             {entrusting}
             <>{tvl ? <>{tvlString}</> : <Skeleton display="inline-block" height={16} width={70} mt="2px" />}</>
             {inFunds}
@@ -290,13 +282,13 @@ const Stats = () => {
           <StyledIconCard $isCircle {...UsersCardData} mr={[null, null, null, '16px']} mb={['16px', null, null, '0']}>
             <StatCardContent
               headingText={t('%users% users', { users })}
-              bodyText={t('in the last 30 days')}
+              bodyText={t('In the last 30 days')}
               highlightColor={theme.colors.secondary}
-              lastWordColor="#ff0099"
+              lastWordColor="#5398c6"
               style={{ justifyContent: 'flex-start', width: '100%', height: '100%', marginTop: '50%' }}
             />
           </StyledIconCard>
-          <StyledBubbleWrapper style={{ top: '-5%', left: '10%' }}>
+          <StyledBubbleWrapper style={{ ['--num' as any]: '2', top: '-5%', left: '10%' }}>
             <StyledBubble />
           </StyledBubbleWrapper>
         </StyledIconCardWrapper>
@@ -305,13 +297,13 @@ const Stats = () => {
           <StyledIconCard $isCircle {...TradesCardData} mr={[null, null, null, '16px']} mb={['16px', null, null, '0']}>
             <StatCardContent
               headingText={t('%trades% trades', { trades })}
-              bodyText={t('made in the last 30 days')}
+              bodyText={t('In the last 30 days')}
               highlightColor={theme.colors.primary}
-              lastWordColor="#6800a8"
+              lastWordColor="#5398c6"
               style={{ justifyContent: 'flex-start', width: '100%', height: '100%', marginTop: '50%' }}
             />
           </StyledIconCard>
-          <StyledBubbleWrapper style={{ top: '-10%', right: '10%', left: 'auto' }}>
+          <StyledBubbleWrapper style={{ ['--num' as any]: '2', top: '-10%', right: '10%', left: 'auto' }}>
             <StyledBubble />
           </StyledBubbleWrapper>
         </StyledIconCardWrapper>
@@ -322,11 +314,11 @@ const Stats = () => {
               headingText={t('$%tvl% staked', { tvl: tvlString })}
               bodyText={t('Total Value Locked')}
               highlightColor={theme.colors.failure}
-              lastWordColor="#ff0099"
+              lastWordColor="#5398c6"
               style={{ justifyContent: 'flex-start', width: '100%', height: '100%', marginTop: '50%' }}
             />
           </StyledIconCard>
-          <StyledBubbleWrapper style={{ top: '-5%', left: '10%', transform: 'rotate(90deg)' }}>
+          <StyledBubbleWrapper style={{ ['--num' as any]: '2', top: '-5%', left: '10%', transform: 'rotate(90deg)' }}>
             <StyledBubble />
           </StyledBubbleWrapper>
         </StyledIconCardWrapper>

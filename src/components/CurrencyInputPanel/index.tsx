@@ -27,18 +27,18 @@ const CurrencySelectButton = styled(Button).attrs({ variant: 'text', scale: 'sm'
   top: 23px;
   left: 10px;
   z-index: 3;
-  background-color: #ec4c93;
+  background-color: #60C5BA;
   border-radius: 5px !important;
 `
 
-const CurrencySelectButtonTrue = styled(Button).attrs({ variant: 'text', scale: 'sm' })`
+const CurrencySelectButtonTrue = styled(Button).attrs({ variant: 'text', scale: 'sm' })<{$isDark: boolean}>`
   padding: 0.75rem 1rem;
   position: relative;
   top: 0px;
   left: 10px;
   z-index: 3;
-  background-color: rgba(46, 0, 23, 0.5);
-  border: 1px solid #ec4c93;
+  background-color: ${({$isDark})=> ( $isDark ? '#1E2735' : '#fff' )} ;
+  border: 1px solid #60C5BA;
   border-radius: 5px !important;
 `
 
@@ -50,13 +50,13 @@ const LabelRow = styled.div<{ $isDark: boolean }>`
   font-size: 0.75rem;
   line-height: 1rem;
   padding: 1.5rem 1rem;
-  border: 1.25px solid #ec4c93;
+  border: 1.25px solid #60C5BA;
   border-radius: 15px;
   position: absolute;
   width: 100%;
   z-index: 2;
   ${({ theme }) => theme.mediaQueries.sm} {
-    background-color: ${({ $isDark }) => ($isDark ? '#2E001780' : '#fff')};
+    background-color: ${({ $isDark }) => ($isDark ? '#101722' : '#fff')};
   }
   // background-color: ${({ theme }) => theme.colors.background};
 `
@@ -173,6 +173,7 @@ export default function CurrencyInputPanel({
                 onPresentCurrencyModal()
               }
             }}
+            $isDark={isDark}
           >
             <Flex alignItems="center" justifyContent="space-between">
               {pair ? (
@@ -194,8 +195,8 @@ export default function CurrencyInputPanel({
                     : currency?.symbol) || t('Select a currency')}
                 </Text>
               )}
-              {!disableCurrencySelect && <ChevronDownIcon />}
-            </Flex>
+             
+            </Flex> {!disableCurrencySelect && <ChevronDownIcon />}
           </CurrencySelectButtonTrue>
         )}
         {/* <Flex style={{ gap: '8px' }}>

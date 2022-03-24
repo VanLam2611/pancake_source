@@ -5,6 +5,7 @@ import { Image, Heading, RowType, Toggle, Text, Button, ArrowForwardIcon, Flex }
 import { ChainId } from '@pancakeswap/sdk'
 import { NextLinkFromReactRouter } from 'components/NextLink'
 import styled from 'styled-components'
+import Link from 'next/link'
 import FlexLayout from 'components/Layout/Flex'
 import Page from 'components/Layout/Page'
 import { useFarms, usePollFarmsWithUserData, usePriceCakeBusd } from 'state/farms/hooks'
@@ -28,6 +29,7 @@ import Table from './components/FarmTable/FarmTable'
 import FarmTabButtons from './components/FarmTabButtons'
 import { RowProps } from './components/FarmTable/Row'
 import { DesktopColumnSchema, FarmWithStakedValue } from './components/types'
+import useTheme from 'hooks/useTheme'
 
 const ControlContainer = styled.div`
   display: flex;
@@ -54,6 +56,10 @@ const ToggleWrapper = styled.div`
 
   ${Text} {
     margin-left: 8px;
+  }
+  div div:last-child {
+    background: #60c5ba;
+    border: 1px solid #0b3854;
   }
 `
 
@@ -102,6 +108,22 @@ const StyledImage = styled(Image)`
   margin-right: auto;
   margin-top: 58px;
 `
+const ParentPool = styled.div`
+  display: block;
+  ${({ theme }) => theme.mediaQueries.sm} {
+    display: flex;
+  }
+`
+const CommunityPool = styled.div`
+  display: block;
+  text-align: left;
+  ${({ theme }) => theme.mediaQueries.sm} {
+    display: block;
+    flex: 50%;
+    text-align: right;
+  }
+`
+
 const NUMBER_OF_FARMS_VISIBLE = 12
 
 export const getDisplayApr = (cakeRewardsApr?: number, lpRewardsApr?: number) => {
@@ -117,6 +139,7 @@ export const getDisplayApr = (cakeRewardsApr?: number, lpRewardsApr?: number) =>
 const Farms: React.FC = ({ children }) => {
   const { pathname } = useRouter()
   const { t } = useTranslation()
+  const { isDark } = useTheme()
   const { data: farmsLP, userDataLoaded, poolLength } = useFarms()
   const cakePrice = usePriceCakeBusd()
   const [query, setQuery] = useState('')
@@ -334,144 +357,155 @@ const Farms: React.FC = ({ children }) => {
   }
 
   return (
-    <FarmsContext.Provider value={{ chosenFarmsMemoized }}>
-      <PageHeader background="#6800A880">
-        <Heading
-          as="h1"
-          scale="md"
-          color="text"
-          mb="24px"
-          style={{
-            background: '#EC4C93',
-            display: 'inline-block',
-            borderRadius: '10px',
-            padding: '15px 25px',
-            border: '1px solid transparent',
-          }}
-        >
-          {t('Farms')}
-        </Heading>
-        <Heading
-          as="h1"
-          scale="md"
-          color="rgba(255, 255, 255, 0.5)"
-          mb="24px"
-          ml="20px"
-          style={{
-            background: 'rgba(46, 0, 23, 0.5)',
-            display: 'inline-block',
-            borderRadius: '10px',
-            padding: '15px 25px',
-            border: '1px solid rgba(236, 76, 147, 0.5)',
-          }}
-        >
-          {t('Pools')}
-        </Heading>
-        <div style={{ display: 'flex' }}>
-          <Heading scale="lg" color="#fff" style={{ flex: '50%', lineHeight: '1.8' }}>
-            {t('Stake LP tokens to earn.')}
-          </Heading>
-          <div style={{ flex: '50%', textAlign: 'right' }}>
-            <NextLinkFromReactRouter to="/farms/auction" id="lottery-pot-banner">
-              <Button p="0" variant="text">
-                <Text color="#EC4C93" bold fontSize="30px" mr="4px">
-                  {t('Community Auctions')}
-                </Text>
-                <ArrowForwardIcon color="#EC4C93" />
-              </Button>
-            </NextLinkFromReactRouter>
+    // <div style={{ background: isDark ? "rgba(38, 47, 52, 1)" : "#fff"}}>
+    <div style={{ background: isDark ? '#101722' : '#fff' }}>
+      <FarmsContext.Provider value={{ chosenFarmsMemoized }}>
+        <PageHeader background={isDark ? '#101722' : '#fff'}>
+          <div style={{ background: '#60C5BA', padding: '20px 30px', borderRadius: '10px' }}>
+            <Link href="/farms" passHref>
+              <Heading
+                as="h1"
+                scale="md"
+                color={isDark ? '#fff' : '#60C5BA'}
+                mb="24px"
+                style={{
+                  background: isDark ? '#101722' : '#fff',
+                  display: 'inline-block',
+                  borderRadius: '30px',
+                  padding: '15px 25px',
+                  border: '1px solid transparent',
+                  cursor: 'pointer',
+                }}
+              >
+                {t('Farms')}
+              </Heading>
+            </Link>
+            <Link href="/pools" passHref>
+              <Heading
+                as="h1"
+                scale="md"
+                color="#fff"
+                mb="24px"
+                ml="20px"
+                style={{
+                  background: '#60C5BA',
+                  display: 'inline-block',
+                  borderRadius: '30px',
+                  padding: '15px 25px',
+                  border: isDark ? '1px solid #0B3854' : '1px solid #fff',
+                  cursor: 'pointer',
+                }}
+              >
+                {t('Pools')}
+              </Heading>
+            </Link>
+            <ParentPool>
+              <Heading scale="lg" color="#fff" style={{ flex: '50%', lineHeight: '1.8' }}>
+                {t('Stake LP tokens to earn.')}
+              </Heading>
+              <CommunityPool>
+                <NextLinkFromReactRouter to="/farms/auction" id="lottery-pot-banner">
+                  <Button p="0" variant="text">
+                    <Text color="#50A69C" bold fontSize="28px" mr="4px">
+                      {t('Community Auctions')}
+                    </Text>
+                    <ArrowForwardIcon color="#50A69C" />
+                  </Button>
+                </NextLinkFromReactRouter>
+              </CommunityPool>
+            </ParentPool>
           </div>
-        </div>
-      </PageHeader>
-      <Page>
-        <ControlContainer>
-          <ViewControls>
-            <ToggleView idPrefix="clickFarm" viewMode={viewMode} onToggle={(mode: ViewMode) => setViewMode(mode)} />
-            <ToggleWrapper>
-              <Toggle
-                id="staked-only-farms"
-                checked={stakedOnly}
-                onChange={() => setStakedOnly(!stakedOnly)}
-                scale="sm"
-              />
-              <Text color="#fff"> {t('Staked only')}</Text>
-            </ToggleWrapper>
-            <FarmTabButtons hasStakeInFinishedFarms={stakedInactiveFarms.length > 0} />
-          </ViewControls>
-          <FilterContainer>
-            <LabelWrapper style={{ display: 'flex' }}>
-              <Text
-                textTransform="uppercase"
-                color="#fff"
-                style={{
-                  flex: '1',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  flexDirection: 'column',
-                  marginRight: '10px',
-                }}
-              >
-                {t('Sort by')}
-              </Text>
-              <Select
-                style={{ flex: '2' }}
-                options={[
-                  {
-                    label: t('Hot'),
-                    value: 'hot',
-                  },
-                  {
-                    label: t('APR'),
-                    value: 'apr',
-                  },
-                  {
-                    label: t('Multiplier'),
-                    value: 'multiplier',
-                  },
-                  {
-                    label: t('Earned'),
-                    value: 'earned',
-                  },
-                  {
-                    label: t('Liquidity'),
-                    value: 'liquidity',
-                  },
-                  {
-                    label: t('Latest'),
-                    value: 'latest',
-                  },
-                ]}
-                onOptionChange={handleSortOptionChange}
-              />
-            </LabelWrapper>
-            <LabelWrapper style={{ marginLeft: 16, display: 'flex' }}>
-              <Text
-                color="#fff"
-                style={{
-                  flex: '1',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  flexDirection: 'column',
-                  margin: '0 10px',
-                }}
-                textTransform="uppercase"
-              >
-                {t('Search')}
-              </Text>
-              <SearchInput onChange={handleChangeQuery} placeholder="Search Farms" />
-            </LabelWrapper>
-          </FilterContainer>
-        </ControlContainer>
-        {renderContent()}
-        {account && !userDataLoaded && stakedOnly && (
-          <Flex justifyContent="center">
-            <Loading />
-          </Flex>
-        )}
-        <div ref={observerRef} />
-        <StyledImage src="/images/decorations/3dpan.png" alt="Pancake illustration" width={120} height={103} />
-      </Page>
-    </FarmsContext.Provider>
+        </PageHeader>
+        <Page>
+          <ControlContainer>
+            <ViewControls>
+              <ToggleView idPrefix="clickFarm" viewMode={viewMode} onToggle={(mode: ViewMode) => setViewMode(mode)} />
+              <ToggleWrapper id="toggle_wapper">
+                <Toggle
+                  id="staked-only-farms"
+                  checked={stakedOnly}
+                  onChange={() => setStakedOnly(!stakedOnly)}
+                  scale="sm"
+                />
+                <Text color={isDark ? '#fff' : '#000'}> {t('Staked only')}</Text>
+              </ToggleWrapper>
+              <FarmTabButtons hasStakeInFinishedFarms={stakedInactiveFarms.length > 0} />
+            </ViewControls>
+            <FilterContainer>
+              <LabelWrapper style={{ display: 'flex' }}>
+                <Text
+                  textTransform="uppercase"
+                  color={ isDark ? "#fff" : "#000"}
+                  style={{
+                    flex: '1',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    flexDirection: 'column',
+                    marginRight: '10px',
+                  }}
+                >
+                  {t('Sort by')}
+                </Text>
+                <Select
+                  style={{ flex: '2' }}
+                  options={[
+                    {
+                      label: t('Hot'),
+                      value: 'hot',
+                    },
+                    {
+                      label: t('APR'),
+                      value: 'apr',
+                    },
+                    {
+                      label: t('Multiplier'),
+                      value: 'multiplier',
+                    },
+                    {
+                      label: t('Earned'),
+                      value: 'earned',
+                    },
+                    {
+                      label: t('Liquidity'),
+                      value: 'liquidity',
+                    },
+                    {
+                      label: t('Latest'),
+                      value: 'latest',
+                    },
+                  ]}
+                  onOptionChange={handleSortOptionChange}
+                />
+              </LabelWrapper>
+              <LabelWrapper style={{ marginLeft: 16, display: 'flex' }}>
+                <Text
+                  color={ isDark ? "#fff" : "#000"}
+                  style={{
+                    flex: '1',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    flexDirection: 'column',
+                    margin: '0 10px',
+                  }}
+                  textTransform="uppercase"
+                >
+                  {t('Search')}
+                </Text>
+                <SearchInput onChange={handleChangeQuery} placeholder="Search Farms" />
+              </LabelWrapper>
+            </FilterContainer>
+          </ControlContainer>
+          {renderContent()}
+          {account && !userDataLoaded && stakedOnly && (
+            <Flex justifyContent="center">
+              <Loading />
+            </Flex>
+          )}
+          <div ref={observerRef} />
+          <StyledImage src="/images/decorations/3dpan.png" alt="Pancake illustration" width={120} height={103} />
+        </Page>
+      </FarmsContext.Provider>
+    </div>
   )
 }
 

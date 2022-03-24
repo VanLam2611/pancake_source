@@ -5,6 +5,7 @@ import { formatUnits } from '@ethersproject/units'
 import BigNumber from 'bignumber.js'
 import { useWeb3React } from '@web3-react/core'
 import { Heading, Flex, Image, Text } from '@pancakeswap/uikit'
+import Link from 'next/link'
 import orderBy from 'lodash/orderBy'
 import partition from 'lodash/partition'
 import { useTranslation } from 'contexts/Localization'
@@ -29,6 +30,7 @@ import BountyCard from './components/BountyCard'
 import HelpButton from './components/HelpButton'
 import PoolsTable from './components/PoolsTable/PoolsTable'
 import { getCakeVaultEarnings } from './helpers'
+import useTheme from 'hooks/useTheme'
 
 const CardLayout = styled(FlexLayout)`
   justify-content: center;
@@ -158,6 +160,7 @@ const sortPools = (account: string, sortOption: string, pools: DeserializedPool[
 const Pools: React.FC = () => {
   const router = useRouter()
   const { t } = useTranslation()
+  const { isDark } = useTheme()
   const { account } = useWeb3React()
   const { pools, userDataLoaded } = usePoolsWithVault()
   const [stakedOnly, setStakedOnly] = useUserPoolStakedOnly()
@@ -246,58 +249,66 @@ const Pools: React.FC = () => {
   const tableLayout = <PoolsTable pools={chosenPools} account={account} userDataLoaded={userDataLoaded} />
 
   return (
-    <>
-      <PageHeader>
-        <Flex justifyContent="space-between" flexDirection={['column', null, null, 'row']}>
-          <Flex flex="1" flexDirection="column" mr={['8px', 0]}>
-            <div style={{ display: 'flex' }}>
-              <Heading
-                as="h1"
-                scale="md"
-                color="rgba(255, 255, 255, 0.5)"
-                mb="24px"
-                style={{
-                  background: 'rgba(46, 0, 23, 0.5)',
-                  display: 'inline-block',
-                  borderRadius: '10px',
-                  padding: '15px 25px',
-                  border: '1px solid rgba(236, 76, 147, 0.5)',
-                }}
-              >
-                {t('Farms')}
+    <div style={{background: isDark ? "#101722" : "#fff"}}>
+      <PageHeader background="transparent">
+        <div style={{ background: '#60C5BA', padding: '20px 30px', borderRadius: '10px' }}>
+          <Flex justifyContent="space-between" flexDirection={['column', null, null, 'row']}>
+            <Flex flex="1" flexDirection="column" mr={['8px', 0]}>
+              <div style={{ display: 'flex' }}>
+                <Link href="/farms" passHref>
+                  <Heading
+                    as="h1"
+                    scale="md"
+                    color="#fff"
+                    mb="24px"
+                    style={{
+                      background: '#60C5BA',
+                      display: 'inline-block',
+                      borderRadius: '30px',
+                      padding: '15px 25px',
+                      border: isDark ? '1px solid #0B3854' : '1px solid #fff',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    {t('Farms')}
+                  </Heading>
+                </Link>
+                <Link href="/pools" passHref>
+                  <Heading
+                    as="h1"
+                    scale="md"
+                    color={isDark ? '#fff' : '#60C5BA'}
+                    mb="24px"
+                    ml="20px"
+                    style={{
+                      background: isDark ? '#101722' : '#fff',
+                      display: 'inline-block',
+                      borderRadius: '30px',
+                      padding: '15px 25px',
+                      border: '1px solid transparent',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    {t('Pools')}
+                  </Heading>
+                </Link>
+              </div>
+              <Heading scale="md" color="#fff">
+                {t('Just stake some tokens to earn.')}
               </Heading>
-              <Heading
-                as="h1"
-                scale="md"
-                color="text"
-                mb="24px"
-                ml="20px"
-                style={{
-                  background: '#EC4C93',
-                  display: 'inline-block',
-                  borderRadius: '10px',
-                  padding: '15px 25px',
-                  border: '1px solid transparent',
-                }}
-              >
-                {t('Pools')}
+              <Heading scale="md" color="#fff">
+                {t('High APR, low risk.')}
               </Heading>
-            </div>
-            <Heading scale="md" color="#fff">
-              {t('Just stake some tokens to earn.')}
-            </Heading>
-            <Heading scale="md" color="#fff">
-              {t('High APR, low risk.')}
-            </Heading>
-          </Flex>
-          <Flex flex="1" height="fit-content" justifyContent="center" alignItems="center" mt={['24px', null, '0']}>
-            <div style={{ visibility: 'collapse' }}>
-              <HelpButton />
-            </div>
+            </Flex>
+            <Flex flex="1" height="fit-content" justifyContent="right" alignItems="center" mt={['24px', null, '0']}>
+              <div style={{ visibility: 'collapse' }}>
+                <HelpButton />
+              </div>
 
-            <BountyCard />
+              <BountyCard />
+            </Flex>
           </Flex>
-        </Flex>
+        </div>
       </PageHeader>
       <Page>
         <PoolControls>
@@ -313,7 +324,7 @@ const Pools: React.FC = () => {
               <Text
                 fontSize="12px"
                 bold
-                color="#fff"
+                color={ isDark ? "#fff" : "#000"}
                 textTransform="uppercase"
                 style={{
                   flex: '1',
@@ -357,7 +368,7 @@ const Pools: React.FC = () => {
               <Text
                 fontSize="12px"
                 bold
-                color="#fff"
+                color={ isDark ? "#fff" : "#000"}
                 textTransform="uppercase"
                 style={{
                   flex: '1',
@@ -385,16 +396,16 @@ const Pools: React.FC = () => {
         )}
         {viewMode === ViewMode.CARD ? cardLayout : tableLayout}
         <div ref={observerRef} />
-        <Image
+        {/* <Image
           mx="auto"
           mt="12px"
           src="/images/decorations/3d-syrup-bunnies.png"
           alt="Pancake illustration"
           width={192}
           height={184.5}
-        />
+        /> */}
       </Page>
-    </>
+    </div>
   )
 }
 

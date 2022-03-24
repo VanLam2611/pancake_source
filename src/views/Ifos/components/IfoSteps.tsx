@@ -37,6 +37,7 @@ import BigNumber from 'bignumber.js'
 import { useIfoPoolVault, useIfoPoolCredit, useIfoWithApr } from 'state/pools/hooks'
 import { useBUSDCakeAmount } from 'hooks/useBUSDPrice'
 import { useCheckVaultApprovalStatus, useVaultApprove } from 'views/Pools/hooks/useApprove'
+import useTheme from 'hooks/useTheme'
 
 interface TypeProps {
   ifoCurrencyAddress: string
@@ -68,14 +69,13 @@ const SmallStakePoolCard = styled(Box)`
 `
 
 const StyledHeading = styled(Heading)`
-  font-weight: bold;
+  font-weight: 500;
   font-size: 32px;
   line-height: 32px;
-  color: #fff;
   margin-bottom: 30px;
 `
 
-const StyledListOfSteps = styled.div`
+const StyledListOfSteps = styled.div <{ $bgColorOrImage?: string }>`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -89,13 +89,28 @@ const StyledListOfSteps = styled.div`
     height: 2px;
     top: 7px;
     left: 0;
-    background: linear-gradient(to right, #ec4c93 0%, rgba(236, 76, 147, 0.5) 50%, transparent 100%);
-    z-index: -1;
+    background: ${(props) => props.$bgColorOrImage};
+    z-index: 1;
+  }
+
+  @media screen and (max-width: 1200px) {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+
+    ::after {
+      height: 100%;
+      width: 2px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
   }
 `
 
-const StyledStepWrapper = styled.div`
+const StyledStepWrapper = styled.div <{ $bgColorOrImage?: string, $borderColor?: string, $dotColor?: string }>`
   flex: 1 1 0%;
+  z-index: 2;
 
   > div {
     display: flex;
@@ -105,12 +120,12 @@ const StyledStepWrapper = styled.div`
 
     > div {
       margin: 0;
-      background: linear-gradient(180deg, rgba(12, 7, 17, 0.8) 0%, rgba(12, 7, 17, 0) 100%);
-      border: 1px solid #ec4c93;
+      background: ${(props) => props.$bgColorOrImage || '#000'};
+      border: 1px solid ${(props) => props.$borderColor || '#fff'};
       box-sizing: border-box;
       border-radius: 10px;
       margin-right: 24px;
-      backdrop-filter: blur(5px);
+      backdrop-filter: blur(10px);
 
       > div,
       > div > div {
@@ -125,28 +140,29 @@ const StyledStepWrapper = styled.div`
     > div:nth-child(2) {
       position: static;
       margin-bottom: 30px;
+      border: none;
 
       > div:first-child {
         width: 16px;
         height: 16px;
         font-size: 0;
         border: none;
-        background: linear-gradient(180deg, #ec4c93 0%, #fff 100%);
+        background: ${(props) => props.$dotColor || '#000'};
         box-shadow: 0px 0px 20px #fff;
         position: relative;
         border-radius: 50%;
 
-        ::after {
-          content: '';
-          position: absolute;
-          width: 10px;
-          height: 10px;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          background: #fff;
-          border-radius: 50%;
-        }
+        // ::after {
+        //   content: '';
+        //   position: absolute;
+        //   width: 10px;
+        //   height: 10px;
+        //   top: 50%;
+        //   left: 50%;
+        //   transform: translate(-50%, -50%);
+        //   background: #fff;
+        //   border-radius: 50%;
+        // }
       }
 
       > div:not(:first-child) {
@@ -187,9 +203,69 @@ const StyledStepWrapper = styled.div`
       margin-right: 0;
     }
   }
+
+  @media screen and (max-width: 1200px) {
+    width: 100%;
+
+    > div > div:not(:nth-child(2)) {
+      margin: 24px 0 24px 0;
+      width: 100%;
+    }
+
+    > div > div:nth-child(2) {
+      margin: 0;
+    }
+
+    &&:nth-child(2),
+    &&:nth-child(4) {
+      > div {
+        flex-direction: column-reverse;
+  
+        > div:nth-child(1) {
+          display: block;
+        }
+
+        > div:nth-child(3) {
+          display: none;
+        }
+      }
+    }
+
+    &&:first-child {
+      > div > div:nth-child(2) {
+        > div:first-child {
+          box-shadow: none;
+        }
+      }
+    }
+
+    &&:last-child {
+      > div > div:not(:nth-child(2)) {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  @media screen and (max-width: 576px) {
+    &&:nth-child(2),
+    &&:nth-child(4) {
+      > div {
+        flex-direction: column;
+
+        > div:nth-child(1) {
+          display: none;
+        }
+  
+        > div:nth-child(3) {
+          display: block;
+        }
+      }
+    }
+  }
 `
 
 const Step1 = ({ hasProfile }: { hasProfile: boolean }) => {
+  const { theme } = useTheme()
   const { t } = useTranslation()
   const ifoPoolVault = useIfoPoolVault()
   const credit = useIfoPoolCredit()
@@ -241,7 +317,10 @@ const Step1 = ({ hasProfile }: { hasProfile: boolean }) => {
             'The maximum amount of CAKE user can commit to the Public Sale, is equal to the average CAKE balance in the IFO CAKE pool prior to the IFO. Stake more CAKE to increase the maximum CAKE you can commit to the sale. Missed this IFO? You can keep staking in the IFO CAKE Pool to join the next IFO sale.',
           )}
         </Text>
-        <TooltipText as="span" fontWeight={700} ref={targetRef} color="#EC4C93" small>
+        <TooltipText
+          as="span" fontWeight={700} ref={targetRef}
+          color={theme.colors.itemPrimary} small
+          style={{ textDecoration: `underline solid ${theme.colors.itemPrimary}` }}>
           {t('How does the IFO credit calculated?')}
         </TooltipText>
       </Box>
@@ -308,6 +387,7 @@ const IfoSteps: React.FC<TypeProps> = ({ isCommitted, hasClaimed, isLive, ifoCur
   const { hasActiveProfile } = useProfile()
   const { account } = useWeb3React()
   const { t } = useTranslation()
+  const { theme } = useTheme()
   const { balance } = useTokenBalance(ifoCurrencyAddress)
   const stepsValidationStatus = [hasActiveProfile, balance.isGreaterThan(0), isCommitted, hasClaimed]
 
@@ -382,15 +462,21 @@ const IfoSteps: React.FC<TypeProps> = ({ isCommitted, hasClaimed, isLive, ifoCur
 
   return (
     <Wrapper>
-      <StyledHeading id="ifo-how-to" as="h2" scale="xl" color="secondary" mb="24px" textAlign="center">
+      <StyledHeading id="ifo-how-to" as="h2" scale="xl" color={theme.isDark ? '#fff' : '#000'} mb="24px" textAlign="center">
         {/* {t('How to Take Part in the Public Sale')} */}
         {t('IFO: Initial Farm Offerings')}
       </StyledHeading>
       <Stepper>
-        <StyledListOfSteps>
+        <StyledListOfSteps
+          $bgColorOrImage={theme.colors.itemPrimary}
+        >
           {stepsValidationStatus.map((_, index) => (
             // eslint-disable-next-line react/no-array-index-key
-            <StyledStepWrapper key={index}>
+            <StyledStepWrapper key={index}
+              $bgColorOrImage='linear-gradient(180deg, #1E2735 0%, rgba(30, 39, 53, 0) 100%)'
+              $borderColor={theme.colors.itemBlueUnhighlight}
+              $dotColor={theme.colors.itemPrimary}
+            >
               <Step
                 // eslint-disable-next-line react/no-array-index-key
                 key={index}

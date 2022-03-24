@@ -1,18 +1,17 @@
 import styled from 'styled-components'
+import useTheme from 'hooks/useTheme'
 import { PoolUpdater, ProtocolUpdater, TokenUpdater } from 'state/info/updaters'
 import InfoNav from './components/InfoNav'
 
 const InfoWrapper = styled.div`
-  background-image: url('/imagesForWomenTechFinance/info/WomenTech_finance_bg_info_token.png');
-  background-attachment: fixed;
-  background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
+  background-color: #fff;
 `
 
 export const InfoPageLayout = ({ children }) => {
+  const { theme } = useTheme()
+
   return (
-    <InfoWrapper>
+    <InfoWrapper style={{ backgroundColor: `${theme.isDark ? theme.colors.bgDark : theme.colors.bgBright}` }}>
       <ProtocolUpdater />
       <PoolUpdater />
       <TokenUpdater />
