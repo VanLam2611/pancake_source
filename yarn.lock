@@ -5373,13 +5373,13 @@
     "@types/node" "*"
 
 "@typescript-eslint/eslint-plugin@^5.10.0":
-  "integrity" "sha512-ir0wYI4FfFUDfLcuwKzIH7sMVA+db7WYen47iRSaCGl+HMAZI9fpBwfDo45ZALD3A45ZGyHWDNLhbg8tZrMX4w=="
-  "resolved" "https://registry.npmjs.org/@typescript-eslint/eslint-plugin/-/eslint-plugin-5.14.0.tgz"
-  "version" "5.14.0"
+  "integrity" "sha512-SJoba1edXvQRMmNI505Uo4XmGbxCK9ARQpkvOd00anxzri9RNQk0DDCxD+LIl+jYhkzOJiOMMKYEHnHEODjdCw=="
+  "resolved" "https://registry.npmjs.org/@typescript-eslint/eslint-plugin/-/eslint-plugin-5.16.0.tgz"
+  "version" "5.16.0"
   dependencies:
-    "@typescript-eslint/scope-manager" "5.14.0"
-    "@typescript-eslint/type-utils" "5.14.0"
-    "@typescript-eslint/utils" "5.14.0"
+    "@typescript-eslint/scope-manager" "5.16.0"
+    "@typescript-eslint/type-utils" "5.16.0"
+    "@typescript-eslint/utils" "5.16.0"
     "debug" "^4.3.2"
     "functional-red-black-tree" "^1.0.1"
     "ignore" "^5.1.8"
@@ -5405,12 +5405,20 @@
     "@typescript-eslint/types" "5.14.0"
     "@typescript-eslint/visitor-keys" "5.14.0"
 
-"@typescript-eslint/type-utils@5.14.0":
-  "integrity" "sha512-d4PTJxsqaUpv8iERTDSQBKUCV7Q5yyXjqXUl3XF7Sd9ogNLuKLkxz82qxokqQ4jXdTPZudWpmNtr/JjbbvUixw=="
-  "resolved" "https://registry.npmjs.org/@typescript-eslint/type-utils/-/type-utils-5.14.0.tgz"
-  "version" "5.14.0"
+"@typescript-eslint/scope-manager@5.16.0":
+  "integrity" "sha512-P+Yab2Hovg8NekLIR/mOElCDPyGgFZKhGoZA901Yax6WR6HVeGLbsqJkZ+Cvk5nts/dAlFKm8PfL43UZnWdpIQ=="
+  "resolved" "https://registry.npmjs.org/@typescript-eslint/scope-manager/-/scope-manager-5.16.0.tgz"
+  "version" "5.16.0"
   dependencies:
-    "@typescript-eslint/utils" "5.14.0"
+    "@typescript-eslint/types" "5.16.0"
+    "@typescript-eslint/visitor-keys" "5.16.0"
+
+"@typescript-eslint/type-utils@5.16.0":
+  "integrity" "sha512-SKygICv54CCRl1Vq5ewwQUJV/8padIWvPgCxlWPGO/OgQLCijY9G7lDu6H+mqfQtbzDNlVjzVWQmeqbLMBLEwQ=="
+  "resolved" "https://registry.npmjs.org/@typescript-eslint/type-utils/-/type-utils-5.16.0.tgz"
+  "version" "5.16.0"
+  dependencies:
+    "@typescript-eslint/utils" "5.16.0"
     "debug" "^4.3.2"
     "tsutils" "^3.21.0"
 
@@ -5418,6 +5426,11 @@
   "integrity" "sha512-BR6Y9eE9360LNnW3eEUqAg6HxS9Q35kSIs4rp4vNHRdfg0s+/PgHgskvu5DFTM7G5VKAVjuyaN476LCPrdA7Mw=="
   "resolved" "https://registry.npmjs.org/@typescript-eslint/types/-/types-5.14.0.tgz"
   "version" "5.14.0"
+
+"@typescript-eslint/types@5.16.0":
+  "integrity" "sha512-oUorOwLj/3/3p/HFwrp6m/J2VfbLC8gjW5X3awpQJ/bSG+YRGFS4dpsvtQ8T2VNveV+LflQHjlLvB6v0R87z4g=="
+  "resolved" "https://registry.npmjs.org/@typescript-eslint/types/-/types-5.16.0.tgz"
+  "version" "5.16.0"
 
 "@typescript-eslint/typescript-estree@5.14.0":
   "integrity" "sha512-QGnxvROrCVtLQ1724GLTHBTR0lZVu13izOp9njRvMkCBgWX26PKvmMP8k82nmXBRD3DQcFFq2oj3cKDwr0FaUA=="
@@ -5432,15 +5445,28 @@
     "semver" "^7.3.5"
     "tsutils" "^3.21.0"
 
-"@typescript-eslint/utils@5.14.0":
-  "integrity" "sha512-EHwlII5mvUA0UsKYnVzySb/5EE/t03duUTweVy8Zqt3UQXBrpEVY144OTceFKaOe4xQXZJrkptCf7PjEBeGK4w=="
-  "resolved" "https://registry.npmjs.org/@typescript-eslint/utils/-/utils-5.14.0.tgz"
-  "version" "5.14.0"
+"@typescript-eslint/typescript-estree@5.16.0":
+  "integrity" "sha512-SE4VfbLWUZl9MR+ngLSARptUv2E8brY0luCdgmUevU6arZRY/KxYoLI/3V/yxaURR8tLRN7bmZtJdgmzLHI6pQ=="
+  "resolved" "https://registry.npmjs.org/@typescript-eslint/typescript-estree/-/typescript-estree-5.16.0.tgz"
+  "version" "5.16.0"
+  dependencies:
+    "@typescript-eslint/types" "5.16.0"
+    "@typescript-eslint/visitor-keys" "5.16.0"
+    "debug" "^4.3.2"
+    "globby" "^11.0.4"
+    "is-glob" "^4.0.3"
+    "semver" "^7.3.5"
+    "tsutils" "^3.21.0"
+
+"@typescript-eslint/utils@5.16.0":
+  "integrity" "sha512-iYej2ER6AwmejLWMWzJIHy3nPJeGDuCqf8Jnb+jAQVoPpmWzwQOfa9hWVB8GIQE5gsCv/rfN4T+AYb/V06WseQ=="
+  "resolved" "https://registry.npmjs.org/@typescript-eslint/utils/-/utils-5.16.0.tgz"
+  "version" "5.16.0"
   dependencies:
     "@types/json-schema" "^7.0.9"
-    "@typescript-eslint/scope-manager" "5.14.0"
-    "@typescript-eslint/types" "5.14.0"
-    "@typescript-eslint/typescript-estree" "5.14.0"
+    "@typescript-eslint/scope-manager" "5.16.0"
+    "@typescript-eslint/types" "5.16.0"
+    "@typescript-eslint/typescript-estree" "5.16.0"
     "eslint-scope" "^5.1.1"
     "eslint-utils" "^3.0.0"
 
@@ -5450,6 +5476,14 @@
   "version" "5.14.0"
   dependencies:
     "@typescript-eslint/types" "5.14.0"
+    "eslint-visitor-keys" "^3.0.0"
+
+"@typescript-eslint/visitor-keys@5.16.0":
+  "integrity" "sha512-jqxO8msp5vZDhikTwq9ubyMHqZ67UIvawohr4qF3KhlpL7gzSjOd+8471H3nh5LyABkaI85laEKKU8SnGUK5/g=="
+  "resolved" "https://registry.npmjs.org/@typescript-eslint/visitor-keys/-/visitor-keys-5.16.0.tgz"
+  "version" "5.16.0"
+  dependencies:
+    "@typescript-eslint/types" "5.16.0"
     "eslint-visitor-keys" "^3.0.0"
 
 "@uniswap/token-lists@^1.0.0-beta.19":
@@ -9947,6 +9981,7 @@
     "setimmediate" "^1.0.5"
 
 "ethereumjs-abi@git+https://github.com/ethereumjs/ethereumjs-abi.git":
+  "integrity" "sha512-Tx0r/iXI6r+lRsdvkFDlut0N08jWMnKRZ6Gkq+Nmw75lZe4e6o3EkSnkaBP5NF6+m5PTGAr9JP43N3LyeoglsA=="
   "version" "0.6.8"
   dependencies:
     "bn.js" "^4.11.8"
@@ -14998,7 +15033,7 @@
   "resolved" "https://registry.npmjs.org/mute-stream/-/mute-stream-0.0.8.tgz"
   "version" "0.0.8"
 
-"nan@^2.14.0":
+"nan@^2.11.0":
   "integrity" "sha512-8ZtvEnA2c5aYCZYd1cvgdnU6cqwixRoYg70xPLWUws5ORTa/lnw+u4amixRS/Ac5U5mQVgp9pnlSUnbNWFaWZQ=="
   "resolved" "https://registry.npmjs.org/nan/-/nan-2.15.0.tgz"
   "version" "2.15.0"
@@ -15085,7 +15120,6 @@
     "@next/swc-linux-x64-gnu" "12.1.0"
     "@next/swc-linux-x64-musl" "12.1.0"
     "@next/swc-win32-arm64-msvc" "12.1.0"
-    "@next/swc-win32-ia32-msvc" "12.1.0"
     "@next/swc-win32-x64-msvc" "12.1.0"
 
 "nice-try@^1.0.4":
@@ -20980,12 +21014,13 @@
     "yaeti" "^0.0.6"
 
 "websocket@github:web3-js/WebSocket-Node#polyfill/globalThis":
+  "integrity" "sha512-WhU8jKXC8sTh6ocLSqpZRlOKMNYGwUvjA5+XcIgIk/G3JCaDfkZUr0zA19sVSxJ0TEvm0i5IBzr54RZC4vzW7g=="
   "resolved" "git+ssh://git@github.com/web3-js/WebSocket-Node.git#ef5ea2f41daf4a2113b80c9223df884b4d56c400"
   "version" "1.0.29"
   dependencies:
     "debug" "^2.2.0"
-    "es5-ext" "^0.10.50"
-    "nan" "^2.14.0"
+    "gulp" "^4.0.2"
+    "nan" "^2.11.0"
     "typedarray-to-buffer" "^3.1.5"
     "yaeti" "^0.0.6"
 
