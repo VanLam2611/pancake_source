@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import { Card } from '@pancakeswap/uikit'
 
-export const StyledCard = styled(Card) <{ isFinished?: boolean, cBgColor?: string, cBorderColor?: string, isDark: boolean }>`
+export const StyledCard = styled(Card) <{ isFinished?: boolean, cBgColor?: string, cBorderColor?: string, isDark?: boolean }>`
   max-width: 352px;
   margin: 0 8px 24px;
   width: 100%;

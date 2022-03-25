@@ -1,4 +1,4 @@
-import { useMemo, useEffect } from 'react'
+import { useMemo } from 'react'
 import { useRouter } from 'next/router'
 import { NextLinkFromReactRouter } from 'components/NextLink'
 import { Menu as UikitMenu } from '@pancakeswap/uikit'
@@ -13,8 +13,6 @@ import { useMenuItems } from './hooks/useMenuItems'
 import GlobalSettings from './GlobalSettings'
 import { getActiveMenuItem, getActiveSubMenuItem } from './utils'
 import { footerLinks } from './config/footerConfig'
-import 'easymde/dist/easymde.min.css'
-import { Alert as Comm } from '../../../pancake-uikit/src/components/Alert'
 
 const Menu = (props) => {
   const { isDark, setTheme } = useTheme()

@@ -17,7 +17,7 @@ const Container = styled.div`
   }
 `
 
-const ToggleView: React.FunctionComponent<ToggleViewProps> = ({ idPrefix, viewMode, onToggle }) => {
+const ToggleView: React.FunctionComponent<ToggleViewProps> = ({ viewMode, onToggle }) => {
   const {isDark} = useTheme()
   const handleToggle = (mode: ViewMode) => {
     if (viewMode !== mode) {

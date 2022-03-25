@@ -538,6 +538,7 @@ export default function RemoveLiquidity() {
                 pair={pair}
                 id="liquidity-amount"
                 onCurrencySelect={() => null}
+                isShow={true}
               />
               <ColumnCenter>
                 <ArrowDownIcon width="24px" my="16px" />
@@ -552,6 +553,7 @@ export default function RemoveLiquidity() {
                 label={t('Output')}
                 onCurrencySelect={handleSelectCurrencyA}
                 id="remove-liquidity-tokena"
+                isShow={true}
               />
               <ColumnCenter>
                 <AddIcon width="24px" my="16px" />
@@ -566,6 +568,7 @@ export default function RemoveLiquidity() {
                 label={t('Output')}
                 onCurrencySelect={handleSelectCurrencyB}
                 id="remove-liquidity-tokenb"
+                isShow={true}
               />
             </Box>
           )}

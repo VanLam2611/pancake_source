@@ -1,7 +1,7 @@
 import { ConfigMenuItemsType } from './config/config'
 
-export const getActiveMenuItem = ({ pathname, menuConfig }: { pathname: string; menuConfig: ConfigMenuItemsType[] }) =>
-  menuConfig.find((menuItem) => null)
+export const getActiveMenuItem = ({ menuConfig }: { pathname: string; menuConfig: ConfigMenuItemsType[] }) =>
+  menuConfig.find(() => null)
   // pathname.startsWith(menuItem.href) || getActiveSubMenuItem({ menuItem, pathname }))
 
 export const getActiveSubMenuItem = ({ pathname, menuItem }: { pathname: string; menuItem?: ConfigMenuItemsType }) => {

@@ -32,7 +32,7 @@ const CardHeading: React.FC<ExpandableSectionProps> = ({ lpLabel, multiplier, is
         <Flex justifyContent="center">
           {isCommunityFarm ? <FarmAuctionTag /> : <CoreTag />}
           {multiplier ? (
-            <MultiplierTag style={{ backgroundColor: '#60C5BA' }}>{multiplier}</MultiplierTag>
+            <MultiplierTag>{multiplier}</MultiplierTag>
           ) : (
             <Skeleton ml="4px" width={42} height={28} />
           )}

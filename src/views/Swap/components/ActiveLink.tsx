@@ -53,7 +53,8 @@ const ActiveLink = ({ route }) => {
         linkData.map((e) => {
             if (route == e.href) {
                 const temp = document.querySelector('#' + e.id)
-                temp.classList += " active"
+                let currenClass = temp.getAttribute('class')
+                temp.setAttribute('class', currenClass + ' active')
             }
         })
     })

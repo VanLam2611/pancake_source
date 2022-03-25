@@ -1,7 +1,8 @@
 import { TranslateFunction } from 'contexts/Localization/types'
-import { SalesSectionProps } from '.'
+import { SalesSectionProps } from './index'
 
 export const swapSectionData = (t: TranslateFunction): SalesSectionProps => ({
+  numberOfWords: 0,
   headingText: t('Trade anything. No registration, no hassle.'),
   bodyText: t('Trade any token on BNB Smart Chain in seconds, just by connecting your wallet.'),
   reverse: false,
@@ -26,6 +27,7 @@ export const swapSectionData = (t: TranslateFunction): SalesSectionProps => ({
 })
 
 export const earnSectionData = (t: TranslateFunction): SalesSectionProps => ({
+  numberOfWords: 1,
   headingText: t('Earn passive income with crypto.'),
   bodyText: t('OnDefi makes it easy to make your crypto work for you.'),
   reverse: true,
@@ -50,6 +52,7 @@ export const earnSectionData = (t: TranslateFunction): SalesSectionProps => ({
 })
 
 export const cakeSectionData = (t: TranslateFunction): SalesSectionProps => ({
+  numberOfWords: 2,
   headingText: t('OnDefi makes our world go round.'),
   bodyText: t(
     'OnDefi token is at the heart of the PancakeSwap ecosystem. Buy it, win it, farm it, spend it, stake it... heck, you can even vote with it!',

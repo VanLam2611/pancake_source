@@ -1,44 +1,41 @@
-import { useEffect, useState } from 'react'
-import { Currency, Pair, Token } from '@pancakeswap/sdk'
-import { Button, ChevronDownIcon, Text, useModal, Flex, Box, MetamaskIcon } from '@pancakeswap/uikit'
+import { Currency, Pair } from '@pancakeswap/sdk'
+import { Button, ChevronDownIcon, Text, useModal, Flex, Box } from '@pancakeswap/uikit'
 import styled from 'styled-components'
 import useTheme from 'hooks/useTheme'
-import { registerToken } from 'utils/wallet'
-import { isAddress } from 'utils'
+// import { isAddress } from 'utils'
 import { useTranslation } from 'contexts/Localization'
-import useActiveWeb3React from 'hooks/useActiveWeb3React'
+// import useActiveWeb3React from 'hooks/useActiveWeb3React'
 import { RowBetween } from 'components/Layout/Row'
-import { useCurrencyBalance } from '../../state/wallet/hooks'
+// import { useCurrencyBalance } from '../../state/wallet/hooks'
 import CurrencySearchModal from '../SearchModal/CurrencySearchModal'
 import { CurrencyLogo, DoubleCurrencyLogo } from '../Logo'
 import { Input as NumericalInput } from './NumericalInput'
-import { CopyButton } from '../CopyButton'
 
-const InputRow = styled.div<{ selected: boolean }>`
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
-  justify-content: flex-end;
-  padding: ${({ selected }) => (selected ? '0.75rem 0.5rem 0.75rem 1rem' : '0.75rem 0.75rem 0.75rem 1rem')};
-`
+// const InputRow = styled.div<{ selected: boolean }>`
+//   display: flex;
+//   flex-flow: row nowrap;
+//   align-items: center;
+//   justify-content: flex-end;
+//   padding: ${({ selected }) => (selected ? '0.75rem 0.5rem 0.75rem 1rem' : '0.75rem 0.75rem 0.75rem 1rem')};
+// `
 const CurrencySelectButton = styled(Button).attrs({ variant: 'text', scale: 'sm' })`
   padding: 1.5rem 1rem;
   position: relative;
   top: 23px;
   left: 10px;
   z-index: 3;
-  background-color: #60C5BA;
+  background-color: #60c5ba;
   border-radius: 5px !important;
 `
 
-const CurrencySelectButtonTrue = styled(Button).attrs({ variant: 'text', scale: 'sm' })<{$isDark: boolean}>`
+const CurrencySelectButtonTrue = styled(Button).attrs({ variant: 'text', scale: 'sm' })<{ $isDark: boolean }>`
   padding: 0.75rem 1rem;
   position: relative;
   top: 0px;
   left: 10px;
   z-index: 3;
-  background-color: ${({$isDark})=> ( $isDark ? '#1E2735' : '#fff' )} ;
-  border: 1px solid #60C5BA;
+  background-color: ${({ $isDark }) => ($isDark ? '#1E2735' : '#fff')};
+  border: 1px solid #60c5ba;
   border-radius: 5px !important;
 `
 
@@ -50,7 +47,7 @@ const LabelRow = styled.div<{ $isDark: boolean }>`
   font-size: 0.75rem;
   line-height: 1rem;
   padding: 1.5rem 1rem;
-  border: 1.25px solid #60C5BA;
+  border: 1.25px solid #60c5ba;
   border-radius: 15px;
   position: absolute;
   width: 100%;
@@ -95,29 +92,29 @@ interface CurrencyInputPanelProps {
 export default function CurrencyInputPanel({
   value,
   onUserInput,
-  onMax,
-  showMaxButton,
-  label,
+  // onMax,
+  // showMaxButton,
+  // label,
   onCurrencySelect,
   currency,
   disableCurrencySelect = false,
-  hideBalance = false,
+  // hideBalance = false,
   pair = null, // used for double token logo
   otherCurrency,
   id,
   showCommonBases,
   isShow,
 }: CurrencyInputPanelProps) {
-  const { account, library } = useActiveWeb3React()
-  const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
+  // const { account } = useActiveWeb3React()
+  // const selectedCurrencyBalance = useCurrencyBalance(account ?? undefined, currency ?? undefined)
   const {
     t,
-    currentLanguage: { locale },
+    // currentLanguage: { locale },
   } = useTranslation()
   const { isDark } = useTheme()
 
-  const token = pair ? pair.liquidityToken : currency instanceof Token ? currency : null
-  const tokenAddress = token ? isAddress(token.address) : null
+  // const token = pair ? pair.liquidityToken : currency instanceof Token ? currency : null
+  // const tokenAddress = token ? isAddress(token.address) : null
 
   const [onPresentCurrencyModal] = useModal(
     <CurrencySearchModal
@@ -195,8 +192,8 @@ export default function CurrencyInputPanel({
                     : currency?.symbol) || t('Select a currency')}
                 </Text>
               )}
-             
-            </Flex> {!disableCurrencySelect && <ChevronDownIcon />}
+            </Flex>{' '}
+            {!disableCurrencySelect && <ChevronDownIcon />}
           </CurrencySelectButtonTrue>
         )}
         {/* <Flex style={{ gap: '8px' }}>

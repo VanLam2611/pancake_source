@@ -40,20 +40,31 @@ const ParentChart = styled.div`
   }
 `
 
-const TradingView = ({isFullWidthContainer}) => {
+const TradingView = ({ isFullWidthContainer }) => {
   const router = useRouter()
   // token warning stuff
   const { isMobile } = useMatchBreakpoints()
-  const { currencies, inputError: swapInputError } = useDerivedSwapInfo()
-  const [userChartPreference, setUserChartPreference] = useExchangeChartManager(isMobile)
-  const singleTokenPrice = useSingleTokenSwapInfo()
-  const [isChartDisplayed, setIsChartDisplayed] = useState(userChartPreference)
-  const [isChartExpanded, setIsChartExpanded] = useState(false)
+  const { independentField, typedValue } = useSwapState()
   // Price data
   const {
     [Field.INPUT]: { currencyId: inputCurrencyId },
     [Field.OUTPUT]: { currencyId: outputCurrencyId },
   } = useSwapState()
+  const inputCurrency = useCurrency(inputCurrencyId)
+  const outputCurrency = useCurrency(outputCurrencyId)
+  const { currencies, inputError: swapInputError } = useDerivedSwapInfo(
+    independentField,
+    typedValue,
+    inputCurrencyId,
+    inputCurrency,
+    outputCurrencyId,
+    outputCurrency,
+    '',
+  )
+  const [userChartPreference, setUserChartPreference] = useExchangeChartManager(isMobile)
+  const singleTokenPrice = useSingleTokenSwapInfo(inputCurrencyId, inputCurrency,outputCurrencyId,outputCurrency)
+  const [isChartDisplayed, setIsChartDisplayed] = useState(userChartPreference)
+  const [isChartExpanded, setIsChartExpanded] = useState(false)
 
   return (
     <>
